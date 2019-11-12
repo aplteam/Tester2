@@ -1,0 +1,20 @@
+ r←Test_Helpers_03(stopFlag batchFlag);stopFlag;⎕TRAP;list1
+⍝ Exercise the `E` helper.
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+
+ :If batchFlag
+     r←T.∆NoBatchTest
+
+ :Else
+
+     r←T.∆Failed
+
+     ⎕←⎕PW↑'   --- ',(↑⎕SI),⎕PW⍴'-'
+     ⎕←'   This text case needs you: it opens an edit window, and you must close it!'
+     ⎕←'   Press enter to continue'
+     {}⍞
+     T.E 1↑T.L''
+
+     r←T.∆OK
+
+ :EndIf

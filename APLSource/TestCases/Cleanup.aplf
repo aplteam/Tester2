@@ -1,0 +1,5 @@
+ {R}←Cleanup
+ R←⍬
+ ##.FilesAndDirs.DeleteFile'Testcases.ini'
+ ##.FilesAndDirs.DeleteFile'Testcases_',##.WinSys.GetComputerName,'.ini'
+ {}⎕WA

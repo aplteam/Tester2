@@ -1,0 +1,37 @@
+ r←Test_Run_04(stopFlag batchFlag);log;rc;expected;stopFlag;⎕TRAP;T2
+⍝ Exercise the "RunThese" method
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T.∆Failed
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+ T2.TestFlag←1
+ (rc log)←T2.RunThese 2 3
+ expected←'  1 test case executed' '  0 test cases failed' '  0 test cases broken'
+ →T.FailsIf expected≢¯3↑¯4↓log
+
+ :Trap 1001   ⍝ Catch stop vector
+     T2←⎕NEW ##.Tester2 TestCasesSimu
+     T2.TestFlag←1
+     (rc log)←T2.RunThese ¯2
+     →T.FailsIf 1
+ :EndTrap
+
+ :Trap 1001    ⍝ Catch stop vector
+     T2←⎕NEW ##.Tester2 TestCasesSimu
+     T2.TestFlag←1
+     log←T2.RunThese 0
+     →T.FailsIf 1
+ :EndTrap
+
+ ⎕TRAP←(1001 'E' '→⎕lc')(0 'S')
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+ T2.TestFlag←1
+ (rc log)←T2.RunThese'Grp1' 0
+ →T.FailsIf 3 0 0≢∆GetTotals log
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+ T2.TestFlag←1
+ (rc log)←T2.RunThese'Test_Grp1' 0
+ →T.FailsIf 3 0 0≢∆GetTotals log
+
+ r←T.∆OK

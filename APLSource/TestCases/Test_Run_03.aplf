@@ -1,0 +1,12 @@
+ r←Test_Run_03(stopFlag batchFlag);log;rc;stopFlag;⎕TRAP
+⍝ Exercise the "RunDebug" method
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T.∆Failed
+
+ TestCasesSimu.T←⎕NEW ##.Tester2 TestCasesSimu
+ TestCasesSimu.T.TestFlag←1
+ (rc log)←TestCasesSimu.T.RunDebug 0
+ TestCasesSimu.⎕EX''
+ →T.FailsIf 13 3 0≢∆GetTotals log
+ r←T.∆OK
+⍝Done

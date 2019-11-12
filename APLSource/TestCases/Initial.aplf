@@ -1,0 +1,11 @@
+ {r}←Initial
+ r←1
+ ##.FilesAndDirs.PolishCurrentDir
+ :If 1<⍴⎕XSI
+ :AndIf ~(⊂1↓↑¯1↑⎕NPARTS↑¯1↑⎕XSI)∊'RunDebug' 'RunThese' 'RunGUI'
+     ⎕←'******* Sorry, this test suite can for technical reasons only be executed with either'
+     ⎕←'        "RunGUI" (recommended) or "RunDebug" or "RunThese"'
+     ⎕←'        Press <enter> to continue'
+     {}⍞
+     r←0
+ :EndIf

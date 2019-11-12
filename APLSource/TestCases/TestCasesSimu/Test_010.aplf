@@ -1,0 +1,8 @@
+ r←Test_010(stopFlag batchFlag);⎕TRAP
+⍝ Does not execute in batch mode but is okay otherwise
+ r←1
+ :If batchFlag
+     r←¯1
+ :Else
+     r←0
+ :EndIf

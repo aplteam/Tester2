@@ -1,0 +1,24 @@
+ r←Test_Helpers_01(stopFlag batchFlag);⎕TRAP;list1;list2;list3
+⍝ Exercise the `L` helper.
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T.∆Failed
+
+ list1←T.L''
+ →T.PassesIf 2=≡list1
+ →T.PassesIf 2=⍴⍴list1
+ →T.PassesIf 1<1⊃⍴list1
+ Assert∨/∨⌿'Other'⍷⊃list1[;1]
+
+ list2←T.L'Other'
+ →T.PassesIf 2=≡list2
+ →T.PassesIf 2=⍴⍴list2
+ →T.PassesIf 1<1⊃⍴list2
+
+ list3←3 T.L'Other'
+ →T.PassesIf 2=≡list3
+ →T.PassesIf 2=⍴⍴list3
+ →T.PassesIf 1=1⊃⍴list3
+ →T.PassesIf∨/'Test_Other_03'⍷∊list3
+
+ r←T.∆OK
+⍝Done

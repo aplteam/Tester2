@@ -1,0 +1,30 @@
+ r←Test_Misc_10(stopFlag batchFlag);log;log;shouldBe;⎕TRAP;rc
+⍝ Exercise the different `type`s of results a test function might return.
+⍝  ¯1 = Not a batch test function
+⍝  ¯2 = Inactive
+⍝ ¯10 = Runs under Windows only
+⍝ ¯11 = Runs under Linux only
+⍝ ¯12 = Runs under Mac OS only
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T.∆Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ #.TEMP.⎕FX'r←Test_01 y;⎕TRAP' 'r←0'       ⍝ Okay
+ #.TEMP.⎕FX'r←Test_02 y;⎕TRAP' '.'         ⍝ Broken
+ #.TEMP.⎕FX'r←Test_03 y;⎕TRAP' 'r←1'       ⍝ Failed
+ #.TEMP.⎕FX'r←Test_04 y;⎕TRAP' 'r←¯1'      ⍝  ¯1 = Not a batch test function
+ #.TEMP.⎕FX'r←Test_05 y;⎕TRAP' 'r←¯2'      ⍝  ¯2 = Inactive
+ #.TEMP.⎕FX'r←Test_06 y;⎕TRAP' 'r←¯10'     ⍝ ¯10 = Runs under Windows only
+ #.TEMP.⎕FX'r←Test_07 y;⎕TRAP' 'r←¯11'     ⍝ ¯11 = Runs under Linux only
+ #.TEMP.⎕FX'r←Test_08 y;⎕TRAP' 'r←¯20'     ⍝ ¯20 = Runs under Linux or Mac only
+ #.TEMP.⎕FX'r←Test_09 y;⎕TRAP' 'r←¯21'     ⍝ ¯21 = Runs under Linux or Windows only
+ #.TEMP.⎕FX'r←Test_10 y;⎕TRAP' 'r←¯22'     ⍝ ¯22 = Runs under Mac or Windows only
+ #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
+
+ (rc log)←#.TEMP.T.Run ⍬
+ →T.PassesIf 1=rc
+ shouldBe←1⌈{⍵↑⍵}10
+ →T.PassesIf shouldBe≡∆GetTotals log
+
+ r←T.∆OK

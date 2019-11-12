@@ -1,0 +1,5 @@
+ r←Test_foo_01(stopFlag batchFlag);log;stopFlag;⎕TRAP
+⍝ Pro-forma test used to test RunThese 'foo' 1
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T.∆OK
+⍝Done

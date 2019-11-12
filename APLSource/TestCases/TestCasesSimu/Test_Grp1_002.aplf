@@ -1,0 +1,3 @@
+ r←Test_Grp1_002(stopFlag batchFlag);⎕TRAP
+⍝ Second in Grp1
+ r←0

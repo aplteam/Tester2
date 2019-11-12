@@ -1,0 +1,5 @@
+ r←Test_01(stopFlag batchFlag);log;stopFlag;⎕TRAP
+⍝ Pro-forma test used to test `RunThese` with a 1 as right argunment
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ ⍝
+ r←T.∆OK

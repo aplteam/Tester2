@@ -1,0 +1,3 @@
+ r←Test_Grp1_003(stopFlag batchFlag);⎕TRAP
+⍝ Third in Grp1
+ r←0

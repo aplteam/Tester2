@@ -1,0 +1,3 @@
+ r←Test_2(stopFlag batchFlag);⎕TRAP
+⍝ Successful test case
+ r←0

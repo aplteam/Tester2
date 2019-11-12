@@ -1,0 +1,7 @@
+ r←Test_021(debugFlag batchFlag)
+⍝ Broken
+⍝ Note that when the function executing this test case does not trap errors then
+⍝ this test case is reported as "failed" rather than "broken.
+ r←T.∆Failed
+ .  ⍝ Now enter "→0" when running the #.Tester2 test cases
+⍝ r←T.∆OK

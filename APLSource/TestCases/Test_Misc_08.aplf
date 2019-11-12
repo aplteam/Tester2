@@ -1,0 +1,10 @@
+ r←Test_Misc_08(stopFlag batchFlag);log;stopFlag;⎕TRAP;rc;T2
+⍝ Exercise the grouping mechanism with specific numbers
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T.∆Failed
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+ (rc log)←T2.RunThese'Grouping'(1 3)
+ →T.PassesIf 1 0 1≡∨/¨∨/¨'Test_Grouping_001 ' 'Test_Grouping_002 ' 'Test_Grouping_003 '⍷¨⊂⊃log
+
+ r←T.∆OK

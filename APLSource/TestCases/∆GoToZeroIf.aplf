@@ -1,0 +1,2 @@
+ r←∆GoToZeroIf
+ r←(1+∨/'⍝ Now enter "→0" when running the #.Tester2 test cases'⍷2⊃⎕DM)⊃'.' 0

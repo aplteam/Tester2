@@ -1,0 +1,4 @@
+ r←Test_Misc_05(stopFlag batchFlag);rc;list;tmp;expected;stopFlag;⎕TRAP
+⍝ Exercise the "ListTestCases" method ⍝ OBSOLETE
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T.∆Failed   ⍝ OBSOLETE

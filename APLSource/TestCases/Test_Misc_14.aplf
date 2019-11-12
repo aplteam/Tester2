@@ -1,0 +1,14 @@
+ r←Test_Misc_14(stopFlag batchFlag);Foo;ref;rc;log;⎕TRAP;T2
+⍝ Exercise `Run` with an `Initial` function that returns a 0 (failure).
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T.∆Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ #.Temp.⎕FX'r←Initial' 'r←0     ⍝ Meaning we cannot initialize'
+ #.Temp.⎕FX'r←Test_01 x' 'r←0'
+ T2←⎕NEW ##.Tester2 #.Temp
+ (rc log)←T2.Run ⍬
+ →T.PassesIf 1=rc
+
+ r←T.∆OK

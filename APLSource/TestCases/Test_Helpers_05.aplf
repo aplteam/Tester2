@@ -1,0 +1,27 @@
+ r←Test_Helpers_05(stopFlag batchFlag);stopFlag;⎕TRAP;list1;result;folder;filenames;T2
+⍝ Exercise the `RenameTestFnsTo` helper.
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+
+ r←T.∆Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ #.TEMP.⎕FX'R←test_001 y' 'R←0'
+ folder←¯4↓##.FilesAndDirs.GetTempFilename2''
+ ##.FilesAndDirs.RmDir folder
+ result←⎕SE.UCMD'acre.CreateProject ',folder,' #.TEMP -keephistory=on -casecode=off'
+ →T.GoToTidyUp'#.TEMP'≢result
+ →T.GoToTidyUp~0∊⍴##.FilesAndDirs.ListFiles folder,'/.acre/changes'
+ T2←⎕NEW ##.Tester2 #.TEMP
+ result←'#.TEMP.test_001'T2.RenameTestFnsTo'#.TEMP.test_groups_02'
+
+ →T.GoToTidyUp~0∊⍴result
+ →T.GoToTidyUp 2≠⍴result←##.FilesAndDirs.ListFiles folder,'/.acre/changes'
+ filenames←⊃¨¨⎕NPARTS¨##.FilesAndDirs.ListFiles folder,'/.acre/changes'
+ →T.GoToTidyUp'.delete' '.change'≢↑¨¯1↑¨filenames
+ →T.GoToTidyUp'test_001' 'test_groups_02'≢↑¨'.'##.APLTreeUtils.Split¨2⊃¨filenames
+
+ r←T.∆OK
+
+∆TidyUp:
+ ##.FilesAndDirs.RmDir folder

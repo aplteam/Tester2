@@ -1,0 +1,6 @@
+ totals←∆GetTotals log;buff
+⍝ Returns the totals from the log report: how many test cases got executed, how many failed/borken/inactive/...
+ buff←(1⍳⍨'-----'∘{⍺≡(⍴⍺)↑⍵}¨log)↓log
+ buff←(+/∧\{↑↑⎕VFI ⍵}¨↑¨' '##.APLTreeUtils.Split¨##.APLTreeUtils.dlb buff)↑buff
+ totals←∊{(//)⎕VFI↑' '##.APLTreeUtils.Split ⍵}¨##.APLTreeUtils.dlb buff
+⍝Done

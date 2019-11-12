@@ -1,0 +1,20 @@
+ r←Test_Other_06(stopFlag batchFlag);ref;⎕TRAP;constants;constant;i;T2;log;rc
+⍝ Check all the constants
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T.∆Failed
+
+ ref←⎕NS''
+ T2←⎕NEW ##.Tester2 ref
+ constants←'∆'T2.⎕NL-2
+ i←0
+
+ :For constant :In constants
+     i+←1
+     ref.⎕FX('r←Test_',(¯2↑'0',⍕i),' y;⎕TRAP')('r←T.',constant)
+ :EndFor
+ ref.T←⎕NEW ##.Tester2 ref
+ (rc log)←T2.RunDebug 0
+ →T.PassesIf 1=rc
+ →T.PassesIf+/'12 test cases executed'⍷∊log
+
+ r←T.∆OK

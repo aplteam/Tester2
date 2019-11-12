@@ -1,0 +1,56 @@
+ r←Test_Misc_07(stopFlag batchFlag);rc;tmp;A;expected;stopFlag;⎕TRAP;log
+⍝ Exercise the "RunThese" method
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T.∆Failed
+
+ A←##.APLTreeUtils
+
+⍝ Pre-conditions
+ tmp←⎕NS''
+ tmp.⎕FX'r←Test_001 (x y)' '   ⍝ This and that' 'r←1'
+ tmp.⎕FX'r←Test_002 (x y)' '⍝ that and this' 'r←0'
+ tmp.⎕FX'r←Test_003 (x y)' '   ⍝⍝ Something else' 'r←1'
+ tmp.⎕FX'r←Test_Grp1_001 (x y)' 'r←0'
+ tmp.⎕FX'r←Test_Grp1_002 (x y)' 'r←1' '. ⍝ Enter →0 here!'
+ tmp.⎕FX'r←Test_Grp1_003 (x y)' 'r←1' '. ⍝ Enter →0 here!'
+ tmp.⎕FX'r←Test_Grp2_001 (x y)' 'r←1'
+ tmp.⎕FX'r←Test_Grp2_002 (x y)' 'r←0'
+ tmp.⎕FX'r←Test_Run_001 (x y)' 'r←0'
+ tmp.T←⎕NEW ##.Tester2 tmp
+
+⍝ The tests
+ (rc log)←tmp.T.RunThese 2 4
+ →T.FailsIf 1 0 0≢∆GetTotals log
+
+ :Trap 0
+     (rc log)←tmp.T.RunThese'Grp1'(1 3)
+     →T.FailsIf 1
+ :Else
+     →T.PassesIf'. ⍝ Enter →0 here!'{⍺≡(-⍴⍺)↑⍵}2⊃⎕DM
+ :EndTrap
+
+ (rc log)←tmp.T.RunThese'Grp2'
+ →T.FailsIf 2 1 0≢∆GetTotals log
+
+ (rc log)←tmp.T.RunThese'Test_Grp2_002'
+ →T.FailsIf 1 0 0≢∆GetTotals log
+
+ (rc log)←tmp.T.RunThese'Test_Grp'
+ →T.PassesIf 0 0 0≡∆GetTotals log   ⍝ Because no group was identified
+
+ (rc log)←tmp.T.RunThese'Test_Grp*'
+ →T.PassesIf 5 3 0≡∆GetTotals log
+
+ (rc log)←tmp.T.RunThese'Run'
+ →T.PassesIf 1 0 0≡∆GetTotals log
+
+ (rc log)←tmp.T.RunThese'Test_Run'
+ →T.PassesIf 1 0 0≡∆GetTotals log
+
+ (rc log)←tmp.T.RunThese'Test_Run*'
+ →T.PassesIf 1 0 0≡∆GetTotals log
+
+ (rc log)←tmp.T.RunThese'Test_Run_001'
+ →T.PassesIf 1 0 0≡∆GetTotals log
+
+ r←T.∆OK

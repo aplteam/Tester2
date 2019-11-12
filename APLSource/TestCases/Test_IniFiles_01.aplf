@@ -1,0 +1,37 @@
+ r←Test_IniFiles_01(stopFlag batchFlag);log;stopFlag;⎕TRAP;rc;ini;body;report;iniFilename;T2
+⍝ Exercise simple test case with a single INI file "testcase.ini"
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T.∆Failed
+
+ ##.FilesAndDirs.DeleteFile'Testcases.ini'
+
+ ini←'[Config]' 'foo = 1' 'goo = ''Hello'''
+ iniFilename←'Testcases.ini'
+ ##.APLTreeUtils.WriteUtf8File iniFilename ini
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
+ #.TEMP.⎕EX'Test_000'
+ body←⊂'r←Test_01(stopFlag batchFlag);⎕TRAP'
+ body,←⊂'⎕TRAP←(999 ''C'' ''. ⍝ Deliberate error'')(0 ''N'')'
+ body,←⊂'r←T.∆Failed'
+ body,←⊂'→T.FailsIf 2≠INI.⎕NC''foo'''
+ body,←⊂'→T.FailsIf 2≠INI.⎕NC''goo'''
+ body,←⊂'→T.FailsIf INI.foo≢1'
+ body,←⊂'→T.FailsIf INI.goo≢''Hello'''
+ body,←⊂'r←T.∆OK'
+ #.TEMP.⎕FX body
+ #.TEMP.T.TestFlag←1
+ (rc report)←#.TEMP.T.RunDebug 0
+ report←∊report
+ →T.GoToTidyUp 1≠+/'INI file(s) "Testcases.ini" found and instantiated as INI'⍷report
+ →T.GoToTidyUp 1≠+/'1 test case executed'⍷report
+ →T.GoToTidyUp 1≠+/'0 test cases failed'⍷report
+ →T.GoToTidyUp 1≠+/'0 test cases broken'⍷report
+
+ r←T.∆OK
+
+∆TidyUp:
+ :Trap 0 ⋄ ##.FilesAndDirs.DeleteFile iniFilename ⋄ :EndTrap
+⍝Done

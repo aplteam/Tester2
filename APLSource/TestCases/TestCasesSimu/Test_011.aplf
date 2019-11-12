@@ -1,0 +1,5 @@
+ r←Test_011(debugFlag batchFlag)
+⍝ Fails
+ r←1
+ →FailsIf 1  ⍝ Now enter "→0" when running the #.Tester2 test cases
+ r←0
