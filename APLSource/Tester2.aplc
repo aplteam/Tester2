@@ -18,7 +18,7 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'1.0.0' '2019-11-12'
+      r←(Last⍕⎕THIS)'0.2.0' '2019-11-13'
     ∇
 
     ∇ History
@@ -100,7 +100,6 @@
     ⍝ in a test case; see <http://github.com/aplteam/Tester2> for details.
       :Access Public Instance
       ⎕IO←1 ⋄ ⎕ML←3
-      'Invalid left argument '⎕SIGNAL 11/⍨~(⊂debugFlag)∊0 1
       flags←0 0 0 0,(⊂these),1
       (rc log ref2Gui)←_ref Run__ flags
     ∇
@@ -766,21 +765,10 @@
       r←flag/label
     ∇
 
-⍝        ∇ {r}←RunBatchTests;ref
-⍝⍝ Run all batch tests.\\
-⍝⍝ The result:
-⍝⍝ 1. A return code. 0 means all test cases passed successfully.
-⍝⍝ 2. A vector of text vector with the log. The log contains detailed information about what was carried out.
-⍝⍝ 3. `⍬`: this helper does not create a GUI, so no referenc is returned.
-⍝          :Access Public Shared
-⍝          ref←{9.4=⎕NC⊂⍵:⎕THIS ⋄ 9.4=##.⎕NC⊂⍵:## ⋄ 9.4=#.⎕NC⊂⍵:# ⋄ ⎕←⎕RSI ⋄ 9.4=({⎕ML←1 ⋄ ⊃⍵}⎕RSI).⎕NC⊂⍵:{⎕ML←1 ⋄ ⊃⍵}⎕RSI ⋄ 9.4=##.⎕NC⊂⍵:## ⋄ 'Cannot find "Testers"'⎕SIGNAL 6}'Tester2'
-⍝          r←ref.Tester.RunBatchTests ⎕THIS
-⍝        ∇
-
-    ∇ {list}←E list;⎕ML;⎕IO
+    ∇ {list}←EditTestFunctions list;⎕ML;⎕IO
 ⍝ Get all functions into the editor starting their names with `Test_` in case `list` is empty.\\
 ⍝ If `list` is not empty it may be one of:
-⍝ * A matrix with test function names in the first column; typically the result of the `L` helper function.
+⍝ * A matrix with test function names in the first column; typically the result of `ListTestFunctions`.
 ⍝ * A vector of text vectors specifying names.
 ⍝ * A simple text vector with the name of a single test case.\\
 ⍝ Returns the list of names (vector of text vectors)  as a shy argument.
@@ -800,11 +788,11 @@
           list←,[0.5]list
       :EndIf
       :If 0<≢list←↓'Test_'{⍵⌿⍨⍺∧.=⍨(⍴,⍺)↑[1+⎕IO]⍵}list
-          ref{(0=≢⍵): ⋄ ⎕ML←1 ⋄ ⍺.⎕ED↑⍵}&list
+          _ref{(0=≢⍵): ⋄ ⎕ML←1 ⋄ ⍺.⎕ED↑⍵}&list
       :EndIf
     ∇
 
-    ∇ r←{numbers}L groupName;A;r2;⎕IO;⎕ML;b;max;longestName
+    ∇ r←{numbers}ListTestFunctions groupName;A;r2;⎕IO;⎕ML;b;max;longestName
 ⍝ Returns a matrix with two columns with the names of all test cases and the first comment line.\\
 ⍝ If "groupName" is not empty then it will return only the members of that group (case dependent).
 ⍝ May or may not start with `Test_`.\\
@@ -842,10 +830,10 @@
       :EndIf
     ∇
 
-    ∇ r←G;A;⎕ML;⎕IO
-          ⍝ Returns all groups as a two-column matrix.
-          ⍝ The first column carries the group name.
-          ⍝ The second column carries the number of test cases within that group.
+    ∇ r←ListGroups;A;⎕ML;⎕IO
+  ⍝ Returns all groups as a two-column matrix.
+  ⍝ The first column carries the group name.
+  ⍝ The second column carries the number of test cases within that group.
       :Access Public Instance
       ⎕IO←1 ⋄ ⎕ML←1
       A←GetRefToAPLTreeUtils
@@ -857,8 +845,8 @@
     ∇
 
     ∇ r←FindSpecialString what
-⍝ Use this to search for stuff like "CHECK" or "TODO" enclosed between `⍝` (⍵).
-⍝ Without left argument the search starts in #.
+    ⍝ Use this to search for stuff like "CHECK" or "TODO" enclosed between `⍝` (⍵).
+    ⍝ Without left argument the search starts in #.
       :Access Public Instance
       r←⍉1↓[1+⎕IO]⎕SE.UCMD'locate "',what,'" -return=count -objects=',⍕_ref  ⍝ The quotes are essential because of the ⍝ symbol!
       :If 0<1↑⍴r←(0<r[;⎕IO+1])⌿r                                    ⍝ Drop those with no hits
@@ -867,8 +855,8 @@
     ∇
 
     ∇ {r}←oldName RenameTestFnsTo newName;body;rc;header;comment;res;name;right;left;newParent;oldParent;delFilanme;A;⎕ML;⎕IO
-⍝ Renames a test function and tells acre.
-⍝ r ← ⍬
+    ⍝ Renames a test function and tells acre.
+    ⍝ r ← ⍬
       :Access Public Instance
       ⎕IO←0 ⋄ ⎕ML←3
       A←GetRefToAPLTreeUtils

@@ -3,18 +3,18 @@
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
  r←T.∆Failed
 
- list1←T.L''
+ list1←T.ListTestFunctions''
  →T.PassesIf 2=≡list1
  →T.PassesIf 2=⍴⍴list1
  →T.PassesIf 1<1⊃⍴list1
  Assert∨/∨⌿'Other'⍷⊃list1[;1]
 
- list2←T.L'Other'
+ list2←T.ListTestFunctions'Other'
  →T.PassesIf 2=≡list2
  →T.PassesIf 2=⍴⍴list2
  →T.PassesIf 1<1⊃⍴list2
 
- list3←3 T.L'Other'
+ list3←3 T.ListTestFunctions'Other'
  →T.PassesIf 2=≡list3
  →T.PassesIf 2=⍴⍴list3
  →T.PassesIf 1=1⊃⍴list3

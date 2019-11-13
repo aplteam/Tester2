@@ -13,7 +13,7 @@
      ⎕←'   This text case needs you: it opens an edit window, and you must close it!'
      ⎕←'   Press enter to continue'
      {}⍞
-     T.E 1↑T.L''
+     T.EditTestFunctions 1↑T.ListTestFunctions''
 
      r←T.∆OK
 

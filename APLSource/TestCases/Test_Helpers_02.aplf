@@ -3,7 +3,7 @@
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
  r←T.∆Failed
 
- list←T.G
+ list←T.ListGroups
  →T.PassesIf 2=≡list
  →T.PassesIf 2=⍴⍴list
  →T.PassesIf 1<1⊃⍴list
