@@ -1,0 +1,14 @@
+ R←Test_045(stopFlag batchFlag);⎕TRAP
+⍝ Model for a test function.
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ R←T.∆Failed
+
+    ⍝ Establish preconditions...
+
+ →T.PassesIf 1≡1
+ →T.FailsIf 1≢1
+ →T.GoToTidyUp 1≢1
+ R←T.∆OK
+
+∆TidyUp: ⍝ Clean up after this label
+⍝ ...

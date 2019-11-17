@@ -1,5 +1,5 @@
  r←Test_Misc_18(stopFlag batchFlag);rc;list;tmp;expected;⎕TRAP;T2
-⍝ Exercise "G" and "L"
+⍝ Exercise the `ListGroups` and the `ListTestFunctions` methods.
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
  r←T.∆Failed
 

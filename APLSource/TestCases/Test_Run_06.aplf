@@ -1,0 +1,15 @@
+ r←Test_Run_06(stopFlag batchFlag);log;rc;stopFlag;⎕TRAP;T2;parms
+⍝ Exercise the `Run__` method.
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T.∆Failed
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+ T2.TestFlag←1
+ ⎕TRAP←(1001 'E' '→⎕lc')(999 'C' '. ⍝ Deliberate error')(0 'N')
+ parms←T2.CreateParms ⍬
+ parms.testCaseNos←'Test_Grp*'
+ (rc log)←T2.Run__ parms
+ →T.PassesIf 5 0 0≡∆GetTotals log
+
+ r←T.∆OK
+⍝Done

@@ -1,0 +1,12 @@
+ r←Test_Helpers_04(stopFlag batchFlag);stopFlag;⎕TRAP;list1;expected;result
+⍝ Exercise the `ListSymbolicNames` method.
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+
+ r←T.∆Failed
+
+ result←T.ListSymbolicNames
+ expected←⍪'∆'T.⎕NL-2
+ →T.PassesIf expected≡result
+
+ r←T.∆OK
+⍝Done

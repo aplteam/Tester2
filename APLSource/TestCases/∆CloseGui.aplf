@@ -1,5 +1,0 @@
- {r}←∆CloseGui ref
- r←⍬
- :Trap 0
-     2 ⎕NQ ref'Close'
- :EndTrap

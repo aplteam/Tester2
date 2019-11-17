@@ -1,0 +1,10 @@
+ r;ps
+ T←⎕NEW Tester2 TestCases
+ T.CloseGUI
+ ps←T.CreateParms ⍬
+ ps.debugFlag←1
+ ps.trapFlag←0
+ ps.guiFlag←1
+⍝ps.testCaseNos←'Helpers'
+ T.Run__ ps
+⍝Done

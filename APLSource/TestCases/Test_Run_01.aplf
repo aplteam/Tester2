@@ -1,11 +1,11 @@
  r←Test_Run_01(stopFlag batchFlag);log;stopFlag;⎕TRAP;rc;ref2Gui;T2
-⍝ Exercise the "Run" method
+⍝ Exercise the `Run` method
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
  r←T.∆Failed
 
  T2←⎕NEW ##.Tester2 TestCasesSimu
  T2.TestFlag←1
- (rc log)←T2.Run ⍬
+ (rc log)←T2.Run 1
  →T.FailsIf 0=rc
  →T.PassesIf 4=+/'...not found'⍷∊log  ⍝ No function `Initial`, no INI files (two!) and no function `Cleanup`
  →T.PassesIf∨/'13 test cases executed'⍷∊log

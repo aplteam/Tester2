@@ -1,5 +1,5 @@
  r←Test_Helpers_05(stopFlag batchFlag);stopFlag;⎕TRAP;list1;result;folder;filenames;T2
-⍝ Exercise the `RenameTestFnsTo` helper.
+⍝ Exercise the `RenameTestFnsTo` method.
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
 
  r←T.∆Failed

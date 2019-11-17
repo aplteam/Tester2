@@ -1,5 +1,5 @@
  r←Test_IniFiles_03(stopFlag batchFlag);log;stopFlag;⎕TRAP;rc;ini;body;report;iniFilename1;iniFilename2
-⍝ Exercise test case with a two INI files: "testcases.ini" & "testcases_{computername}.ini"
+⍝ Exercise two INI files: "testcases.ini" & "testcases_{computername}.ini"
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
  r←T.∆Failed
 
@@ -27,7 +27,7 @@
  body,←⊂'r←T.∆OK'
  #.TEMP.⎕FX body
  #.TEMP.T.TestFlag←1
- report←∊#.TEMP.T.RunDebug 0
+ report←∊#.TEMP.T.Run 1
  →T.GoToTidyUp 1≠+/'INI file(s) "Testcases.ini,testcases_'⍷report
  →T.GoToTidyUp 1≠+/'1 test case executed'⍷report
  →T.GoToTidyUp 1≠+/'0 test cases failed'⍷report

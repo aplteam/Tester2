@@ -1,5 +1,5 @@
  r←Test_Run_04(stopFlag batchFlag);log;rc;expected;stopFlag;⎕TRAP;T2
-⍝ Exercise the "RunThese" method
+⍝ Exercise the `RunThese` method
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
  r←T.∆Failed
 

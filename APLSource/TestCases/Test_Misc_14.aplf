@@ -8,7 +8,7 @@
  #.Temp.⎕FX'r←Initial' 'r←0     ⍝ Meaning we cannot initialize'
  #.Temp.⎕FX'r←Test_01 x' 'r←0'
  T2←⎕NEW ##.Tester2 #.Temp
- (rc log)←T2.Run ⍬
+ (rc log)←T2.Run 1
  →T.PassesIf 1=rc
 
  r←T.∆OK

@@ -1,11 +1,11 @@
- {r}←Initial
+ {r}←Initial parms
  r←1
  ##.FilesAndDirs.PolishCurrentDir
- :If 1<⍴⎕XSI
- :AndIf ~(⊂1↓↑¯1↑⎕NPARTS↑¯1↑⎕XSI)∊'RunDebug' 'RunThese' 'RunGUI'
-     ⎕←'******* Sorry, this test suite can for technical reasons only be executed with either'
-     ⎕←'        "RunGUI" (recommended) or "RunDebug" or "RunThese"'
-     ⎕←'        Press <enter> to continue'
+ :If 0=parms.debugFlag
+     ⎕←'******* Sorry, but for technical reasons this test suite'
+     ⎕←'        can only be executed without error trapping'
+     ⎕←'        and with the debug flag switched on!'
+     ⎕←'        ===> Press <enter> to continue'
      {}⍞
      r←0
  :EndIf

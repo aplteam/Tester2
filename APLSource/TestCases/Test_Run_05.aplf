@@ -1,26 +1,26 @@
- r←Test_Run_05(stopFlag batchFlag);log;rc;expected;stopFlag;⎕TRAP;ref2Gui;T2
-⍝ Exercise the "RunGUI" method.
+ r←Test_Run_05(stopFlag batchFlag);log;rc;expected;stopFlag;⎕TRAP;T2
+⍝ Exercise the `RunGUI` method.
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
  r←T.∆Failed
 
  T2←⎕NEW ##.Tester2 TestCasesSimu
  T2.TestFlag←1
  ⎕TRAP←(1001 'E' '→⎕lc')(999 'C' '. ⍝ Deliberate error')(0 'N')
- (rc log ref2Gui)←T2.RunGUI 2
- ∆CloseGui ref2Gui
+ (rc log)←T2.RunGUI 2
+ T2.CloseGUI
  expected←'  1 test case executed' '  0 test cases failed' '  0 test cases broken'
  →T.FailsIf expected≢¯3↑¯4↓log
 
  T2←⎕NEW ##.Tester2 TestCasesSimu
  T2.TestFlag←1
- (rc log ref2Gui)←T2.RunGUI'Grp1'
- ∆CloseGui ref2Gui
+ (rc log)←T2.RunGUI'Grp1'
+ T2.CloseGUI
  →T.FailsIf 3 0 0≢∆GetTotals log
 
  T2←⎕NEW ##.Tester2 TestCasesSimu
  T2.TestFlag←1
- (rc log ref2Gui)←T2.RunGUI'Test_Grp1'
- ∆CloseGui ref2Gui
+ (rc log)←T2.RunGUI'Test_Grp1'
+ T2.CloseGUI
  →T.FailsIf 3 0 0≢∆GetTotals log
 
  r←T.∆OK

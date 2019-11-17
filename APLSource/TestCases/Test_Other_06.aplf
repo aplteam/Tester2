@@ -13,7 +13,7 @@
      ref.⎕FX('r←Test_',(¯2↑'0',⍕i),' y;⎕TRAP')('r←T.',constant)
  :EndFor
  ref.T←⎕NEW ##.Tester2 ref
- (rc log)←T2.RunDebug 0
+ (rc log)←T2.Run 1
  →T.PassesIf 1=rc
  →T.PassesIf+/'12 test cases executed'⍷∊log
 

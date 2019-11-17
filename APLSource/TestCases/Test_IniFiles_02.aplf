@@ -22,7 +22,7 @@
  body,←⊂'r←T.∆OK'
  #.TEMP.⎕FX body
  #.TEMP.T.TestFlag←1
- report←∊#.TEMP.T.RunDebug 0
+ report←∊#.TEMP.T.Run 1
  →T.GoToTidyUp 1≠+/'1 INI file instantiated'⍷report
  →T.GoToTidyUp 1≠+/'1 test case executed'⍷report
  →T.GoToTidyUp 1≠+/'0 test cases failed'⍷report

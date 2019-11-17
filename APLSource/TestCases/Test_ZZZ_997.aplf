@@ -1,5 +1,5 @@
  R←Test_ZZZ_997(stopFlag batchFlag);⎕IO;⎕ML;⎕TRAP;xml;report
-⍝ Checks on whether the "publish.config" file carries a "<container>".
+⍝ Checks on whether the "publish.config" file carries a "<container>" tag.
  ⎕IO←0 ⋄ ⎕ML←3
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
  R←T.∆Failed

@@ -1,5 +1,5 @@
  r←Test_Other_02(stopFlag batchFlag);log;⎕TRAP;rc;T2
-⍝ Exercise RunTheseIn: grouping mechanism but without any hits
+⍝ Exercise `RunThese`: grouping mechanism but without any hits
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
  r←T.∆Failed
 

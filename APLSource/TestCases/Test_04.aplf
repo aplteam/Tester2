@@ -1,5 +1,7 @@
  r←Test_04(stopFlag batchFlag);log;stopFlag;⎕TRAP;T2
 ⍝ Test the `RenameTestFns`
+
+⍝ This is a candidate for simplifying and spitting stuff into a new group "RenameTest"
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
  r←T.∆Failed
 

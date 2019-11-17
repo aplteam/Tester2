@@ -1,5 +1,5 @@
  r←Test_Misc_10(stopFlag batchFlag);log;log;shouldBe;⎕TRAP;rc
-⍝ Exercise the different `type`s of results a test function might return.
+⍝ Exercise the different types of results a test function might return.
 ⍝  ¯1 = Not a batch test function
 ⍝  ¯2 = Inactive
 ⍝ ¯10 = Runs under Windows only
@@ -22,7 +22,7 @@
  #.TEMP.⎕FX'r←Test_10 y;⎕TRAP' 'r←¯22'     ⍝ ¯22 = Runs under Mac or Windows only
  #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
 
- (rc log)←#.TEMP.T.Run ⍬
+ (rc log)←#.TEMP.T.Run 1
  →T.PassesIf 1=rc
  shouldBe←1⌈{⍵↑⍵}10
  →T.PassesIf shouldBe≡∆GetTotals log

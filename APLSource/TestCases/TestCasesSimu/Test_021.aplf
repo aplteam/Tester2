@@ -1,4 +1,4 @@
- r←Test_021(debugFlag batchFlag)
+ r←Test_021(debugFlag batchFlag);⎕TRAP
 ⍝ Broken
 ⍝ Note that when the function executing this test case does not trap errors then
 ⍝ this test case is reported as "failed" rather than "broken.
