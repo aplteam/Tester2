@@ -1,7 +1,7 @@
  r←Test_Other_04(stopFlag batchFlag);ref;stopFlag;⎕TRAP;T2
 ⍝ Exercise `FailsIf` and `PassesIf`
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
- r←T.∆Failed
+ r←T._Failed
 
  ref←⎕NS''
  T2←⎕NEW ##.Tester2 ref
@@ -32,4 +32,4 @@
  →T.FailsIf 1
 
 ∆TidyUp: ⍝ pro forma
- r←T.∆OK
+ r←T._OK

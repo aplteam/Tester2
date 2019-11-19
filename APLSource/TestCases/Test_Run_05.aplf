@@ -1,7 +1,7 @@
  r←Test_Run_05(stopFlag batchFlag);log;rc;expected;stopFlag;⎕TRAP;T2
 ⍝ Exercise the `RunGUI` method.
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
- r←T.∆Failed
+ r←T._Failed
 
  T2←⎕NEW ##.Tester2 TestCasesSimu
  T2.TestFlag←1
@@ -23,5 +23,5 @@
  T2.CloseGUI
  →T.FailsIf 3 0 0≢∆GetTotals log
 
- r←T.∆OK
+ r←T._OK
 ⍝Done

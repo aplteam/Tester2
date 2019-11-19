@@ -2,11 +2,11 @@
 ⍝ Exercise the `ListSymbolicNames` method.
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
 
- r←T.∆Failed
+ r←T._Failed
 
  result←T.ListSymbolicNames
- expected←⍪'∆'T.⎕NL-2
+ expected←⍪'_'T.⎕NL-2
  →T.PassesIf expected≡result
 
- r←T.∆OK
+ r←T._OK
 ⍝Done

@@ -1,7 +1,7 @@
  R←Test_ZZZ_999(stopFlag batchFlag);v;n;d;xml;rf;f1;f2;⎕TRAP
 ⍝ Check the `Version` function and "publish.config" against each other.
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
- R←T.∆Failed
+ R←T._Failed
 
  rf←##.Tester2
 
@@ -30,4 +30,4 @@
 
  →T.FailsIf f1∨f2
 
- R←T.∆OK
+ R←T._OK

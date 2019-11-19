@@ -3,7 +3,7 @@
 
 ⍝ This is a candidate for simplifying and spitting stuff into a new group "RenameTest"
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
- r←T.∆Failed
+ r←T._Failed
 
  #.⎕SHADOW'TEMP'
  'TEMP'#.⎕NS''
@@ -120,5 +120,5 @@
      →T.PassesIf'New name is invalid'{⍺≡(⍴⍺)↑⍵}1⊃⎕DM
  :EndTrap
 
- r←T.∆OK
+ r←T._OK
 ⍝Done

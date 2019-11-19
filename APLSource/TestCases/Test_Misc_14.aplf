@@ -1,7 +1,7 @@
  r←Test_Misc_14(stopFlag batchFlag);Foo;ref;rc;log;⎕TRAP;T2
 ⍝ Exercise `Run` with an `Initial` function that returns a 0 (failure).
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
- r←T.∆Failed
+ r←T._Failed
 
  #.⎕SHADOW'Temp'
  'Temp'#.⎕NS''
@@ -11,4 +11,4 @@
  (rc log)←T2.Run 1
  →T.PassesIf 1=rc
 
- r←T.∆OK
+ r←T._OK

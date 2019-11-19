@@ -1,7 +1,7 @@
  r←Test_Run_02(stopFlag batchFlag);log;rc;stopFlag;⎕TRAP
 ⍝ Exercise the `RunBatchTests` method in debug mode
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
- r←T.∆Failed
+ r←T._Failed
 
  TestCasesSimu.T←⎕NEW ##.Tester2 TestCasesSimu
  TestCasesSimu.T.TestFlag←1
@@ -10,9 +10,9 @@
  TestCasesSimu.⎕EX'T'
  →T.PassesIf 4=+/'...not found'⍷∊log  ⍝ No function `Initial`, no INI file and no function `Cleanup`
  →T.PassesIf∨/'13 test cases executed'⍷∊log
- →T.PassesIf∨/'1 test case failed'⍷∊log
- →T.PassesIf∨/'1 test case broken'⍷∊log
+ →T.PassesIf∨/'0 test cases failed'⍷∊log
+ →T.PassesIf∨/'2 test cases broken'⍷∊log
  →T.PassesIf∨/'2 test cases not executed because they are not "batchable"'⍷∊log
 
- r←T.∆OK
+ r←T._OK
 ⍝Done

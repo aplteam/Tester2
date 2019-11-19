@@ -6,12 +6,11 @@
 ⍝ ¯11 = Runs under Linux only
 ⍝ ¯12 = Runs under Mac OS only
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
- r←T.∆Failed
+ r←T._Failed
 
  #.⎕SHADOW'TEMP'
  'TEMP'#.⎕NS''
  #.TEMP.⎕FX'r←Test_01 y;⎕TRAP' 'r←0'       ⍝ Okay
- #.TEMP.⎕FX'r←Test_02 y;⎕TRAP' '.'         ⍝ Broken
  #.TEMP.⎕FX'r←Test_03 y;⎕TRAP' 'r←1'       ⍝ Failed
  #.TEMP.⎕FX'r←Test_04 y;⎕TRAP' 'r←¯1'      ⍝  ¯1 = Not a batch test function
  #.TEMP.⎕FX'r←Test_05 y;⎕TRAP' 'r←¯2'      ⍝  ¯2 = Inactive
@@ -24,7 +23,7 @@
 
  (rc log)←#.TEMP.T.Run 1
  →T.PassesIf 1=rc
- shouldBe←1⌈{⍵↑⍵}10
+ shouldBe←{(1+⍵)↑⍵,1 0,⍵⍴1}9
  →T.PassesIf shouldBe≡∆GetTotals log
 
- r←T.∆OK
+ r←T._OK

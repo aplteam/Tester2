@@ -1,7 +1,7 @@
  r←Test_Other_05(stopFlag batchFlag);ref;⎕TRAP;T2
 ⍝ Exercise `GoToTidyUp`
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
- r←T.∆Failed
+ r←T._Failed
 
  ref←⎕NS''
  T2←⎕NEW ##.Tester2 ref
@@ -13,4 +13,4 @@
 
 ∆TidyUp: ⍝ Clean up after this label
 
- r←T.∆OK
+ r←T._OK

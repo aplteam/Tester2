@@ -1,7 +1,7 @@
  r←Test_Misc_17(stopFlag batchFlag);⎕TRAP;T2;buff
 ⍝ Exercise the `FindSpecialString` method.
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
- r←T.∆Failed
+ r←T._Failed
 
  #.⎕SHADOW'Temp'
  'Temp'#.⎕NS''
@@ -19,4 +19,4 @@
  buff←T2.FindSpecialString'⍝ELSE⍝'
  →T.PassesIf 0=≢buff
 
- r←T.∆OK
+ r←T._OK

@@ -1,7 +1,7 @@
  r←Test_Helpers_02(stopFlag batchFlag);⎕TRAP;list1;list
 ⍝ Exercise the `ListGroups` method.
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
- r←T.∆Failed
+ r←T._Failed
 
  list←T.ListGroups
  →T.PassesIf 2=≡list
@@ -9,4 +9,4 @@
  →T.PassesIf 1<1⊃⍴list
  →T.PassesIf 2=2⊃⍴list
 
- r←T.∆OK
+ r←T._OK

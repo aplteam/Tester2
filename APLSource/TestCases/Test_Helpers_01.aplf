@@ -1,7 +1,7 @@
  r←Test_Helpers_01(stopFlag batchFlag);⎕TRAP;list1;list2;list3
 ⍝ Exercise `ListTestFunctions`.
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
- r←T.∆Failed
+ r←T._Failed
 
  list1←T.ListTestFunctions''
  →T.PassesIf 2=≡list1
@@ -20,5 +20,5 @@
  →T.PassesIf 1=1⊃⍴list3
  →T.PassesIf∨/'Test_Other_04'⍷∊list3
 
- r←T.∆OK
+ r←T._OK
 ⍝Done

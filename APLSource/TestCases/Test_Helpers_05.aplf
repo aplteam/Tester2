@@ -2,7 +2,7 @@
 ⍝ Exercise the `RenameTestFnsTo` method.
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
 
- r←T.∆Failed
+ r←T._Failed
 
  #.⎕SHADOW'TEMP'
  'TEMP'#.⎕NS''
@@ -21,7 +21,7 @@
  →T.GoToTidyUp'.delete' '.change'≢↑¨¯1↑¨filenames
  →T.GoToTidyUp'test_001' 'test_groups_02'≢↑¨'.'##.APLTreeUtils.Split¨2⊃¨filenames
 
- r←T.∆OK
+ r←T._OK
 
 ∆TidyUp:
  ##.FilesAndDirs.RmDir folder

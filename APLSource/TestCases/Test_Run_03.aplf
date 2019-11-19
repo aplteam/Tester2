@@ -1,12 +1,12 @@
  r←Test_Run_03(stopFlag batchFlag);log;rc;stopFlag;⎕TRAP
 ⍝ Exercise the `Run` method
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
- r←T.∆Failed
+ r←T._Failed
 
  TestCasesSimu.T←⎕NEW ##.Tester2 TestCasesSimu
  TestCasesSimu.T.TestFlag←1
  (rc log)←TestCasesSimu.T.Run 1
  TestCasesSimu.⎕EX''
- →T.FailsIf 13 2 1≢∆GetTotals log
- r←T.∆OK
+ →T.FailsIf 13 3 0≢∆GetTotals log
+ r←T._OK
 ⍝Done

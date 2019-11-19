@@ -7,7 +7,7 @@
 
  :Else
 
-     r←T.∆Failed
+     r←T._Failed
 
      ⎕←⎕PW↑'   --- ',(↑⎕SI),⎕PW⍴'-'
      ⎕←'   This text case needs you: it opens an edit window, and you must close it!'
@@ -15,6 +15,6 @@
      {}⍞
      T.EditTestFunctions 1↑T.ListTestFunctions''
 
-     r←T.∆OK
+     r←T._OK
 
  :EndIf

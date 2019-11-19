@@ -1,7 +1,7 @@
  r←Test_Misc_18(stopFlag batchFlag);rc;list;tmp;expected;⎕TRAP;T2
 ⍝ Exercise the `ListGroups` and the `ListTestFunctions` methods.
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
- r←T.∆Failed
+ r←T._Failed
 
 ⍝ Pre-conditions
  tmp←⎕NS''
@@ -24,4 +24,4 @@
  →T.PassesIf(+/'Test_Grp'{((≢⍺)↑[2]⍵)∧.=⍺}'T'tmp.⎕NL 3)=≢T2.ListTestFunctions'Grp*'
  →T.PassesIf 5=1↑⍴T2.ListGroups
 
- r←T.∆OK
+ r←T._OK

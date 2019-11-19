@@ -69,6 +69,48 @@ Note that all `Run*` functions return  a two-element vector:
 A reference pointing to the GUI is assigned internally. That's why the GUI does not disappear straight away after all test cases have been executed. To get rid of it either click the "Close" box or call the `T.CloseGUI` method which does not require an argument.
 
 
+## Differences between `Tester` and `Tester2`
+
+Since `Tester2` is supposed to replace `Tester` without being 100% compatible it is probably worthwhile to see the main differences on a glance:
+
+### `Testers2` needs to be instantiated.
+
+While `Tester` offered a function `EstablisHelpersIn` which injected a significant number of functions into the namespace that hosts test cases `Tester2` _must_ be instantiated.
+
+All methods and all symbolic names are available via the the instance, and only via the instance. Therefore:
+
+```
+      T←⎕NEW Tester2 HomeOfYourTestCases
+      ≢T.⎕nl -3
+24
+      ≢T.⎕nl -2
+13
+```
+
+The advantage is that your namespace is not cluttered with those methods and symbolic names. The disadvantage is that you must use the instance name now.
+
+### Symbolic names got renamed.
+
+In `Tester` all symbolic names started with a `∆` character.
+
+In `Tester2` tehy start with an underscore (`_`). This is a very common convention for symbolic names (or constants) and was therefore adapted.
+
+
+### Couple of helpers have been renamed:
+
+
+| Old name | New name              |
+|----------|-----------------------|
+| `E`      | `T.EditTestFunctions` |
+| `L`      | `T.ListTestFunctions` |
+| `G`      | `T.ListGroups`        |
+
+
+### The `Run*` functions
+
+The number of `Run*` functions has be reduced, but at the same time a general function `Run__` is now available that can be used for all possible scenarios.
+
+
 ## Details 
 
 
@@ -119,7 +161,7 @@ Error trapping (`trapFlag`)
 
 Debugging (`debugFlag`)
 
-: If this flag is 0 any failing test within any test function just makes the test function quit, returning a return code that has the symbolic name `∆Failure`. See [Symbolic names](#) for details on this.
+: If this flag is 0 any failing test within any test function just makes the test function quit, returning a return code that has the symbolic name `_Failure`. See [Symbolic names](#) for details on this.
 
 : If this is 1 then any failing check crashes right on the spot. This allows one to investigate what went wrong, and why.
 
@@ -145,7 +187,7 @@ Batchable tests
 
    1. `batchFlag`: 1 means that there is no user available in front of the mnitor.
 
-      That allows a test function that requires a human for confirmation or some action to _not_ carry out the test but return the symbolic name `∆NoBatchTest`.
+      That allows a test function that requires a human for confirmation or some action to _not_ carry out the test but return the symbolic name `_NoBatchTest`.
 
 1. Every test function must return a result. You are advised to assign one of the symbolic names defined as read-only fields every instance of `Tester2` comes with. This is much more readable than a simple integer, and it is easier to find as well. See [Symbolic names](#) for details.
 
@@ -167,7 +209,7 @@ From then on, all `Run`* functions, all symbolic names and all other helpers are
 
 ```
       T.RunGUI ⍬
-      T.∆OK
+      T._OK
       T.PassesIf
       T.⎕nl -3    ⍝ Produces a list of all public instance methods
 ```
@@ -243,7 +285,7 @@ This is achieved by the functions `FailsIf`, `PassesIf` and `GoToTidyUp` signall
 
 That's why the template for a test function carries such a statement _and_ keeps `⎕TRAP` local.
 
-Note that `GoToTidyUp` allows you to jump to a label `∆TidyUp` with a statement like:
+Note that `GoToTidyUp` allows you to jump to a label `_TidyUp` with a statement like:
 
 ```
  →GoToTidyUp ~expected≡result
@@ -288,23 +330,23 @@ These are the public read-only instance fields that act like constants:
 
 | Name                  | Meaning                                                                     |
 |-----------------------|-----------------------------------------------------------------------------|
-| `∆OK`                 | Passed |
-| `∆Failed`             | Unexpected result|
-| `∆NoBatchTest`        | Not executed because `batchFlag` was 1.|
-| `∆NotApplicable`      | This test is not applicable here and now |
-| `∆InActive`           | Not executed because the test case is inactive (not ready, buggy, ...) |
-| `∆LinuxOnly`          | Not executed because runs under Linux only|
-| `∆LinuxOrMacOnly`     | Not executed because runs under Linux/Mac OS only|
-| `∆LinuxOrWindowsOnly` | Not executed because runs under Linux/Windows only|
-| `∆MacOrWindowsOnly`   | Not executed because runs under Mac OS/Windows only|
-| `∆MacOnly`            | Not executed because runs under Mac OS only|
-| `∆NoAcreTests`        | Not executed because it's acre related|
-| `∆WindowsOnly`        | Not executed because runs under Windows only|
+| `_OK`                 | Passed |
+| `_Failed`             | Unexpected result|
+| `_NoBatchTest`        | Not executed because `batchFlag` was 1.|
+| `_NotApplicable`      | This test is not applicable here and now |
+| `_InActive`           | Not executed because the test case is inactive (not ready, buggy, ...) |
+| `_LinuxOnly`          | Not executed because runs under Linux only|
+| `_LinuxOrMacOnly`     | Not executed because runs under Linux/Mac OS only|
+| `_LinuxOrWindowsOnly` | Not executed because runs under Linux/Windows only|
+| `_MacOrWindowsOnly`   | Not executed because runs under Mac OS/Windows only|
+| `_MacOnly`            | Not executed because runs under Mac OS only|
+| `_NoAcreTests`        | Not executed because it's acre related|
+| `_WindowsOnly`        | Not executed because runs under Windows only|
 
 Use these to assign an explicit result within any test function. The advantages of this approach:
 
 1. Much more readable than an integer.
-2. You can easily search for, say, `∆InActive`.
+2. You can easily search for, say, `_InActive`.
 
 Note that there is a method `ListSymbolicNames` available that lists all symbolic names.
 
@@ -312,44 +354,7 @@ Note that there is a method `ListSymbolicNames` available that lists all symboli
 
 These are functions that are not actually required in order to run test cases but can make a programmer's life significantly easier.
 
-### `ListGroups`
-
-Use this to list all groups.
-
-### `ListSymbolicNames`
-
-This method lists all symbolic names any test function may return as result as a one-column matrix:
-
-```
-      ⍴⎕←T.ListSymbolicNames
- ∆Failed             
- ∆Inactive           
- ∆LinuxOnly          
- ∆LinuxOrMacOnly     
- ∆LinuxOrWindowsOnly 
- ∆MacOnly            
- ∆MacOrWindowsOnly   
- ∆NoAcreTests        
- ∆NoBatchTest        
- ∆NotApplicable      
- ∆OK                 
- ∆WindowsOnly 
-12 1       
-```
-
-### `ListTestFunctions`
-
-Usee this to list all test functions --- if the right argument is empty --- together with the first comment line in the function.
-
-The right argument can be used to restrict output to a group, the optional left argument to restrict output to certain numbers.
-
-For example, `T.ListTestFunctions 'Misc'` would list all test functions of the group "Misc" while `T.ListTestFunctions 'M*'` would list all test functions that start their names with `Test_M`.
-
-### `EditTestFunctions`
-
-Use this to edit all test functions (empty right argument) or the function(s) identified by the right argument, be it a simple character vector (single name), a vector of character vectors or a matrix.
-
-Note that `EditTestFunctions` can process the result of `ListTestFunctions`.
+These function are discussed in detail at [Managing test cases](#).
 
 ## Examples
 
@@ -403,7 +408,7 @@ This is a generalized function that is effectively called by all the other `Run*
 
 ```
       ps←T.CreateParms ⍬
-      ps.∆List  ⍝ List the defaults
+      ps._∆List  ⍝ List the defaults
  batchFlag    0 
  debugFlag    0 
  guiFlag      0 
@@ -441,28 +446,28 @@ Search
 
 #### Listing symbolic names
 
-`ListSymbolicNames` lists all symbalic names available:
+`ListSymbolicNames` lists all symbolic names available:
 
 ```
       ListSymbolicNames
- ∆Failed             
- ∆Inactive           
- ∆LinuxOnly          
- ∆LinuxOrMacOnly     
- ∆LinuxOrWindowsOnly 
- ∆MacOnly            
- ∆MacOrWindowsOnly   
- ∆NoAcreTests        
- ∆NoBatchTest        
- ∆NotApplicable      
- ∆OK                 
- ∆WindowsOnly        
+ _Failed             
+ _Inactive           
+ _LinuxOnly          
+ _LinuxOrMacOnly     
+ _LinuxOrWindowsOnly 
+ _MacOnly            
+ _MacOrWindowsOnly   
+ _NoAcreTests        
+ _NoBatchTest        
+ _NotApplicable      
+ _OK                 
+ _WindowsOnly        
 ```
 
 
 #### Listing test functions
 
-`ListTestFunctions` requires a right argument (empty or group name) and accepts an optional left argument (test case numbers).
+`ListTestFunctions` requires a right argument (empty or group name) and accepts an optional left argument (test case number(s)).
 
 ```
       ⍴ListTestFunctions ''
