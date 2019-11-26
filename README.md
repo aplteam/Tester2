@@ -616,8 +616,5 @@ Therefore this would make sense:
 * Notice that the DRY principle (don't repeat yourself) can and should be ignored when it comes to test cases: any test case should read from top to bottom like an independent story that can be understood by itself.
 
 * It might  be a good idea for _all_ test functions to tidy up in line 1, just in case a failing test case has left something behind; see [CleanUp](#cleanUp) for details.
-<<<<<<< HEAD
 
 * It's probably a good idea to implement for every fixed bugs a separate test case, for bugs tend to make comebacks all the time, and such a test case should prevent that comeback.
-=======
->>>>>>> origin/master
