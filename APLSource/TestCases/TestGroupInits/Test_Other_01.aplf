@@ -1,0 +1,6 @@
+ r←Test_Other_01(stopFlag batchFlag);⎕TRAP
+⍝ Pro-forma test for the group `Other`. Used to test the execution of `Initial_Other` and `Cleanup_Other`.
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+
+ r←T._OK
+⍝Done

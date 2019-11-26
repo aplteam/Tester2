@@ -1,0 +1,16 @@
+ r←Test_Init_03(stopFlag batchFlag);Foo;ref;rc;log;⎕TRAP;T2
+⍝ Exercise `Run` with an `Initial` function that sets a global ∆Testing←1 and deletes it in a function `Cleanup`
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⎕FX'Initial' '∆Testing←0'
+ #.Temp.⎕FX'r←Test_01 x;⎕TRAP' 'r←0' ' {⍵:.}∆Testing≠0' '∆Testing←1'
+ #.Temp.⎕FX'Cleanup' '{⍵:.}∆Testing≠1' '⎕EX ''∆Testing'''
+ (rc log)←T2.Run 1
+ →T.PassesIf 0=rc
+ →T.PassesIf 0=#.Temp.⎕NC'∆Testing'
+
+ r←T._OK

@@ -1,4 +1,4 @@
- r←Test_04(stopFlag batchFlag);log;stopFlag;⎕TRAP;T2
+ r←Test_Misc_004(stopFlag batchFlag);log;stopFlag;⎕TRAP;T2
 ⍝ Test the `RenameTestFns`
 
 ⍝ This is a candidate for simplifying and spitting stuff into a new group "RenameTest"

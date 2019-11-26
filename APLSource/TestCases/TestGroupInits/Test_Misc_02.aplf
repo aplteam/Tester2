@@ -1,0 +1,9 @@
+ r←Test_Misc_02(stopFlag batchFlag);⎕TRAP
+⍝ Pro-forma test for the group `Misc`. Used to test the execution of `Initial_Misc` and `Cleanup_Misc`.
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ →T.PassesIf ∆Initial_Misc=1
+
+ r←T._OK
+⍝Done

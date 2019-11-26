@@ -1,8 +1,4 @@
-[parm]:numberHeaders = 6
-
-
 # Test framework for Unit tests in Dyalog APL
-
 
 `Tester2` is a member of the APLTree library. This library is a collection of classes etc. that aim to support the Dyalog APL programmer. Search GitHub for "apltree" and you will find solutions to many every-day problems Dyalog APL programmers might have to solve.
 
@@ -71,7 +67,7 @@ A reference pointing to the GUI is assigned internally. That's why the GUI does 
 
 ## Differences between `Tester` and `Tester2`
 
-Since `Tester2` is supposed to replace `Tester` without being 100% compatible it is probably worthwhile to see the main differences on a glance:
+Since `Tester2` is supposed to replace `Tester` without being 100% compatible it is probably worthwhile to see the main differences on a glance because the two are pretty similar, and if you've used `Tester` you probably wnat to convert your tests to `Tester2`.
 
 ### `Testers2` needs to be instantiated.
 
@@ -89,14 +85,14 @@ All methods and all symbolic names are available via the the instance, and only 
 
 The advantage is that your namespace is not cluttered with those methods and symbolic names. The disadvantage is that you must use the instance name now.
 
-### Symbolic names got renamed.
+### Symbolic names got renamed
 
 In `Tester` all symbolic names started with a `∆` character.
 
 In `Tester2` tehy start with an underscore (`_`). This is a very common convention for symbolic names (or constants) and was therefore adapted.
 
 
-### Couple of helpers have been renamed:
+### Couple of helpers have been renamed
 
 
 | Old name | New name              |
@@ -105,10 +101,38 @@ In `Tester2` tehy start with an underscore (`_`). This is a very common conventi
 | `L`      | `T.ListTestFunctions` |
 | `G`      | `T.ListGroups`        |
 
+### INI files{#ini_diffs}
+
+When `Tester` found one or two INI files they were merged, converted into a single flat namespace holding variables and that namespace was created in the hosting namespace as `INI`.
+
+With `Tester2` you won't be surprised to learn that the INI file is now part of the instance. With an instance `T` you can address a variable `foo` as `T.INI.foo`.
+
 
 ### The `Run*` functions
 
 The number of `Run*` functions has be reduced, but at the same time a general function `Run__` is now available that can be used for all possible scenarios.
+
+
+### `Cleanup` function may accept a right argument
+
+In `Tester` the function `Cleanup` was expected to be niladic. With `Tester2` it may be monadically.
+
+
+### Initialising on a per-group basis
+
+In addition to the [global `Initial` function](#Initialisation and cleaning up) you can also have [group-specific `Initial` functions](#Initialisation for groups), a feature that was not available with `Tester`.
+
+
+### The `List` function
+
+When a parameter namespace is created by calling the instance method `CreateParms` it comes with a built-in function `List`. In `Tester` the name of that function was `∆List`.
+
+
+### New method `QuitTests`
+
+`Tester` did not offer a way to quit from a test suite after having executed only a subset of the test functions.
+
+`Tester2` offers the method `QuitTests` for this purpose. When executed it prints a `⎕SIGNAL` command to the session that when executed will make `Tester2` finish the currently running tests in an orderly fashion, including executing any `Cleanup` function.
 
 
 ## Details 
@@ -192,6 +216,19 @@ Batchable tests
 1. Every test function must return a result. You are advised to assign one of the symbolic names defined as read-only fields every instance of `Tester2` comes with. This is much more readable than a simple integer, and it is easier to find as well. See [Symbolic names](#) for details.
 
 
+### Groups
+
+You will find that test cases need to be kept simple, and should not depend on each other (see [Best Practices](#)). That leads easily to a significant number of test cases in case of a complex application.
+
+It is pretty easy to get lost in a large number of test cases, less so when writing the first ones but more so when later you need to delete obsolete test cases, add new test cases for new features or fixed bugs and make changes to test cases that need, well, changing.
+
+That's why groups are quite important: they allow you to order test cases hierarchically.
+
+It is also possible to execute all test cases belonging to a particular group with a single command.
+
+Note that you can have group-specific [initialization ](#Initialisation for groups) and [cleaning up](#Cleaning up for groups).
+
+
 ## Work flow
 
 No matter which of the `Run*` functions you are going to call, the workflow is always the same. (There is a minor difference when `Run__` is used; this will be mentioned)
@@ -231,7 +268,7 @@ Note that if one or both of the two INI files exist there will be a _flat_ names
 ```
 
 
-### Initialisation
+### Initialisation and cleaning up
 
 In the next step the `Run*` method checks whether there is a function `Initial` in the hosting namespace. If that is the case then this function is executed.
 
@@ -241,19 +278,42 @@ Of course, you can simply execute `→` on a single line in your `Initial` funct
 
 In such cases `Initial` should return a 0 indicating failure. Also, part of the initialization might have been carried out, and a function `Cleanup` (discussed in a second) might get rid of any left-overs.
 
-If the function is monadic then a reference pointing to the parameter space is passed as the right argument. By checking this parameter space `Initial` can, for example, find out whether the `batchFlag` is set or not.
+If the function is monadic then a reference pointing to the parameter space is passed as the right argument. By checking this parameter space `Initial` can, for example, find out whether the `batchFlag` is set or not. 
+
+You may also put a variable inside that namespace which can later be referenced by the `Cleanup` function. However, in order to avoid name clashes you are advised to start the names of such variables with a `⍙` or a `∆` character. 
 
 Use `Initial` to create stuff that's needed by **all** test cases, or tell the user something important (only if the batch flag is false of course).
+
+Note that you can have separate [`Initial` functions for specific or all groups](#Initialisation for groups). Use this to initialize stuff that is only needed for a certain group, like a database connection etc.
+
+When everything else has been done then `Tester2` looks for a function `Cleanup` in the hosting nanmespace. If there is such a function it will be executed.
 
 
 ### Finally: running the test cases
 
-Now the test cases are executed one by one.
+Now the test cases are executed one by one, or if groups are defiend, one group after the other.
+
+#### Initialisation for groups
+
+You can have initialisation functions for groups. It's recognzied by naming convention: for a group `foo` the function's name must be `Initial_foo`. 
+
+The rules are exactly the same as for the [global `Initial` function](#Initialisation and cleaning up) although the consequences are different:
+
+When `Initial_foo` returns a Boolean and that is a zero, then no test function belonging to the group `foo` will be executed but `Tester2` will carry on executing other test cases.
+
+#### Cleaning up for groups
+
+You can have clean-up functions for groups. It's recognzied by naming convention: for a group `foo` the function's name must be `Cleanup_foo`. 
+
+The rules are exactly the same as for the [global `Cleanup` function](#Initialisation and cleaning up).
+
 
 
 ### Tidying up: `CleanUp`{#cleanUp}
 
 After the last test case was executed the `Run*` function checks whether there is a function `Cleanup` in the namespace hosting your test cases. If that's the case then this function is executed. Such a function must be a niladic, no-result returning function.
+
+Any `Cleanup` function should either return a shy result --- which will be inored --- or no result at all. It might accept a right argument, but this is optional: it might as well be niladic. If it _does_ accept a right argument it will get the parameter namespace passed.
 
 
 ### INI file again
@@ -261,7 +321,14 @@ After the last test case was executed the `Run*` function checks whether there i
 Finally, the namespace `INI` holding variables populated from your INI file(s) is deleted.
 
 
-## Instance methods offered by `Tester2`
+### Premature exit
+
+There might be situations when you've executed some but not all test cases and now you want to exit the test framework, typically while you are in a test function. In such a case the framework should clean up (execute any `Cleanup` function etc.)
+
+This can be achieved by calling the instance method `QuitTests`. This function signals a `QuitEvent` which is trapped and processed in a specific way by the test framework.
+
+
+## Instance stuff offered by `Tester2`
 
 The methods fall into four groups:
 
@@ -540,12 +607,17 @@ Therefore this would make sense:
 
 * Create everything you need on the fly and tidy up afterwards. Or more precisely, tidy up (leftovers!), prepare, test, tidy up again. In other words, make the test case "stand-alone".
 
-  The exception from this rule is when _all_ test cases require the same pre-condition like, say, a database connection. In that case establish what's needed in a function [`Initial`](#Initialisation) and use a function [`CleanUp`](#cleanUp) to get rid of it.
+  The exception from this rule is when _all_ test cases require the same pre-condition like, say, a database connection. In that case establish what's needed in a function [`Initial`](#Initialisation and cleaning up) and use a function [`CleanUp`](#cleanUp) to get rid of it.
+
+  Alternatively it might be a good idea to initialize certain things just on a [per-group bases](#Initialisation for groups).
 
 * Avoid a test case relying on changes made by an earlier test case. It's a tempting thing to do but you will almost certainly regret this later.
 
 * Notice that the DRY principle (don't repeat yourself) can and should be ignored when it comes to test cases: any test case should read from top to bottom like an independent story that can be understood by itself.
 
 * It might  be a good idea for _all_ test functions to tidy up in line 1, just in case a failing test case has left something behind; see [CleanUp](#cleanUp) for details.
+<<<<<<< HEAD
 
-[^acre]: If you do not know what acre is see <https://github.com/the-carlisle-group/Acre-Desktop>
+* It's probably a good idea to implement for every fixed bugs a separate test case, for bugs tend to make comebacks all the time, and such a test case should prevent that comeback.
+=======
+>>>>>>> origin/master

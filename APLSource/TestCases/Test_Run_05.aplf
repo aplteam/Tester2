@@ -8,7 +8,7 @@
  ⎕TRAP←(1001 'E' '→⎕lc')(999 'C' '. ⍝ Deliberate error')(0 'N')
  (rc log)←T2.RunGUI 2
  T2.CloseGUI
- expected←'  1 test case executed' '  0 test cases failed' '  0 test cases broken'
+ expected←'  1 test case of 1 executed' '  0 test cases failed' '  0 test cases broken'
  →T.FailsIf expected≢¯3↑¯4↓log
 
  T2←⎕NEW ##.Tester2 TestCasesSimu

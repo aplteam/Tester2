@@ -9,6 +9,6 @@
  T2←⎕NEW ##.Tester2 #.Temp.Scripted
  (rc log)←T2.Run 1
  →T.PassesIf 0=rc
- →T.PassesIf 1=+/'1 test case executed'⍷∊log
+ →T.PassesIf 1=+/'1 test case of 1 executed'⍷∊log
 
  r←T._OK

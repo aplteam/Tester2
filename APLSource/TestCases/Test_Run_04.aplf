@@ -6,7 +6,7 @@
  T2←⎕NEW ##.Tester2 TestCasesSimu
  T2.TestFlag←1
  (rc log)←T2.RunThese 2 3
- expected←'  1 test case executed' '  0 test cases failed' '  0 test cases broken'
+ expected←'  1 test case of 1 executed' '  0 test cases failed' '  0 test cases broken'
  →T.FailsIf expected≢¯3↑¯4↓log
 
  :Trap 1001   ⍝ Catch stop vector

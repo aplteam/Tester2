@@ -15,6 +15,6 @@
  ref.T←⎕NEW ##.Tester2 ref
  (rc log)←T2.Run 1
  →T.PassesIf 1=rc
- →T.PassesIf+/'12 test cases executed'⍷∊log
+ →T.PassesIf+/'12 test cases of 12 executed'⍷∊log
 
  r←T._OK

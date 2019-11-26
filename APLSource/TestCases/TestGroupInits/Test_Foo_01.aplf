@@ -1,0 +1,13 @@
+ r←Test_Foo_01(stopFlag batchFlag);⎕TRAP
+⍝ Pro-forma test for the group `Foo`. Used to test the execution of `Initial_Foo` and `Cleanup_Foo`.
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ →T.GoToTidyUp 0=⎕NC'∆Initial_Foo'
+ →T.GoToTidyUp ∆Initial_Foo≠1
+
+ r←T._OK
+
+∆TidyUp:
+ ⎕EX'∆Initial_Foo'
+⍝Done

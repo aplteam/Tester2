@@ -17,21 +17,21 @@
  body←⊂'r←Test_03(stopFlag batchFlag);⎕TRAP'
  body,←⊂'⎕TRAP←(999 ''C'' ''. ⍝ Deliberate error'')(0 ''N'')'
  body,←⊂'r←T._Failed'
- body,←⊂'→T.FailsIf 2≠INI.⎕NC''foo'''
- body,←⊂'→T.FailsIf 2≠INI.⎕NC''goo'''
- body,←⊂'→T.FailsIf 2≠INI.⎕NC''too'''
- body,←⊂'→T.FailsIf INI.foo≢2'
- body,←⊂'→T.FailsIf INI.goo≢''Hello'''
- body,←⊂'→T.FailsIf INI.too≢''Universe'''
- body,←⊂'→T.FailsIf 3≠1↑⍴INI.List'
+ body,←⊂'→T.FailsIf 2≠T.INI.⎕NC''foo'''
+ body,←⊂'→T.FailsIf 2≠T.INI.⎕NC''goo'''
+ body,←⊂'→T.FailsIf 2≠T.INI.⎕NC''too'''
+ body,←⊂'→T.FailsIf T.INI.foo≢2'
+ body,←⊂'→T.FailsIf T.INI.goo≢''Hello'''
+ body,←⊂'→T.FailsIf T.INI.too≢''Universe'''
+ body,←⊂'→T.FailsIf 3≠1↑≢T.INI.List'
  body,←⊂'r←T._OK'
  #.TEMP.⎕FX body
  #.TEMP.T.TestFlag←1
- report←∊#.TEMP.T.Run 1
- →T.GoToTidyUp 1≠+/'INI file(s) "Testcases.ini,testcases_'⍷report
- →T.GoToTidyUp 1≠+/'1 test case executed'⍷report
- →T.GoToTidyUp 1≠+/'0 test cases failed'⍷report
- →T.GoToTidyUp 1≠+/'0 test cases broken'⍷report
+ report←#.TEMP.T.Run 1
+ →T.GoToTidyUp 1≠+/'INI file(s) "Testcases.ini,testcases_'⍷∊report
+ →T.GoToTidyUp 1≠+/'1 test case of 1 executed'⍷∊report
+ →T.GoToTidyUp 1≠+/'0 test cases failed'⍷∊report
+ →T.GoToTidyUp 1≠+/'0 test cases broken'⍷∊report
 
  r←T._OK
 

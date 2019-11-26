@@ -1,0 +1,8 @@
+ RunTests;ps
+ Prepare
+ ps←T.CreateParms ⍬
+ ps.guiFlag←1
+ ps.debugFlag←1
+ ps.trapFlag←0
+ T.Run__ ps
+ ⍝Done

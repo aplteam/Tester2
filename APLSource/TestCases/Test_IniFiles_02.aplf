@@ -15,18 +15,18 @@
  body←⊂'r←Test_02(stopFlag batchFlag);⎕TRAP'
  body,←⊂'⎕TRAP←(999 ''C'' ''. ⍝ Deliberate error'')(0 ''N'')'
  body,←⊂'r←T._Failed'
- body,←⊂'→T.FailsIf 2≠INI.⎕NC''foo'''
- body,←⊂'→T.FailsIf 2≠INI.⎕NC''goo'''
- body,←⊂'→T.FailsIf INI.foo≢1'
- body,←⊂'→T.FailsIf INI.goo≢''Hello'''
+ body,←⊂'→T.FailsIf 2≠T.INI.⎕NC''foo'''
+ body,←⊂'→T.FailsIf 2≠T.INI.⎕NC''goo'''
+ body,←⊂'→T.FailsIf T.INI.foo≢1'
+ body,←⊂'→T.FailsIf T.INI.goo≢''Hello'''
  body,←⊂'r←T._OK'
  #.TEMP.⎕FX body
  #.TEMP.T.TestFlag←1
- report←∊#.TEMP.T.Run 1
- →T.GoToTidyUp 1≠+/'1 INI file instantiated'⍷report
- →T.GoToTidyUp 1≠+/'1 test case executed'⍷report
- →T.GoToTidyUp 1≠+/'0 test cases failed'⍷report
- →T.GoToTidyUp 1≠+/'0 test cases broken'⍷report
+ report←#.TEMP.T.Run 1
+ →T.GoToTidyUp 1≠+/'1 INI file instantiated'⍷∊report
+ →T.GoToTidyUp 1≠+/'1 test case of 1 executed'⍷∊report
+ →T.GoToTidyUp 1≠+/'0 test cases failed'⍷∊report
+ →T.GoToTidyUp 1≠+/'0 test cases broken'⍷∊report
 
  r←T._OK
 

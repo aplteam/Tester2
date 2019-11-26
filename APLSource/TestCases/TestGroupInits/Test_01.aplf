@@ -1,0 +1,5 @@
+ r←Test_01(stopFlag batchFlag);⎕TRAP
+⍝ Pro-forma test to make sure we have one test function that does not belong to a group
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._OK
+⍝Done

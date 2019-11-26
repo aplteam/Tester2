@@ -1,0 +1,9 @@
+ r←Test_ZZZ_01(stopFlag batchFlag);⎕TRAP
+⍝ Check whether there are any variables startting their names with `∆`: if so then `Cleanup*` function have not been executed.
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ →T.PassesIf 0=≢'∆'⎕NL 2
+
+ r←T._OK
+⍝Done

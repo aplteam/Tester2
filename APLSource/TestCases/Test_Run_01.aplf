@@ -8,7 +8,7 @@
  (rc log)←T2.Run 1
  →T.FailsIf 0=rc
  →T.PassesIf 4=+/'...not found'⍷∊log  ⍝ No function `Initial`, no INI files (two!) and no function `Cleanup`
- →T.PassesIf∨/'13 test cases executed'⍷∊log
+ →T.PassesIf∨/'13 test cases of 13 executed'⍷∊log
  →T.PassesIf∨/'3 test cases failed (flagged with "*")'⍷∊log
  →T.PassesIf∨/'0 test cases broken'⍷∊log
 
