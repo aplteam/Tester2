@@ -1,6 +1,3 @@
-[parm]:numberHeaders = 6
-
-
 # Test framework for Unit tests in Dyalog APL
 
 
@@ -547,5 +544,3 @@ Therefore this would make sense:
 * Notice that the DRY principle (don't repeat yourself) can and should be ignored when it comes to test cases: any test case should read from top to bottom like an independent story that can be understood by itself.
 
 * It might  be a good idea for _all_ test functions to tidy up in line 1, just in case a failing test case has left something behind; see [CleanUp](#cleanUp) for details.
-
-[^acre]: If you do not know what acre is see <https://github.com/the-carlisle-group/Acre-Desktop>
