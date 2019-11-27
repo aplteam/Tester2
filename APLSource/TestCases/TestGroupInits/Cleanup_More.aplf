@@ -1,0 +1,5 @@
+ Cleanup_More ps
+ {⍵:.}9≠⎕NC'ps'
+ {⍵:.}3≠ps.⎕NC'List'
+ {⍵:.}0=≡ps.List
+⍝Done

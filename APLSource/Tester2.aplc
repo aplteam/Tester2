@@ -19,11 +19,16 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'0.8.0.14' '2019-11-24'
+      r←(Last⍕⎕THIS)'0.8.1.19' '2019-11-27'
     ∇
 
     ∇ History
       :Access Public shared
+      ⍝ * 0.8.1
+      ⍝   * Bug fixes:
+      ⍝     * The GUI left buttons and check boxes active after a run.
+      ⍝     * Spurious VALUE ERROR in `ProcessGuiEvents` fixed.
+      ⍝     * Function calls to `Initial_{groupName}` and `Initial_{groupName}` were wrong.
       ⍝ * 0.8.0
       ⍝   * Now group-specific `Initial` and `Cleanup` functions are supported.
       ⍝ * 0.7.0
@@ -262,9 +267,10 @@
       log←ps.log
       r←rc log
       :If ps.guiFlag
-          {6::shy←⍬ ⋄ ref2Gui.onClose←⍵ ⋄ 1:shy←⍬}0
           :If ps.ref2Gui.∆n.∆Closed   ⍝ The user has clicked the "Close" box but the GUI is still around
               CloseGUI
+          :Else
+              ps.ref2Gui.∆n.(TrapErrors Debug StopFlag StartBtn PauseBtn).Active←0
           :EndIf
       :EndIf
     ∇
@@ -409,7 +415,7 @@
       ps.groups←∪(≢'Test_')GetGroupName¨ps.list
     ∇
 
-    ∇ ProcessTestCases(ref ps);i;testFns;testNo;rc;msg;length;cw;max;desc;comment;marker;length2;at;fns;result;cases;currentGroup;noOf
+    ∇ ProcessTestCases(ref ps);i;testFns;testNo;rc;msg;length;cw;max;desc;comment;marker;length2;at;result;cases;currentGroup;noOf
       cw←≢max←⍕noOf←≢ps.list
       length←2+⌈/≢¨ps.list
       length2←length+≢'(',max,'/',max,')  '
@@ -443,12 +449,12 @@
               :AndIf currentGroup≢↑⌽ps.processedGroups
                   ps.processedGroups,←⊂currentGroup
                   :If 3=ref.⎕NC'Initial_',currentGroup
-                      at←↑ref.⎕AT'Initial_',currentGroup
-                      :If 2⊃at  ⍝ Accepts a right argument?
-                          fns←ref⍎'Initial_',currentGroup
-                          result←fns{6::1 ⋄ ⍺⍺ ⍵}ps
-                      :Else
+                      at←1⊃ref.⎕AT'Initial_',currentGroup
+                      :If (2⊃at)∊1 ¯2           ⍝ Accepts a right argument (monadic=1, ambivalent=¯2)?
                           result←ps ref.{6::1 ⋄ ⍎⍵,' ⍺'}'Initial_',currentGroup
+                      :Else
+                          ref⍎'Initial_',currentGroup
+                          result←1
                       :EndIf
                       :If ~1↑result∊⍬ 1
                           ShowLog'Function "Initial_',currentGroup,'" found and executed but did not return a 1'
@@ -500,8 +506,8 @@
           :OrIf currentGroup{0=≢⍺:0 ⋄ ⍺≢GetGroupName(i+1)⊃⍵}ps.list     ⍝ Group change?!
               :If 3=ref.⎕NC'Cleanup_',currentGroup
                   at←1⊃ref.⎕AT'Cleanup_',currentGroup
-                  :If 2⊃at
-                      ∘∘∘
+                  :If (2⊃at)∊1 ¯2 ⍝ Accepts a right argument (1=monadic, ¯2=ambivalent)?
+                      ps ref.{6::1 ⋄ ⍎⍵,' ⍺'}'Cleanup_',currentGroup
                   :Else
                       ref.⍎'Cleanup_',currentGroup
                   :EndIf
@@ -509,6 +515,7 @@
           :EndIf
           {}⎕WA  ⍝ Enforce a memory compaction in order to get rid of any rubbish.
           :If ps.guiFlag
+          :AndIf 0=ps.ref2Gui.∆n.∆Closed
               ps.stopFlag←ps.ref2Gui.∆n.StopFlag.State
               ps.trapFlag←ps.ref2Gui.∆n.TrapErrors.State
               ProcessGuiEvents ps.ref2Gui.∆n
@@ -843,7 +850,7 @@
 
     ∇ {r}←ProcessGuiEvents n
       :Trap 6
-          {_←⎕DL 0.3 ⋄ 1:shy←⎕NQ ⍵.Form 9999}&n
+          {6::shy←⍬ ⋄ _←⎕DL 0.3 ⋄ 1:shy←⎕NQ ⍵.Form 9999}&n
           r←⎕DQ n.Form
       :EndTrap
     ∇
