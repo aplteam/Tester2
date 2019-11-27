@@ -69,7 +69,7 @@ A reference pointing to the GUI is assigned internally. That's why the GUI does 
 
 Since `Tester2` is supposed to replace `Tester` without being 100% compatible it is probably worthwhile to see the main differences on a glance because the two are pretty similar, and if you've used `Tester` you probably wnat to convert your tests to `Tester2`.
 
-### `Testers2` needs to be instantiated.
+### `Testers` needs to be instantiated.
 
 While `Tester` offered a function `EstablisHelpersIn` which injected a significant number of functions into the namespace that hosts test cases `Tester2` _must_ be instantiated.
 
