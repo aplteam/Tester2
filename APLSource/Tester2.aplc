@@ -8,6 +8,9 @@
 ⍝ on [`Tester2`'s home page on GitHub ](https://github.com/aplteam/Tester2).\\
 ⍝ Note that in case after running `RunGUI` the GUI stays around your have two choices of getting rid of the GUI
 ⍝ programmatically: either call the `CloseGUI` method from your instance or erase the instance altogether.
+⍝ ## INI files
+⍝ `Tester2` tries to find two INI files: "Testcases.INI" and "Testcases_{computername}.INI". If it finds one or
+⍝ both of them it will merge and flatten them and assign them to the `INI` property of `Tester2` instance.
 ⍝ ## Misc
 ⍝ This class is part of the APLTree Open Source project.\\
 ⍝ Home page: <https://github.com/aplteam/Tester2>\\
@@ -19,7 +22,7 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'1.0.0.23' '2019-12-01'
+      r←(Last⍕⎕THIS)'1.0.0.25' '2019-12-01'
     ∇
 
     ∇ History
@@ -392,6 +395,7 @@
       report←,⊂'Searching for INI file ',iniFilename
       :If ⎕NEXISTS iniFilename
           iniFilenames,←⊂iniFilename
+          report[≢report]←⊂((≢report)⊃report),': found!'
       :Else
           report[≢report]←⊂((≢report)⊃report),': not found'
       :EndIf
@@ -399,14 +403,19 @@
       report,←⊂'Searching for INI file ',iniFilename
       :If ⎕NEXISTS iniFilename
           iniFilenames,←⊂iniFilename
+          report[≢report]←⊂((≢report)⊃report),': found!'
       :Else
           report[≢report]←⊂((≢report)⊃report),': not found'
       :EndIf
       ShowLog¨report
       :If 0≠≢iniFilenames
-          _INI←'flat'(⎕NEW((↑↑⎕CLASS ⎕THIS).##.IniFiles)(iniFilenames 1)).Convert ⎕NS''
-          ShowLog'  INI file(s) "',(↑{⍺,',',⍵}/iniFilenames),'" found and instantiated as INI'
-          ShowLog(⍕≢iniFilenames),' INI file',((1<≢iniFilenames)/'s'),' instantiated'
+          :Trap 6
+              _INI←'flat'(⎕NEW((↑↑⎕CLASS ⎕THIS).##.IniFiles)(iniFilenames 1)).Convert ⎕NS''
+              ShowLog'  INI file(s) "',(↑{⍺,',',⍵}/iniFilenames),'" found and instantiated as INI'
+              ShowLog(⍕≢iniFilenames),' INI file',((1<≢iniFilenames)/'s'),' instantiated'
+          :Else
+              'The class "IniFiles" is needed but missing'⎕SIGNAL 6
+          :EndTrap
       :EndIf
     ∇
 
