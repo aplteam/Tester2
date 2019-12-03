@@ -1,0 +1,50 @@
+ r←Test_Custom_01(stopFlag batchFlag);⎕TRAP;qdmx;i;T2
+⍝ Exercise `custom_{n}` properties with invalid settings
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+ T2←⎕NEW ##.Tester2 ⎕THIS
+
+ :Trap 11
+     T2.custom_1←'Message 1' 'asxlkaskx'
+     →T2.FailsIf 1
+ :Else
+     qdmx←⎕DMX
+     →T2.FailsIf~∨/'Must be a simple text vector'⍷∊qdmx.DM
+ :EndTrap
+
+ :Trap 11
+     T2.custom_1←1 2 3
+     →T2.FailsIf 1
+ :Else
+     qdmx←⎕DMX
+     →T2.FailsIf~∨/'Must be a simple text vector'⍷∊qdmx.DM
+ :EndTrap
+
+ :Trap 11
+     T2.custom_1←2 2⍴'ABC'
+     →T2.FailsIf 1
+ :Else
+     qdmx←⎕DMX
+     →T2.FailsIf~∨/'Must be a simple text vector'⍷∊qdmx.DM
+ :EndTrap
+
+ :Trap 11
+     T2.custom_1←1.2
+     →T2.FailsIf 1
+ :Else
+     qdmx←⎕DMX
+     →T2.FailsIf~∨/'Must be a simple text vector'⍷∊qdmx.DM
+ :EndTrap
+
+ T2.custom_9←'Special message'
+ :Trap 11
+     T2.custom_1←'Special message'                                  ⍝ Message is by now already defined
+     →T2.FailsIf 1
+ :Else
+     qdmx←⎕DMX
+     →T2.FailsIf~∨/'Message is already defined'⍷∊qdmx.DM
+ :EndTrap
+
+ r←T._OK
+
+ ⍝Done

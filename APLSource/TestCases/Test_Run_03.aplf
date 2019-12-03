@@ -1,6 +1,6 @@
  r←Test_Run_03(stopFlag batchFlag);log;rc;stopFlag;⎕TRAP
 ⍝ Exercise the `Run` method
- ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
 
  TestCasesSimu.T←⎕NEW ##.Tester2 TestCasesSimu

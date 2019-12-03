@@ -1,6 +1,6 @@
  r←Test_Helpers_02(stopFlag batchFlag);⎕TRAP;list1;list
 ⍝ Exercise the `ListGroups` method.
- ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
 
  list←T.ListGroups

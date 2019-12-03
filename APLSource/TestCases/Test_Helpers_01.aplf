@@ -1,6 +1,6 @@
  r←Test_Helpers_01(stopFlag batchFlag);⎕TRAP;list1;list2;list3
 ⍝ Exercise `ListTestFunctions`.
- ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
 
  list1←T.ListTestFunctions''

@@ -1,6 +1,6 @@
  r←Test_Helpers_03(stopFlag batchFlag);stopFlag;⎕TRAP;list1
 ⍝ Exercise the `EditTestFunctions` method.
- ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
  :If batchFlag
      r←T.∆NoBatchTest

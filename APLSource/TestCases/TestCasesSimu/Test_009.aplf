@@ -2,5 +2,7 @@
 ⍝ Does not execute in batch mode but fails otherwise
  r←1
  :If batchFlag
-     r←¯1
+     r←T._NoBatchTest
+ :Else
+     r←T._Failed
  :EndIf

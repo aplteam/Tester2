@@ -1,13 +1,13 @@
  r←Test_Run_10(stopFlag batchFlag);stopFlag;⎕TRAP;T2;trap;rc;log
 ⍝ Exercise the `QuitEvent` mechanism
- ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
 
  #.⎕SHADOW'TEMP'
  'TEMP'#.⎕NS''
  #.TEMP.⎕FX'Initial' '∆Initalized←1'
  #.TEMP.⎕FX'Cleanup' '⎕ex''∆Initalized'''
- trap←'⎕TRAP←(999 ''C'' ''. ⍝ Deliberate error'')(0 ''N'')'
+ trap←'⎕TRAP←(999 ''C'' ''∘∘∘ ⍝ Deliberate error'')(0 ''N'')'
  #.TEMP.⎕FX'r←Test_001(stopFlag batchFlag);⎕TRAP'trap'∆GLOBAL←1' 'r←T._OK'
  #.TEMP.⎕FX'r←Test_002(stopFlag batchFlag);⎕TRAP'trap'r←T._OK' ':If 0=⎕NC''∆Initalized''' 'r←T._Failed' ':EndIf'
  #.TEMP.⎕FX'r←Test_003(stopFlag batchFlag);⎕TRAP'trap'T.QuitTests' '⎕←''To continue execute the ⎕SIGNAL statement''' '.'

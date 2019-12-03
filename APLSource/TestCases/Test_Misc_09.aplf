@@ -1,6 +1,6 @@
  r←Test_Misc_09(stopFlag batchFlag);log;⎕TRAP;rc;T2
 ⍝ Exercise the grouping mechanism without any specific numbers
- ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
 
  T2←⎕NEW ##.Tester2 TestCasesSimu

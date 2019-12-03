@@ -2,7 +2,7 @@
 ⍝ Does not execute in batch mode but is okay otherwise
  r←1
  :If batchFlag
-     r←¯1
+     r←T._NoBatchTest
  :Else
      r←0
  :EndIf

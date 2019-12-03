@@ -1,6 +1,6 @@
  r←Test_Other_05(stopFlag batchFlag);ref;⎕TRAP;T2
 ⍝ Exercise `GoToTidyUp`
- ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
 
  ref←⎕NS''
@@ -8,6 +8,7 @@
  ref.debugFlag←0
  ref.∆TidyUp←∆TidyUp
  →T.FailsIf ⍬≢T2.GoToTidyUp 0
+ →T.PassesIf ¯999=¯999 T2.GoToTidyUp 1
  →T2.GoToTidyUp 1
  :Return
 

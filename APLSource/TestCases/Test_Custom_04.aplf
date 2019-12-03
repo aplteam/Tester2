@@ -1,0 +1,30 @@
+ r←Test_Custom_04(stopFlag batchFlag);⎕TRAP;qdmx;i;T2;log;rc
+⍝ Run a test function that uses some custom messages
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ #.TEMP.(⎕IO ⎕ML)←1
+ #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
+ #.TEMP.T.custom_1←'Firlefanz1'
+ #.TEMP.T.custom_2←'Firlefanz2'
+ #.TEMP.T.custom_7←'Firlefanz7'
+ #.TEMP.T.custom_8←'Firlefanz8'
+ #.TEMP.⎕FX'r←Test_01 arg;⎕TRAP' '⍝ Test 1' 'r←T.custom_1'
+ #.TEMP.⎕FX'r←Test_02 arg;⎕TRAP' '⍝ Test 2' 'r←T.custom_2'
+ #.TEMP.⎕FX'r←Test_03 arg;⎕TRAP' '⍝ Test 3' 'r←T.custom_1'
+ #.TEMP.⎕FX'r←Test_04 arg;⎕TRAP' '⍝ Test 4' 'r←T.custom_1'
+ #.TEMP.⎕FX'r←Test_05 arg;⎕TRAP' '⍝ Test 5' 'r←T.custom_7'
+ #.TEMP.⎕FX'r←Test_06 arg;⎕TRAP' '⍝ Test 6' 'r←T.custom_2'
+ #.TEMP.⎕FX'r←Test_07 arg;⎕TRAP' '⍝ Test 7' 'r←T.custom_7'
+ #.TEMP.⎕FX'r←Test_08 arg;⎕TRAP' '⍝ Test 8' 'r←T.custom_8'
+ #.TEMP.⎕FX'r←Test_09 arg;⎕TRAP' '⍝ Test 9' 'r←T.custom_8'
+ #.TEMP.⎕FX'r←Test_10 arg;⎕TRAP' '⍝ Test 10' 'r←T.custom_1'
+ (rc log)←#.TEMP.T.Run 1
+ →T.PassesIf 0=rc
+ →T.PassesIf 10 0 0 10≡∆GetTotals log
+
+ r←T._OK
+
+ ⍝Done
