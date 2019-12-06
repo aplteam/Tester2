@@ -3,10 +3,9 @@
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
 
- ##.FilesAndDirs.DeleteFile'Testcases.ini'
-
- ini←'[Config]' 'foo = 1' 'goo = ''Hello'''
  iniFilename←'Testcases.ini'
+ ##.FilesAndDirs.DeleteFile iniFilename
+ ini←'[Config]' 'foo = 1' 'goo = ''Hello'''
  ##.APLTreeUtils.WriteUtf8File iniFilename ini
 
  #.⎕SHADOW'TEMP'
@@ -23,8 +22,10 @@
  body,←⊂'r←T._OK'
  #.TEMP.⎕FX body
  #.TEMP.T.TestFlag←1
+ #.TEMP.T.IniFolder←''
  (rc report)←#.TEMP.T.Run 1
- →T.GoToTidyUp 1≠+/'INI file(s) "Testcases.ini" found and instantiated as INI'⍷∊report
+ →T.GoToTidyUp 1≠+/'Searching for INI file Testcases.ini: found'⍷∊report
+ →T.GoToTidyUp 1≠+/('Searching for INI file Testcases-',(2 ⎕NQ'#' 'GetEnvironment' 'Computername'),'.ini: not found')⍷∊report
  →T.GoToTidyUp 1≠+/'1 test case of 1 called'⍷∊report
  →T.GoToTidyUp 1≠+/'0 test cases failed'⍷∊report
  →T.GoToTidyUp 1≠+/'0 test cases broken'⍷∊report

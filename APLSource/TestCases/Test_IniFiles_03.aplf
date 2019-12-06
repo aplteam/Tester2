@@ -3,12 +3,14 @@
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
 
- ini←'[Config]' 'foo = 1' 'goo = ''Hello'''
  iniFilename1←'Testcases.ini'
+ ##.FilesAndDirs.DeleteFile iniFilename1
+ ini←'[Config]' 'foo = 1' 'goo = ''Hello'''
  ##.APLTreeUtils.WriteUtf8File iniFilename1 ini
 
+ iniFilename2←'Testcases-',(2 ⎕NQ'#' 'GetEnvironment' 'Computername'),'.ini'
+ ##.FilesAndDirs.DeleteFile iniFilename2
  ini←'[Config]' 'foo = 2' 'too = ''Universe'''
- iniFilename2←'Testcases_',##.WinSys.GetComputerName,'.ini'
  ##.APLTreeUtils.WriteUtf8File iniFilename2 ini
 
  #.⎕SHADOW'TEMP'
@@ -27,8 +29,9 @@
  body,←⊂'r←T._OK'
  #.TEMP.⎕FX body
  #.TEMP.T.TestFlag←1
- report←#.TEMP.T.Run 1
- →T.GoToTidyUp 1≠+/'INI file(s) "Testcases.ini,testcases_'⍷∊report
+ (rc report)←#.TEMP.T.Run 1
+ →T.GoToTidyUp 1≠+/'Searching for INI file Testcases.ini: found'⍷∊report
+ →T.GoToTidyUp 1≠+/('Searching for INI file Testcases-',(2 ⎕NQ'#' 'GetEnvironment' 'Computername'),'.ini: found')⍷∊report
  →T.GoToTidyUp 1≠+/'1 test case of 1 called'⍷∊report
  →T.GoToTidyUp 1≠+/'0 test cases failed'⍷∊report
  →T.GoToTidyUp 1≠+/'0 test cases broken'⍷∊report
@@ -36,4 +39,5 @@
  r←T._OK
 
 ∆TidyUp:
- ##.FilesAndDirs.DeleteFile iniFilename1 iniFilename2
+ :Trap 0 ⋄ ##.FilesAndDirs.DeleteFile iniFilename1 ⋄ :EndTrap
+ :Trap 0 ⋄ ##.FilesAndDirs.DeleteFile iniFilename2 ⋄ :EndTrap

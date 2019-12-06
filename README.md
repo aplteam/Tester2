@@ -285,14 +285,22 @@ When you call one of the `Run*` functions the same steps are executed:
 
 ### INI files (optional)
 
-First of all, the `Run*` methods check whether there is a file `testcases.ini` in the current directory. If this is the case that INI file is processed. Use this to specify general stuff that does not depend on a certain computer/environment.
+Note that there is an instance property `IniFolder`. By default this points to `AcreConfig.ProjectFolder` if a namespace `AcreConfig` can be found in the namespace that hosts the test cases or one of it's parents up to the `#` namespace.
 
-Then it checks for a file `testcases_{computername}.ini`. If this file exists then it is processed. Use this to specify stuff that does depend on a certain computer/environment.
+If there is no such namespace the default falls back to the current directory.
 
-Note that if one or both of the two INI files exist there will be a _flat_ namespace `{yourTestNamespace}.INI`, meaning that any sections defined in the INI file(s) will be ignored. An example: if your test functions are hosted by a namespace `Foo.TestCases` and your INI file specifies a variable `hello` as holding "world" then:
+If your INI file(s) do not live in either place then you must set the `IniFolder` property in order to allow `Tester2` to find the INI file(s).
+
+First the `Run*` methods check whether there is a file `testcases.ini`. If this is the case that INI file is processed. Use this INI file to specify general stuff that does not depend on a certain computer/environment.
+
+Then the `Run*` methods checks for a file `testcases-{computername}.ini`. If this file exists it is processed. Use this to specify stuff that does depend on a certain computer or environment.
+
+Note that if one or both of the two INI files exist there will be a _flat_ namespace `{yourTestNamespace}.INI`, meaning that any sections defined in the INI file(s) will be ignored. 
+
+An example: if your test functions are hosted by a namespace `Foo.TestCases` and your INI file specifies a variable `hello` as holding "world" and you have created an instance with the name `T` inside `#.Foo.TestCases` then:
 
 ```
-       'world'≡#.Foo.TestCases.INI.hello
+       'world'≡#.Foo.TestCases.T.INI.hello
 1
 ```
 

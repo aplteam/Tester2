@@ -1,0 +1,21 @@
+ r←Test_IniFiles_04(stopFlag batchFlag);⎕TRAP;path;computername;rc;log
+⍝ Exercise the `IniFolder` property with two INI files in the middle of nowhere.
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ path←##.FilesAndDirs.GetTempSubDir''
+ ##.APLTreeUtils.WriteUtf8File(path,'\Testcases.ini')('[CONFIG]' 'file1= ''Main file''')
+ computername←2 ⎕NQ #'GetEnvironment' 'Computername'
+ ##.APLTreeUtils.WriteUtf8File(path,'\Testcases-',computername,'.ini')('[CONFIG]' 'file2= ''Sub file''')
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ #.TEMP.⎕FX'r←Test_01 y;⎕TRAP' ' r←T._Failed' '→T.PassesIf 2=≢T.INI.⎕NL 2' '→T.PassesIf''Main file''≡T.INI.file1' '→T.PassesIf''Sub file''≡T.INI.file2' 'r←T._OK'
+ #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
+ #.TEMP.T.IniFolder←path
+ (rc log)←#.TEMP.T.Run 1
+ →T.GoToTidyUp 0≠rc
+
+ r←T._OK
+
+∆TidyUp:
+ ##.FilesAndDirs.RmDir path
