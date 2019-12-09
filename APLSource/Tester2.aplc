@@ -22,15 +22,17 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'1.0.0.29' '2019-12-01'
+      r←(Last⍕⎕THIS)'1.0.0.34' '2019-12-08'
     ∇
 
     ∇ History
       :Access Public shared
       ⍝ * 1.0.0
       ⍝   * First release.\\
-      ⍝   This is the successor of the `Tester` class. `Tester2` requires to be instanticated, and the
-      ⍝   constructor requires a ref pointing to the namespace (scipted or ordinary) that hosts the tests.
+      ⍝   This is the successor of the `Tester` class. `Tester2` requires to be instantiated, and the
+      ⍝   constructor requires a ref pointing to the namespace (scripted or ordinary) that hosts the tests.\\
+      ⍝   For a full list of differences between the now deprecated `Tester` class and the new class
+      ⍝   `Tester2` see the ReadMe.html file.
       ⍝\\
       ⍝ For a full history (including older versions) see <https://github.com/aplteam/Tester2/releases>
     ∇
@@ -314,7 +316,7 @@
       r.⎕FX'r←List' 'r←⊃{⍵(⍎⍵)}¨'' ''~¨⍨↓⎕NL 2'
     ∇
 
-    ∇ {r}←Run__ ps;rc;log;⎕TRAP;∆InitialGotExecuted
+    ∇ {r}←Run__ ps;rc;log;⎕TRAP;rc2
         ⍝ Run all test cases to be found in `_ref`.\\
         ⍝ The right argument is a parameter space, typically created by calling `CreateParms ⍬`.\\
         ⍝ The shy explicit result is a two-element vector:
@@ -326,7 +328,6 @@
       ⎕TRAP←(QuitEvent'C' '→∆GetOutOfHere')((0 1000)'N')
       _ref.Stop←ps.stopFlag         ⍝ "Stop" is honored by "FailsIf" & "PassesIf"
       _INI←⍬                        ⍝ Flatten any leftovers
-      ∆InitialGotExecuted←0
       ps.(log errCounter failedCounter totalCounter)←'' 0 0 0
       ps.guiFlag∧←'Win'≡GetOperatingSystem ⍬  ⍝ Windows only, if at all
       :If ps.guiFlag
@@ -356,8 +357,10 @@
           ShowLog'*** "Initial" could not initialize'
           ps.errCounter←1
           rc←2
-          ps.⎕EX'list'
+          ps.list←''
           →∆GetOutOfHere
+      :Else
+          rc←0
       :EndIf
       ps.returnCodes←⍬
       :If ps.guiFlag
@@ -371,11 +374,14 @@
      ∆GetOutOfHere:
       _INI←⍬                    ⍝ Flatten any leftovers
       :If 0<ps.⎕NC'list'        ⍝ Then no test cases got executed, probably because `Initial` failed.
-          (rc log)←ReportTestResults ps
+          (rc2 log)←ReportTestResults ps
+          :If rc≠2
+              rc←rc2
+          :EndIf
           _ref.TestCasesExecutedAt←FormatDateTime ⎕TS
           ShowLog'Time of execution recorded on variable ',(⍕_ref),'.TestCasesExecutedAt in: ',_ref.TestCasesExecutedAt
       :EndIf
-      {}ExecuteCleanup⍣∆InitialGotExecuted⊣_ref ps
+      {}ExecuteCleanup⍣(0<≢ps.list)⊣_ref ps
       ShowLog'*** Tests done'
       log←ps.log
       r←rc log
@@ -459,7 +465,6 @@
               :Else
                   r←ref.Initial
               :EndIf
-              ∆InitialGotExecuted←1
           :Case 1
               :If 0=↑↑ref.⎕AT'Initial'
                   ref.Initial ps
@@ -1118,11 +1123,12 @@
       :EndIf
     ∇
 
-    ∇ r←FindSpecialString what
+    ∇ r←{target}FindSpecialString what
     ⍝ Use this to search for stuff like "CHECK" or "TODO" enclosed between lamps `⍝`.
-    ⍝ Without left argument the search starts in `#`.
+    ⍝ Without left argument the search starts in `_ref`.
       :Access Public Instance
-      r←⍉1↓[1+⎕IO]⎕SE.UCMD'locate "',what,'" -return=count -objects=',⍕_ref  ⍝ The quotes are essential because of the ⍝ symbol!
+      target←{0<⎕NC ⍵:⍎⍵ ⋄ ⍕_ref}'target'
+      r←⍉1↓[1+⎕IO]⎕SE.UCMD'locate "',what,'" -return=count -objects=',⍕target  ⍝ The quotes are essential because of the ⍝ symbol!
       :If 0<≢r←(0<r[;⎕IO+1])⌿r                                    ⍝ Drop those with no hits
           r[;⎕IO]←{2>'#'+.=⍵:⍵ ⋄ {⎕IO←0 ⋄ ⌽⍵↑⍨1+⍵⍳'#'}⌽⍵}¨r[;⎕IO]
       :EndIf

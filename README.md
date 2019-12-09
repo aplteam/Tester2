@@ -344,6 +344,8 @@ After the last test case was executed the `Run*` function checks whether there i
 
 Any `Cleanup` function should either return a shy result --- which will be inored --- or no result at all. It might accept a right argument, but this is optional: it might as well be niladic. If it _does_ accept a right argument it will get the parameter namespace passed.
 
+Note that a function `Cleanup` would be executed no matter whether there was or was not a function `Initial`, and if there was, no matter whether it returned a 0 or a 1 or nothing at all.
+
 ### Cleaning up for groups
 
 You can have clean-up functions for groups. It's recognzied by naming convention: for a group `foo` the function's name must be `Cleanup_foo`. 
