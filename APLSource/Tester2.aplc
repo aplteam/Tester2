@@ -22,11 +22,15 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'1.0.0.34' '2019-12-08'
+      r←(Last⍕⎕THIS)'1.1.0.35' '2019-12-13'
     ∇
 
     ∇ History
       :Access Public shared
+      ⍝ * 1.1.0
+      ⍝   * Two new properties introduced: `exec_before_each_test` and `exec_after_each_test`.
+      ⍝   * Couple of minor improvements on the GUI.
+      ⍝   * `RunGUI` now accepts an optional left argument: a parameter space.
       ⍝ * 1.0.0
       ⍝   * First release.\\
       ⍝   This is the successor of the `Tester` class. `Tester2` requires to be instantiated, and the
@@ -51,6 +55,7 @@
     :Field Public Instance Readonly _NotApplicable←¯19
 
     :Field Public Instance ReadOnly QuitEvent←993
+    :Field Public Instance ReadOnly PassEvent←994
     :Field Public Instance TestFlag←0   ⍝ Used **only** for testing `Tester2`!
                                         ⍝ Setting this to 1 prevents `⎕DQ` from being run on `Tester2`'s own GUI, if any.
 
@@ -75,7 +80,7 @@
           msg←arg.NewValue
           ⎕SIGNAL/2 CheckCustomDef msg
           _custom_2←msg
-        ∇ ⍝         
+        ∇
     :EndProperty
 
     :Property custom_3
@@ -179,6 +184,31 @@
         ∇
     :EndProperty
 
+    :Property exec_before_each_test
+    :Access Public Instance
+        ∇ r←get
+          r←_exec_before_each_test
+        ∇
+        ∇ set arg
+          'Must be fully qualified name of a function'⎕SIGNAL 11/⍨' '≠1↑0⍴∊arg.NewValue
+          'Must be fully qualified name of a function'⎕SIGNAL 11/⍨3≠⎕NC arg.NewValue
+          _exec_before_each_test←arg.NewValue
+        ∇
+    :endproperty
+
+
+    :Property exec_after_each_test
+    :Access Public Instance
+        ∇ r←get
+          r←_exec_after_each_test
+        ∇
+        ∇ set arg
+          'Must be fully qualified name of a function'⎕SIGNAL 11/⍨' '≠1↑0⍴∊arg.NewValue
+          'Must be fully qualified name of a function'⎕SIGNAL 11/⍨3≠⎕NC arg.NewValue
+          _exec_after_each_test←arg.NewValue
+        ∇
+    :endproperty
+
     ∇ make1 ref;parent
     ⍝ Requires a reference as the right argument which points to the namespace that hosts the test cases .\\
     ⍝ All instance methods will use that reference in order to find the test cases.
@@ -189,6 +219,7 @@
       _parms←CreateParms ⍬
       _INI←⍬
       _custom_1←_custom_2←_custom_3←_custom_4←_custom_5←_custom_6←_custom_7←_custom_8←_custom_9←⍬''
+      _exec_before_each_test←_exec_after_each_test←''
       :If 0<≢parent←'AcreConfig'{⍵∊# ⎕SE:'' ⋄ 0<⍵.⎕NC ⍺:⍵ ⋄ ⍺ ∇ ⍵.##}_ref
           _IniFolder←parent.AcreConfig.ProjectFolder
       :Else
@@ -231,14 +262,15 @@
      ⍝Done
     ∇
 
-    ∇ {(rc log)}←RunGUI these;⎕ML;⎕IO
+    ∇ {(rc log)}←{parms}RunGUI these;⎕ML;⎕IO
     ⍝ Runs _all_ test cases. The user can set all sorts of parameters via the GUI.\\
     ⍝ Note that this is a Windows-only feature.\\
+    ⍝ The left argument is useful only for defining defaults on the GUI.\\
     ⍝ See also `RunDebug` which does the same but without a GUI.\\
       :Access Public Instance
       ⎕IO←1 ⋄ ⎕ML←3
+      _parms←{0<⎕NC ⍵:⍎⍵ ⋄ CreateParms ⍬}'parms'
       CloseGUI
-      _parms←CreateParms ⍬
       _parms.testCaseNos←these
       _parms.guiFlag←1
       (rc log)←Run__ _parms
@@ -325,7 +357,7 @@
         ⍝    `r ←→  2   when `Initial` prevented any test case to be executed.\\
         ⍝ 2. Nested vector with the log information
       :Access Public Instance
-      ⎕TRAP←(QuitEvent'C' '→∆GetOutOfHere')((0 1000)'N')
+      ⎕TRAP←(QuitEvent'C' '→∆GetOutOfHere')(PassEvent'C'('⎕SIGNAL ',⍕PassEvent))((0 1000)'N')
       _ref.Stop←ps.stopFlag         ⍝ "Stop" is honored by "FailsIf" & "PassesIf"
       _INI←⍬                        ⍝ Flatten any leftovers
       ps.(log errCounter failedCounter totalCounter)←'' 0 0 0
@@ -372,6 +404,12 @@
       ps.stopFlag∨←¯1∊×ps.testCaseNos
       ProcessTestCases _ref ps
      ∆GetOutOfHere:
+      :If ps.guiFlag
+      :AndIf {6::1 ⋄ 0⊣⍵.Type}ps.ref2Gui.∆n.Form
+          ⎕←'*** Tests cancelled'
+          r←rc ps.log
+          →0
+      :EndIf
       _INI←⍬                    ⍝ Flatten any leftovers
       :If 0<ps.⎕NC'list'        ⍝ Then no test cases got executed, probably because `Initial` failed.
           (rc2 log)←ReportTestResults ps
@@ -555,7 +593,9 @@
               ps.ref2Gui.∆n.Grid.Values[;3]←ref{{⍵↓⍨+/∧\' '=⍵}{⍵↓⍨⍵⍳'⍝'}2⊃⍺.⎕NR ⍵}¨ps.list
               2 ⎕NQ ps.ref2Gui.∆n.Form'Flush'
           :EndIf
-          →(ps.ref2Gui.∆n.∆Closed)/0
+          :If ps.ref2Gui.∆n.∆Closed
+              ⎕SIGNAL QuitEvent
+          :EndIf
           ps.ref2Gui.∆n.Form.on9998←0
           ps.ref2Gui.∆n.StartBtn.Active←0
           ps.stopFlag←ps.ref2Gui.∆n.StopFlag.State
@@ -658,7 +698,7 @@
               ps.trapFlag←ps.ref2Gui.∆n.TrapErrors.State
               ProcessGuiEvents ps.ref2Gui.∆n
           :AndIf ps.ref2Gui.∆n.∆Closed
-              :Return
+              ⎕SIGNAL QuitEvent
           :EndIf
       :Until i≥≢ps.list
       :If ps.guiFlag
@@ -667,10 +707,11 @@
 ⍝Done
     ∇
 
-    ∇ HandleStops(fns ps StopHere testNo)
+    ∇ HandleStops(fns ps StopHere testNo fnsName)
       :If 0<ps.stopFlag
       :AndIf testNo≥ps.stopFlag
           (∪(⎕STOP fns),StopHere)⎕STOP fns
+          ⎕←'About to execute <',(⍕_ref),'.',fnsName,'> ...'
       :Else
           ((⎕STOP fns)~StopHere)⎕STOP fns
       :EndIf
@@ -737,16 +778,34 @@
       ShowLog report
     ∇
 
-    ∇ rc←ExecuteTestFunction(ref ps testNo fnsName)
+    ∇ rc←ExecuteTestFunction(ref ps testNo fnsName);buff
       :If 0=ps.batchFlag
       :AndIf 0=+/';⎕TRAP;'⍷Uppercase{';',⍵,';'}{⍵↓⍨⍵⍳';'}{⍵↑⍨¯1+⍵⍳'⍝'}↑ref.⎕NR fnsName
           ShowLog'  *** WARNING: ⎕TRAP is not localized in ',(⍕ref),'.',fnsName
       :EndIf
-      HandleStops(1⊃⎕SI)ps ∆StopHere testNo
+      HandleStops(1⊃⎕SI)ps ∆StopHere testNo fnsName
       :If ps.guiFlag
           ps.ref2Gui.∆n.Info.Text←'Executing ',(⍕ref),'.',fnsName,'...'
       :EndIf
+      :If 0<≢_exec_before_each_test
+          :If 0=1 1⊃⎕AT _exec_before_each_test
+              ⍎_exec_before_each_test,' ps'
+          :Else
+              :If 0<≢buff←⍎_exec_before_each_test,' fnsName ps'
+                  ⎕←buff
+              :EndIf
+          :EndIf
+      :EndIf
      ∆StopHere:rc←ref.⍎fnsName,' ',(⍕ps.debugFlag),' ',(⍕ps.batchFlag)
+      :If 0<≢_exec_after_each_test
+          :If 0=1 1⊃⎕AT _exec_after_each_test
+              ⍎_exec_after_each_test,' ps'
+          :Else
+              :If 0<≢buff←⍎_exec_after_each_test,' fnsName ps'
+                  ⎕←buff
+              :EndIf
+          :EndIf
+      :EndIf
     ⍝Done
     ∇
 
@@ -778,6 +837,9 @@
       :Else
           buff←{1=≡⍵:⊂⍵ ⋄ (3≠≢⍵)∨'---'≡3↑↑⍵:⍵ ⋄ ⊂(1⊃⍵),' ',(2⊃⍵),' ',(3⊃⍵)}msg
           :If ps.guiFlag
+              :If ps.ref2Gui.∆n.∆Closed
+                  ⎕SIGNAL QuitEvent
+              :EndIf
               ps.ref2Gui.∆n.Log.Text,←Nest msg
               ps.ref2Gui.∆n.Log.SelText←2⍴(≢ps.ref2Gui.∆n.Log.Text),¨1
           :EndIf
@@ -889,17 +951,17 @@
       ∆,←⊂'Coord' 'Prop'
       ∆,←⊂'Posn'(0 0)
       ∆,←⊂'Size'(100 100)
-      ∆,←⊂'ColTitles'('' 'Name' 'Comments' 'Result')
+      ∆,←⊂'ColTitles'('' 'Name' 'Comments' 'Result' '')
       ∆,←⊂'ResizeCols' 1
       n.Grid←n.SF2.⎕NEW'Grid'∆
      
       n.Grid.Coord←'Pixel'
-      n.Grid.BCol←(255 255 255)(122 255 189)(10 10 10)(3↑255)(3⍴128)(3⍴255) ⍝ Default, okay, broken, failed, inactive, not run yet
-      n.Grid.FCol←(0 0 0)(0 0 0)(255 255 0)(255 255 0)(3⍴255)(3⍴1) ⍝ Default, okay, broken, failed, inactive, place holder
+      n.Grid.BCol←(255 255 255)(122 255 189)(10 10 10)(3↑255)(3⍴128) ⍝ Default, okay, broken, failed, inactive, not run yet
+      n.Grid.FCol←(0 0 0)(0 0 0)(255 255 0)(255 255 0)(3⍴255) ⍝ Default, okay, broken, failed, inactive
       n.Grid.Values←2000 5⍴⊂''
       n.Grid.CellTypes←2000 5⍴6
       n.Grid.TitleWidth←70
-      width←20 200 0,(2+⌈/2⊃¨n.Grid.GetTextSize¨,ListSymbolicNames),1   ⍝ Size of the "RC" column is calculated dynamically
+      width←20 200 0,(2+⌈/2⊃¨n.Grid.GetTextSize¨,ListSymbolicNames)   ⍝ Size of the "RC" column is calculated dynamically
       n.Grid.CellWidths←width
       scrollbarSize←35
       n.Grid.CellWidths[3]←n.Form.Size[2]-scrollbarSize+n.Grid.TitleWidth++/width
@@ -1397,6 +1459,7 @@
           v←⍎¨l
           symbolic←(v⍳rc)⊃(1↓¨l),⊂⍕rc
           symbolic←{2⊃ListCustomMessages[ListCustomNumbers⍳↑↑(//)⎕VFI ⍵;]}⍣(↑↑⎕VFI symbolic)⊣symbolic
+          6::shy←⍬
           _←2 ⎕NQ ps.ref2Gui.∆n.Grid'SetColSize' 4 ¯3
           ps.ref2Gui.∆n.Grid.Values[row;4]←⊂symbolic
           1:shy←⍬

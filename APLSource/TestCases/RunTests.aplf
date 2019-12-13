@@ -1,10 +1,8 @@
  RunTests groupName;ps;rc;log
  Prepare
  ps←T.CreateParms ⍬
- ps.guiFlag←1
  ps.debugFlag←1
  ps.trapFlag←0
- ps.testCaseNos←groupName
- (rc log)←T.Run__ ps
+ (rc log)←ps T.RunGUI groupName
  Assert 0=rc
  ⍝Done

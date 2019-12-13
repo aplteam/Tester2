@@ -1,0 +1,35 @@
+ r←Test_Exec_01(stopFlag batchFlag);⎕TRAP;rc;log;QDMX
+⍝ Test `exec_before_each_test` without a valid assignment.
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
+
+ :Trap 11
+     T.exec_after_each_test←'#.TEMP.∆Check' 'Nested'
+     →T.FailsIf 1
+ :Else
+     QDMX←⎕DMX
+     →T.FailsIf'Must be fully qualified name of a function'≢QDMX.EM
+ :EndTrap
+
+ :Trap 11
+     T.exec_after_each_test←999
+     →T.FailsIf 1
+ :Else
+     QDMX←⎕DMX
+     →T.FailsIf'Must be fully qualified name of a function'≢QDMX.EM
+ :EndTrap
+
+ :Trap 11
+     T.exec_after_each_test←'#.NS1.NS2.Unknown.'
+     →T.FailsIf 1
+ :Else
+     QDMX←⎕DMX
+     →T.FailsIf'Must be fully qualified name of a function'≢QDMX.EM
+ :EndTrap
+
+ r←T._OK
+⍝Done

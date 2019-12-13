@@ -1,0 +1,21 @@
+ r←Test_Exec_11(stopFlag batchFlag);⎕TRAP;rc;log;QDMX
+⍝ Test `exec_before_each_test` returning a result
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ #.TEMP.∆flag←0
+ #.TEMP.⎕FX'r←Test_01 flags;⎕TRAP' 'r←T._Failed'
+ #.TEMP.⎕FX'r←Test_02 flags;⎕TRAP' 'r←T._OK' '∆flag←1'
+ #.TEMP.⎕FX'r←Test_03 flags;⎕TRAP' 'r←T._OK'
+ #.TEMP.⎕FX'r←∆Check (fnsName ps);⎕TRAP' 'r←∆flag/''Before '',fnsName,''it went wrong''' ':If ∆flag' '∆Cause←fnsName' ':EndIf' '∆flag←0'
+ #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
+ #.TEMP.T.exec_before_each_test←'#.TEMP.∆Check'
+
+ (rc log)←#.TEMP.T.Run 1
+ →T.PassesIf 0<#.TEMP.⎕NC'∆Cause'
+ →T.PassesIf'Test_03'≡#.TEMP.∆Cause
+
+ r←T._OK
+⍝Done

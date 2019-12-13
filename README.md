@@ -94,7 +94,7 @@ In `Tester2` they start with an underscore (`_`). This is a very common conventi
 
 ### Custom constants added
 
-In addition to the pre-defined symbolic names you can define your own ones; see [Custom constants](#) for details.
+In addition to the pre-defined symbolic names you can define your own ones; see [Custom constants](#constants) for details.
 
 
 ### Couple of helpers have been renamed
@@ -245,7 +245,7 @@ It is also possible to execute all test cases belonging to a particular group wi
 Note that you can have group-specific [initialization ](#Initialisation for groups) and [cleaning up](#Cleaning up for groups).
 
 
-### Custom constants
+### Custom constants{#constants}
 
 Although there are quite a number of symbolic names available to give feedback for many foreseeable problems (like a test that can run only on a certain platform,) there will always be circumstances that cannot be foreseen. Therefore `Tester2` allows you to define up to 9 custom constants.
 
@@ -257,6 +257,25 @@ An example would be (assuming that `T` is an instance of the `Tester2` class):
 T.custom_1←'Invalid version of Dyalog APL'
 ```
 
+### Checks before and after a test case is executed
+
+This idea was born when a few of a large set of test cases left files behind in the temp folder, and I had no idea which one. Obviously that is easy to find out when you check right after a test case was executed.
+
+That's why `exec_before_each_test` and `exec_after_each_test` were added as properties with version 1.1 to `Tester2`.
+
+When specified they must be the fully qualified name of a monadic function that may or may not return a result.
+
+The right argument will be a two-element vector:
+
+1. The name of the test function that is about to be executed (in case of `exec_before_each_test`) or was just executed (in case of `exec_after_each_test`).
+
+2. A namespace with all the parameters.
+
+Regarding the result there are two options:
+
+* In case no result is returned you need to make sure you make the function stop in case you find something not to your liking, or print a message to the session if that's sufficient.
+* In case the function returns a result it must be a text vector. If that text vector is empty then `Tester2` does not take any action. If it is a simple string this string will be printed to the session. Then `Tester2` carries on.
+  
 
 ## Work flow
 
@@ -476,11 +495,14 @@ The optional left argument must also be Boolean and defines whether the `Run` fu
 
 With `RunGUI` you can achieve the same as with `Run` but it is a Windows-only feature. It might be easier to start with `RunGUI` but you might switch to `Run` later, if only because it is significantly faster.
 
-However, there are situations when `RunGUI` is indispensable: `Tester2`'s own test cases are almost impossible to follow without it, for example. It's also very useful in order to demonstrate the features of the `Tester2` class.
+However, there are situations when `RunGUI` is indispensable: `Tester2`'s own test cases are almost impossible to follow without it, for example. It's also useful in order to demonstrate the features of the `Tester2` class.
 
 `RunGUI` requires only a right argument; if this is empty _all_ test cases will be executed. You can specify numbers or one or more group names or mix a single group name with numbers.
 
-Note that the GUI can be closed programmatically by calling the niladic instance method `CloseGUI`.
+Notes:
+
+* The GUI can be closed programmatically by calling the niladic instance method `CloseGUI`.
+* You can create a parameter space by calling `CreateParms`, make amendments and pass the parameter space as the optional left argument to `RunGUI`. However, since you can make those amendmends in the GUI itself this is useful only to specify defaults for the GUI.
 
 #### `RunThese`
 

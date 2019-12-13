@@ -1,4 +1,4 @@
- r←Test_Run_05(stopFlag batchFlag);log;rc;expected;stopFlag;⎕TRAP;T2
+ r←Test_Run_05(stopFlag batchFlag);log;rc;expected;stopFlag;⎕TRAP;T2;parms;ref
 ⍝ Exercise the `RunGUI` method.
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
@@ -20,6 +20,18 @@
  T2←⎕NEW ##.Tester2 TestCasesSimu
  T2.TestFlag←1
  (rc log)←T2.RunGUI'Test_Grp1'
+ T2.CloseGUI
+ →T.FailsIf 3 0 0≢∆GetTotals log
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+ parms←T2.CreateParms ⍬
+ T2.TestFlag←1
+ parms.trapFlag←0
+ parms.debugFlag←1
+ (rc log)←parms T2.RunGUI'Test_Grp1'
+ ref←T2.Getref2Gui
+ →T2.PassesIf 0=ref.∆n.TrapErrors.State
+ →T2.PassesIf 1=ref.∆n.Debug.State
  T2.CloseGUI
  →T.FailsIf 3 0 0≢∆GetTotals log
 
