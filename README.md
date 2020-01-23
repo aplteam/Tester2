@@ -106,7 +106,7 @@ In addition to the pre-defined symbolic names you can define your own ones; see 
 | `L`      | `T.ListTestFunctions` |
 | `G`      | `T.ListGroups`        |
 
-### INI files{#ini_diffs}
+### INI files
 
 When `Tester` found one or two INI files they were merged, converted into a single flat namespace holding variables, and that namespace was created in the hosting namespace as `INI`.
 
