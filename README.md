@@ -134,7 +134,7 @@ In `Tester` the function `Cleanup` was expected to be niladic. With `Tester2` it
 
 ### Initialising on a per-group basis
 
-In addition to the [global `Initial` function](#Initialisation) you can also have [group-specific `Initial` functions](#Initialisation for groups), a feature that was not available with `Tester`.
+In addition to the [global `Initial` function](#Initialisation) you can also have [group-specific `Initial` functions](#initialisation-for-groups), a feature that was not available with `Tester`.
 
 A function is recognized as a group-specific `Initial` function by naming convention: for a group `Foo` the function's name must be `Initial_Foo` for it to be recognized.
 
