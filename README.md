@@ -195,25 +195,25 @@ All these functions call `Run__`, which means that this is a generalized all-sin
 
 Definitions:
 
-Error trapping (`trapFlag`)
+#### Error trapping (`trapFlag`)
 
-: Traps all errors except that is does not influence the workings of the `debugFlag`.
+Traps all errors except that is does not influence the workings of the `debugFlag`.
 
-Debugging (`debugFlag`)
+#### Debugging (`debugFlag`)
 
-: If this flag is 0 any failing test within any test function just makes the test function quit, returning a return code that has the symbolic name `_Failure`. See [Symbolic names](#symbolic-names) for details.
+If this flag is 0 any failing test within any test function just makes the test function quit, returning a return code that has the symbolic name `_Failure`. See [Symbolic names](#symbolic-names) for details.
 
-: If this is 1 then any failing check crashes right on the spot. This allows one to investigate what went wrong, and why.
+If this is 1 then any failing check crashes right on the spot. This allows one to investigate what went wrong, and why.
 
-Suspend execution (`stopFlag`)
+#### Suspend execution (`stopFlag`)
 
-: If set this makes the test framework stop just before any test function is about to be executed. This allows you to trace any test cases from top to bottom.
+If set this makes the test framework stop just before any test function is about to be executed. This allows you to trace any test cases from top to bottom.
 
-Batchable tests
+#### Batchable tests
 
-: These are tests that do not need a human in front of the monitor. Ideally all tests should be "batchable" of course. However, in real life this is not always possible for technical reasons, or the effort would be way too high.
+These are tests that do not need a human in front of the monitor. Ideally all tests should be "batchable" of course. However, in real life this is not always possible for technical reasons, or the effort would be way too high.
 
-: Note that all test cases get the `batchFlag` provided as part of the right argument, so they know what's required.
+Note that all test cases get the `batchFlag` provided as part of the right argument, so they know what's required.
     
 
 
