@@ -589,6 +589,7 @@ Search
  _NoAcreTests        
  _NoBatchTest        
  _NotApplicable      
+ _NotImplemented
  _OK                 
  _WindowsOnly        
 ```
