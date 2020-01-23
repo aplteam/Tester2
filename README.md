@@ -662,7 +662,7 @@ Therefore this would make sense:
 
 ## Best Practices
 
-* When starting to implement test cases you are advised to leave gaps: `Test_001`, `Test_010` etc. The same holds true for groups.
+* When starting to implement test cases you are advised to leave gaps: `Test_001`, `Test_010` etc. The same holds true for numbering within groups.
 
 * Try to keep your test cases simple and test just one thing at a time, for example just one method at a time. 
 
