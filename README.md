@@ -245,7 +245,7 @@ It is also possible to execute all test cases belonging to a particular group wi
 Note that you can have group-specific [initialization ](#Initialisation for groups) and [cleaning up](#Cleaning up for groups).
 
 
-### Custom constants{#constants}
+### Custom constants
 
 Although there are quite a number of symbolic names available to give feedback for many foreseeable problems (like a test that can run only on a certain platform,) there will always be circumstances that cannot be foreseen. Therefore `Tester2` allows you to define up to 9 custom constants.
 
