@@ -242,7 +242,7 @@ That's why groups are quite important: they allow you to order test cases hierar
 
 It is also possible to execute all test cases belonging to a particular group with a single command.
 
-Note that you can have group-specific [initialization ](#initialisation-for-groups) and [cleaning up](#Cleaning up for groups).
+Note that you can have group-specific [initialization ](#initialisation-for-groups) and [cleaning up](#cleaning-up-for-groups).
 
 
 ### Custom constants
