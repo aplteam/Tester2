@@ -361,7 +361,7 @@ Now the test cases are executed one by one, or, if groups are defiend, one group
 
 After the last test case was executed the `Run*` function checks whether there is a function `Cleanup` in the namespace hosting your test cases. If that's the case then this function is executed. 
 
-Any `Cleanup` function should either return a shy result --- which will be inored --- or no result at all. It might accept a right argument, but this is optional: it might as well be niladic. If it _does_ accept a right argument it will get the parameter namespace passed.
+Any `Cleanup` function should either return a shy result (which will be inored) or no result at all. It might accept a right argument, but this is optional: it might as well be niladic. If it _does_ accept a right argument it will get the parameter namespace passed.
 
 Note that a function `Cleanup` would be executed no matter whether there was or was not a function `Initial`, and if there was, no matter whether it returned a 0 or a 1 or nothing at all.
 
@@ -459,6 +459,7 @@ These are the public read-only instance fields that act like constants:
 | `_Failed`             | Unexpected result|
 | `_NoBatchTest`        | Not executed because `batchFlag` was 1.|
 | `_NotApplicable`      | This test is not applicable here and now |
+| `_NotImplemented`     | Attempts to test a feature that has yet not been implemented |
 | `_InActive`           | Not executed because the test case is inactive (not ready, buggy, ...) |
 | `_LinuxOnly`          | Not executed because runs under Linux only|
 | `_LinuxOrMacOnly`     | Not executed because runs under Linux/Mac OS only|
