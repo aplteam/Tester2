@@ -279,7 +279,7 @@ Regarding the result there are two options:
 
 ## Work flow
 
-No matter which of the `Run*` functions you are going to call, the workflow is always the same. (There is a minor difference when `Run__` is used; this will be mentioned)
+No matter which of the `Run*` functions you are going to call, the workflow is always the same. (There is a minor difference when `Run__` is used; this will be discussed later)
 
 
 ### Create an instance
