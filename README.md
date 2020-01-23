@@ -134,7 +134,7 @@ In `Tester` the function `Cleanup` was expected to be niladic. With `Tester2` it
 
 ### Initialising on a per-group basis
 
-In addition to the [global `Initial` function](#Initialisation) you can also have [group-specific `Initial` functions](#initialisation-for-groups), a feature that was not available with `Tester`.
+In addition to the [global `Initial` function](#initialisation) you can also have [group-specific `Initial` functions](#initialisation-for-groups), a feature that was not available with `Tester`.
 
 A function is recognized as a group-specific `Initial` function by naming convention: for a group `Foo` the function's name must be `Initial_Foo` for it to be recognized.
 
@@ -223,7 +223,7 @@ Note that all test cases get the `batchFlag` provided as part of the right argum
 
    1. `debugFlag`; 1 means that the test function runs in debug mode.
 
-      Assuming that all tests use the [flow control functions](#Flow control) provided by `Tester2` the difference is that with `debugFlag` being 0 the test function would finish and return the symbolic name `Failure` while with `debugFlag` being 1 the test function would crash on the spot when a particular check fails, allowing the user to investigate right away.
+      Assuming that all tests use the [flow control functions](#flow-control) provided by `Tester2` the difference is that with `debugFlag` being 0 the test function would finish and return the symbolic name `Failure` while with `debugFlag` being 1 the test function would crash on the spot when a particular check fails, allowing the user to investigate right away.
 
    1. `batchFlag`: 1 means that there is no user available in front of the monitor.
 
@@ -348,7 +348,7 @@ When everything else has been done then `Tester2` looks for a function `Cleanup`
 
 You can have initialisation functions for groups. It's recognzied by naming convention: for a group `foo` the function's name must be `Initial_foo`. 
 
-The rules are exactly the same as for the [global `Initial` function](#Initialisation), although the consequences are different:
+The rules are exactly the same as for the [global `Initial` function](#initialisation), although the consequences are different:
 
 When `Initial_foo` returns a Boolean and that is a zero, then no test function belonging to the group `foo` will be executed but `Tester2` will carry on executing other test cases.
 
@@ -369,7 +369,7 @@ Note that a function `Cleanup` would be executed no matter whether there was or 
 
 You can have clean-up functions for groups. It's recognzied by naming convention: for a group `foo` the function's name must be `Cleanup_foo`. 
 
-The rules are exactly the same as for the [global `Cleanup` function](#Initialisation).
+The rules are exactly the same as for the [global `Cleanup` function](#initialisation).
 
 Naturally a group-specific `Cleanup` function is called after the last test function of that group got executed.
 
@@ -398,7 +398,7 @@ The methods fall into four groups:
 
 ### Flow control
 
-`FailsIf`, `PassesIf` and `GoToTidyUp` control the program flow in test functions. The test template (see [`GetTestTemplate`](#Test function template) for details) contains examples for how to use these functions.
+`FailsIf`, `PassesIf` and `GoToTidyUp` control the program flow in test functions. The test template (see [`GetTestTemplate`](#test-function-template) for details) contains examples for how to use these functions.
 
 These functions return a result (Boolean) in case `debugFlag` is a 0 but make the calling `Test_*` function crash otherwise, allowing you to investigate a failing test case right on the spot. Note that the setting of the `trapFlag` has no bearing on this.
 
@@ -480,7 +480,7 @@ Note that there is a method `ListSymbolicNames` available that lists all symboli
 
 These are functions that are not actually required in order to run test cases but can make a programmer's life significantly easier.
 
-These function are discussed in detail at [Managing test cases](#).
+These function are discussed in detail at [Managing test cases](#managing-test-cases).
 
 ## Examples
 
