@@ -77,9 +77,9 @@ All methods and all symbolic names are available via the the instance, and only 
 
 ```
       T←⎕NEW Tester2 HomeOfYourTestCases
-      ≢T.⎕nl -3
+      ⊃⍴T.⎕nl -3
 24
-      ≢T.⎕nl -2
+      ⊃⍴T.⎕nl -2
 13
 ```
 
@@ -431,15 +431,15 @@ You can also provide a group name via the optional left argument.
 Check the examples which assume that an instance of `Tester2` is available as `T`, and that you are inside the (ordinary, non-scripted) namespace that hosts the test cases:
 
 ```
-      ≢'T'⎕NL 3
+      ⊃⍴'T'⎕NL 3
 0
       T.GetTestTemplate 3
 Test_003
-     ≢'T'⎕NL 3
+     ⊃⍴'T'⎕NL 3
 1
       'Misc' T.GetTestTemplate 1
 Test_Misc_001
-     ≢'T'⎕NL 3
+     ⊃⍴'T'⎕NL 3
 2
 ```
 
