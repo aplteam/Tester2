@@ -94,7 +94,7 @@ In `Tester2` they start with an underscore (`_`). This is a very common conventi
 
 ### Custom constants added
 
-In addition to the pre-defined symbolic names you can define your own ones; see [Custom constants](#constants) for details.
+In addition to the pre-defined symbolic names you can define your own ones; see [Custom constants](#custom-constants) for details.
 
 
 ### Couple of helpers have been renamed
