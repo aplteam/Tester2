@@ -201,7 +201,7 @@ Error trapping (`trapFlag`)
 
 Debugging (`debugFlag`)
 
-: If this flag is 0 any failing test within any test function just makes the test function quit, returning a return code that has the symbolic name `_Failure`. See [Symbolic names](#) for details.
+: If this flag is 0 any failing test within any test function just makes the test function quit, returning a return code that has the symbolic name `_Failure`. See [Symbolic names](#symbolic-names) for details.
 
 : If this is 1 then any failing check crashes right on the spot. This allows one to investigate what went wrong, and why.
 
@@ -229,7 +229,7 @@ Batchable tests
 
       That allows a test function that requires a human for confirmation or some action to _not_ carry out the test but return the symbolic name `_NoBatchTest`.
 
-1. Every test function must return a result. You are advised to assign one of the symbolic names defined as read-only fields every instance of `Tester2` comes with. This is much more readable than a simple integer, and it is easier to find as well. See [Symbolic names](#) for details.
+1. Every test function must return a result. You are advised to assign one of the symbolic names defined as read-only fields every instance of `Tester2` comes with. This is much more readable than a simple integer, and it is easier to find as well. See [Symbolic names](#symbolic-names) for details.
 
 
 ### Groups
