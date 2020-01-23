@@ -234,7 +234,7 @@ Note that all test cases get the `batchFlag` provided as part of the right argum
 
 ### Groups
 
-You will find that test cases need to be kept simple, and should not depend on each other (see [Best Practices](#)). That leads easily to a significant number of test cases in case of a complex subject like, say, MarkAPL ().
+You will find that test cases need to be kept simple, and should not depend on each other (see [Best Practices](#best-practices)). That leads easily to a significant number of test cases in case of a complex subject like, say, MarkAPL ().
 
 It is pretty easy to get lost in a large number of test cases, less so when writing the first ones but more so when later you need to delete obsolete test cases, add new test cases for new features or fixed bugs and make changes to test cases that need, well, changing.
 
