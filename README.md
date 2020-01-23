@@ -242,7 +242,7 @@ That's why groups are quite important: they allow you to order test cases hierar
 
 It is also possible to execute all test cases belonging to a particular group with a single command.
 
-Note that you can have group-specific [initialization ](#Initialisation for groups) and [cleaning up](#Cleaning up for groups).
+Note that you can have group-specific [initialization ](#initialisation-for-groups) and [cleaning up](#Cleaning up for groups).
 
 
 ### Custom constants
@@ -340,7 +340,7 @@ You may also put a variable inside that namespace which can later be referenced 
 
 Use `Initial` to create stuff that's needed by **all** test cases, or tell the user something important (only if the batch flag is false of course).
 
-Note that you can have separate [`Initial` functions for specific or all groups](#Initialisation for groups). Use this to initialize stuff that is only needed for a certain group, like a database connection etc.
+Note that you can have separate [`Initial` functions for specific or all groups](#initialisation-for-groups). Use this to initialize stuff that is only needed for a certain group, like a database connection etc.
 
 When everything else has been done then `Tester2` looks for a function `Cleanup` in the hosting nanmespace. If there is such a function it will be executed.
 
@@ -670,7 +670,7 @@ Therefore this would make sense:
 
   The exception from this rule is when _all_ test cases require the same pre-condition like, say, a database connection. In that case establish what's needed in a function [`Initial`](#Initialisation) and use a function [`CleanUp`](#cleanUp) to get rid of it.
 
-  If all test function of a certain group share the same requirement use [Initialisation for groups](#).
+  If all test function of a certain group share the same requirement use [Initialisation for groups](#initialisation-for-groups).
 
 * Avoid a test case relying on changes made by an earlier test case. This can be a tempting thing to do, but you will almost certainly regret this later.
 
