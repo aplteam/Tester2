@@ -680,4 +680,4 @@ Therefore this would make sense:
 
 * It might  be a good idea for _all_ test functions to tidy up first, just in case this test case has failed earlier and left some debris behind.
 
-* It's probably a good idea to implement for every fixed bug a separate test case, for bugs tend to make comebacks all the time, and such a test case would celebrate such a comeback.
+* It's probably a good idea to implement for every fixed bug a separate test case, for bugs tend to make comebacks all the time, and such a test case would discover such a comeback.
