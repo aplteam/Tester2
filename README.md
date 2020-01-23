@@ -670,7 +670,7 @@ Therefore this would make sense:
 
 * Create everything you need on the fly and tidy up afterwards. Or more precisely, tidy up (leftovers!), prepare, test, tidy up again. In other words, make the test case "stand-alone".
 
-  The exception from this rule is when _all_ test cases require the same pre-condition like, say, a database connection. In that case establish what's needed in a function [`Initial`](#initialisation) and use a function [`CleanUp`](#cleanUp) to get rid of it.
+  The exception from this rule is when _all_ test cases require the same pre-condition like, say, a database connection. In that case establish what's needed in a function [`Initial`](#initialisation) and use a function [`CleanUp`](#cleanup) to get rid of it.
 
   If all test function of a certain group share the same requirement use [Initialisation for groups](#initialisation-for-groups).
 
