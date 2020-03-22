@@ -22,21 +22,14 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'1.1.0.35' '2019-12-13'
+      r←(Last⍕⎕THIS)'2.0.0.39' '2020-03-22'
     ∇
 
     ∇ History
       :Access Public shared
-      ⍝ * 1.1.0
-      ⍝   * Two new properties introduced: `exec_before_each_test` and `exec_after_each_test`.
-      ⍝   * Couple of minor improvements on the GUI.
-      ⍝   * `RunGUI` now accepts an optional left argument: a parameter space.
-      ⍝ * 1.0.0
-      ⍝   * First release.\\
-      ⍝   This is the successor of the `Tester` class. `Tester2` requires to be instantiated, and the
-      ⍝   constructor requires a ref pointing to the namespace (scripted or ordinary) that hosts the tests.\\
-      ⍝   For a full list of differences between the now deprecated `Tester` class and the new class
-      ⍝   `Tester2` see the ReadMe.html file.
+      ⍝ * 2.0.0
+      ⍝   * BREAKING CHANGE: file extension is now .aplc rather than .dyalog
+      ⍝   * The GUI is now pre-populated with the names and the comments of all test functions which
       ⍝\\
       ⍝ For a full history (including older versions) see <https://github.com/aplteam/Tester2/releases>
     ∇
@@ -53,6 +46,7 @@
     :Field Public Instance Readonly _MacOrWindowsOnly←¯17
     :Field Public Instance Readonly _NoAcreTests←¯18
     :Field Public Instance Readonly _NotApplicable←¯19
+    :Field Public Instance Readonly _NotImplemented←¯20
 
     :Field Public Instance ReadOnly QuitEvent←993
     :Field Public Instance ReadOnly PassEvent←994
@@ -263,16 +257,18 @@
     ∇
 
     ∇ {(rc log)}←{parms}RunGUI these;⎕ML;⎕IO
-    ⍝ Runs _all_ test cases. The user can set all sorts of parameters via the GUI.\\
+    ⍝ Runs `these` test cases, which defaults to _all_ in case `these` is empty.\\
+    ⍝ The user can set all sorts of parameters via the GUI.\\
     ⍝ Note that this is a Windows-only feature.\\
     ⍝ The left argument is useful only for defining defaults on the GUI.\\
-    ⍝ See also `RunDebug` which does the same but without a GUI.\\
+    ⍝ See also `Run` which does vasically the same but without a GUI.\\
       :Access Public Instance
       ⎕IO←1 ⋄ ⎕ML←3
       _parms←{0<⎕NC ⍵:⍎⍵ ⋄ CreateParms ⍬}'parms'
       CloseGUI
       _parms.testCaseNos←these
       _parms.guiFlag←1
+      _parms.testCaseNos←these
       (rc log)←Run__ _parms
     ∇
 
@@ -377,7 +373,11 @@
       :EndIf
       →(0=≢ps.list)/∆GetOutOfHere
       :If ps.guiFlag
-          CorrectWidthOfCommentColumn ps
+          :If 0<≢ps.list
+              ps.ref2Gui.∆n.Grid.Values[⍳≢ps.list;2]←(≢'Test_')↓¨ps.list
+              ps.ref2Gui.∆n.Grid.Values[⍳≢ps.list;3]←_ref{{⍵↓⍨+/∧\' '=⍵}{⍵↓⍨⍵⍳'⍝'}2⊃⍺.⎕NR ⍵}¨ps.list
+              {2 ⎕NQ ps.ref2Gui.∆n.Grid'SetColSize'⍵ ¯3}¨2 3
+          :EndIf
           {}{_←⎕DQ ⍵ ⋄ ⎕DL 0.1}⍣(0=TestFlag)⊣ps.ref2Gui.∆n.Form
           :If ps.ref2Gui.∆n.∆Closed
               r←0 ''
@@ -395,10 +395,6 @@
           rc←0
       :EndIf
       ps.returnCodes←⍬
-      :If ps.guiFlag
-      :AndIf 0<≢ps.list
-          ps.ref2Gui.∆n.Grid.CellWidths[2]←10+2⊃ps.ref2Gui.∆n.Grid.GetTextSize(≢'Test_')↓{⍵⊃⍨{⍵⍳⌈/⍵}≢¨⍵}ps.list
-      :EndIf
       ps.processedGroups←''
       ShowLog(,'--- Tests started at ',FormatDateTime ⎕TS),' on ',(⍕_ref),' ---'
       ps.stopFlag∨←¯1∊×ps.testCaseNos
@@ -589,8 +585,8 @@
           :If 0<≢ps.list
               ps.ref2Gui.∆n.Grid.Values←(noOf,1↓⍴ps.ref2Gui.∆n.Grid.Values)⍴ps.ref2Gui.∆n.Grid.Values
               ps.ref2Gui.∆n.Grid.CellTypes←(noOf,1↓⍴ps.ref2Gui.∆n.Grid.Values)⍴ps.ref2Gui.∆n.Grid.CellTypes
-              ps.ref2Gui.∆n.Grid.Values[;2]←(≢'Test_')↓¨ps.list
-              ps.ref2Gui.∆n.Grid.Values[;3]←ref{{⍵↓⍨+/∧\' '=⍵}{⍵↓⍨⍵⍳'⍝'}2⊃⍺.⎕NR ⍵}¨ps.list
+⍝              ps.ref2Gui.∆n.Grid.Values[;2]←(≢'Test_')↓¨ps.list
+⍝              ps.ref2Gui.∆n.Grid.Values[;3]←ref{{⍵↓⍨+/∧\' '=⍵}{⍵↓⍨⍵⍳'⍝'}2⊃⍺.⎕NR ⍵}¨ps.list
               2 ⎕NQ ps.ref2Gui.∆n.Form'Flush'
           :EndIf
           :If ps.ref2Gui.∆n.∆Closed
@@ -600,7 +596,7 @@
           ps.ref2Gui.∆n.StartBtn.Active←0
           ps.stopFlag←ps.ref2Gui.∆n.StopFlag.State
           ps.trapFlag←ps.ref2Gui.∆n.TrapErrors.State
-          {2 ⎕NQ ps.ref2Gui.∆n.Grid'SetColSize'⍵ ¯3}¨¯1↓1↓⍳2⊃⍴ps.ref2Gui.∆n.Grid.Values
+          {2 ⎕NQ ps.ref2Gui.∆n.Grid'SetColSize'⍵ ¯3}¨¯1↓3↓⍳2⊃⍴ps.ref2Gui.∆n.Grid.Values
       :EndIf
       i←0
       :Repeat
@@ -657,7 +653,7 @@
               :If rc∊0 1
                   marker←('*✓'[1+rc=0])
               :Else
-                  marker←'-'
+                  marker←'⍝'
               :EndIf
               ShowLog(length2↑(length↑marker,' ',testFns),' (',(cw 0⍕i),'/',max,')'),' ⍝ ',desc
               i AddToGui(length2↑(length↑marker,' ',testFns),' (',(cw 0⍕i),'/',max,')'),' ⍝ ',desc
@@ -845,10 +841,12 @@
           :EndIf
           ps.log,←buff
           selog←{1=≡⍵:⍵ ⋄ (3≠≢⍵)∨'---'≡3↑↑⍵:⍪⍵ ⋄ (1⊃⍵),' ',(2⊃⍵),' ',(3⊃⍵)}msg
-          :If type<0
-              ⍞←selog,(type=¯2)/⎕UCS 13
-          :Else
-              ⎕←selog
+          :If ~ps.guiFlag
+              :If type<0
+                  ⍞←selog,(type=¯2)/⎕UCS 13
+              :Else
+                  ⎕←selog
+              :EndIf
           :EndIf
       :EndIf
     ∇
@@ -1000,8 +998,8 @@
       :Access Public Shared
       r←1
       ref←1⊃,msg
-      ⎕NQ ref 9998
-      ref.∆n.∆Closed←1
+      ref{6::shy←⍬ ⋄ ⎕NQ ⍺ ⍵}9998
+      :Trap 6 ⋄ ref.∆n.∆Closed←1 ⋄ :EndTrap
       ⍝Done
     ∇
 
@@ -1462,13 +1460,6 @@
           6::shy←⍬
           _←2 ⎕NQ ps.ref2Gui.∆n.Grid'SetColSize' 4 ¯3
           ps.ref2Gui.∆n.Grid.Values[row;4]←⊂symbolic
-          1:shy←⍬
-      }
-
-      CorrectWidthOfCommentColumn←{
-          ps←⍵
-          buff←_ref.{2↓↑1↑1↓⎕NR ⍵}¨ps.list
-          ps.ref2Gui.∆n.Grid.CellWidths[3]←20+⌈/2⊃¨ps.ref2Gui.∆n.Grid.GetTextSize¨buff,⊂' Comments '
           1:shy←⍬
       }
 

@@ -1,4 +1,4 @@
- r←Test_Other_06(stopFlag batchFlag);ref;⎕TRAP;constants;constant;i;T2;log;rc
+ r←Test_Other_06(stopFlag batchFlag);ref;⎕TRAP;constants;constant;i;T2;log;rc;expected
 ⍝ Check all the constants
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
@@ -15,6 +15,7 @@
  ref.T←⎕NEW ##.Tester2 ref
  (rc log)←T2.Run 1
  →T.PassesIf 1=rc
- →T.PassesIf+/'12 test cases of 12 called'⍷∊log
+ expected←{⍵,' test cases of ',⍵,' called'}⍕≢constants
+ →T.PassesIf+/expected⍷∊log
 
  r←T._OK

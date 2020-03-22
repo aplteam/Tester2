@@ -4,18 +4,18 @@
  r←T._Failed
  T2←⎕NEW ##.Tester2 ⎕THIS
 
- →T.PassesIf 12=≢T2.ListSymbolicNames
+ →T.PassesIf 13=≢T2.ListSymbolicNames
  T2.custom_1←'Message1'
  T2.custom_2←'Message2'
  T2.custom_3←'Message3'
- →T.PassesIf 15=≢T2.ListSymbolicNames
+ →T.PassesIf 16=≢T2.ListSymbolicNames
  T2.custom_4←'Message4'
  T2.custom_5←'Message5'
  T2.custom_6←'Message6'
  T2.custom_7←'Message7'
  T2.custom_8←'Message8'
  T2.custom_9←'Message9'
- →T.PassesIf 21=≢T2.ListSymbolicNames
+ →T.PassesIf 22=≢T2.ListSymbolicNames
 
  r←T._OK
 
