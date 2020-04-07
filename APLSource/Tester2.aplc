@@ -22,12 +22,15 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'2.0.0.39' '2020-03-22'
+      r←(Last⍕⎕THIS)'2.0.1.40' '2020-04-07'
     ∇
 
     ∇ History
       :Access Public shared
-      ⍝ * 2.0.0
+      ⍝ * 2.0.1 ⋄ 2020-04-07
+      ⍝   In case a test function spread its local vars over more than one line the leading comment line was not identified
+      ⍝   correctly. This affected both the `ListTestFunctions` function and the GUI.
+      ⍝ * 2.0.0 ⋄ 2020-03-20
       ⍝   * BREAKING CHANGE: file extension is now .aplc rather than .dyalog
       ⍝   * The GUI is now pre-populated with the names and the comments of all test functions which
       ⍝\\
@@ -375,7 +378,7 @@
       :If ps.guiFlag
           :If 0<≢ps.list
               ps.ref2Gui.∆n.Grid.Values[⍳≢ps.list;2]←(≢'Test_')↓¨ps.list
-              ps.ref2Gui.∆n.Grid.Values[⍳≢ps.list;3]←_ref{{⍵↓⍨+/∧\' '=⍵}{⍵↓⍨⍵⍳'⍝'}2⊃⍺.⎕NR ⍵}¨ps.list
+              ps.ref2Gui.∆n.Grid.Values[⍳≢ps.list;3]←_ref{{dlb ⍵↓⍨⍵⍳'⍝'}↑⍺{⍵↓⍨+/∧\';'=↑¨dlb ⍵} 1↓⍺.⎕NR ⍵}¨ps.list
               {2 ⎕NQ ps.ref2Gui.∆n.Grid'SetColSize'⍵ ¯3}¨2 3
           :EndIf
           {}{_←⎕DQ ⍵ ⋄ ⎕DL 0.1}⍣(0=TestFlag)⊣ps.ref2Gui.∆n.Form
@@ -1113,7 +1116,7 @@
       :EndIf
     ∇
 
-    ∇ r←{numbers}ListTestFunctions groupName;A;r2;⎕IO;⎕ML;b;max;longestName
+    ∇ r←{numbers}ListTestFunctions groupName;A;r2;⎕IO;⎕ML;b;max;longestName;buff
 ⍝ Returns a matrix with two columns with the names of all test cases in the first column and the
 ⍝ first comment line in the second column.\\
 ⍝ If `groupName` is not empty then it will return only the members of that group (case dependent) or,
@@ -1139,7 +1142,10 @@
           :If 0≠≢numbers
               r2←((({⊃∘⊃∘(//)∘⎕VFI ⍵↑⍨-(-1)+'_'⍳⍨⌽⍵}¨r2))∊numbers)⌿r2
           :EndIf
-          r2←r2,[1.5]{{⍵↓⍨+/∧\' '=⍵}{⍵↓⍨⍵⍳'⍝'}{⎕ML←3 ⋄ ∊⍵}1↑1↓_ref.⎕NR ⍵}¨r2
+          buff←{{1⊃⍵↓⍨{+/∧\';'=⊃¨⍵}dlb ⍵}1↓_ref.⎕NR ⍵}¨r2
+          buff←{⍵↓⍨⍵⍳'⍝'}¨buff
+          buff←dlb buff
+          r2←r2,[1.5]buff
           r2←r2[⍋↑A.Lowercase r2[;1];]
           longestName←⌈/≢¨r2[;1]
           :If 0<≢r2
