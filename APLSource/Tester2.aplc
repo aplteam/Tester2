@@ -22,7 +22,7 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'2.0.1.41' '2020-04-07'
+      r←(Last⍕⎕THIS)'2.1.0.42' '2020-04-07'
     ∇
 
     ∇ History
