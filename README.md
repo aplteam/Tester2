@@ -77,9 +77,9 @@ All methods and all symbolic names are available via the the instance, and only 
 
 ```
       T←⎕NEW Tester2 HomeOfYourTestCases
-      ≢T.⎕nl -3
+      ⊃⍴T.⎕nl -3
 24
-      ≢T.⎕nl -2
+      ⊃⍴T.⎕nl -2
 13
 ```
 
@@ -94,7 +94,7 @@ In `Tester2` they start with an underscore (`_`). This is a very common conventi
 
 ### Custom constants added
 
-In addition to the pre-defined symbolic names you can define your own ones; see [Custom constants](#constants) for details.
+In addition to the pre-defined symbolic names you can define your own ones; see [Custom constants](#custom-constants) for details.
 
 
 ### Couple of helpers have been renamed
@@ -106,7 +106,7 @@ In addition to the pre-defined symbolic names you can define your own ones; see 
 | `L`      | `T.ListTestFunctions` |
 | `G`      | `T.ListGroups`        |
 
-### INI files{#ini_diffs}
+### INI files
 
 When `Tester` found one or two INI files they were merged, converted into a single flat namespace holding variables, and that namespace was created in the hosting namespace as `INI`.
 
@@ -134,7 +134,7 @@ In `Tester` the function `Cleanup` was expected to be niladic. With `Tester2` it
 
 ### Initialising on a per-group basis
 
-In addition to the [global `Initial` function](#Initialisation) you can also have [group-specific `Initial` functions](#Initialisation for groups), a feature that was not available with `Tester`.
+In addition to the [global `Initial` function](#initialisation) you can also have [group-specific `Initial` functions](#initialisation-for-groups), a feature that was not available with `Tester`.
 
 A function is recognized as a group-specific `Initial` function by naming convention: for a group `Foo` the function's name must be `Initial_Foo` for it to be recognized.
 
@@ -195,25 +195,25 @@ All these functions call `Run__`, which means that this is a generalized all-sin
 
 Definitions:
 
-Error trapping (`trapFlag`)
+#### Error trapping (`trapFlag`)
 
-: Traps all errors except that is does not influence the workings of the `debugFlag`.
+Traps all errors except that is does not influence the workings of the `debugFlag`.
 
-Debugging (`debugFlag`)
+#### Debugging (`debugFlag`)
 
-: If this flag is 0 any failing test within any test function just makes the test function quit, returning a return code that has the symbolic name `_Failure`. See [Symbolic names](#) for details.
+If this flag is 0 any failing test within any test function just makes the test function quit, returning a return code that has the symbolic name `_Failure`. See [Symbolic names](#symbolic-names) for details.
 
-: If this is 1 then any failing check crashes right on the spot. This allows one to investigate what went wrong, and why.
+If this is 1 then any failing check crashes right on the spot. This allows one to investigate what went wrong, and why.
 
-Suspend execution (`stopFlag`)
+#### Suspend execution (`stopFlag`)
 
-: If set this makes the test framework stop just before any test function is about to be executed. This allows you to trace any test cases from top to bottom.
+If set this makes the test framework stop just before any test function is about to be executed. This allows you to trace any test cases from top to bottom.
 
-Batchable tests
+#### Batchable tests
 
-: These are tests that do not need a human in front of the monitor. Ideally all tests should be "batchable" of course. However, in real life this is not always possible for technical reasons, or the effort would be way too high.
+These are tests that do not need a human in front of the monitor. Ideally all tests should be "batchable" of course. However, in real life this is not always possible for technical reasons, or the effort would be way too high.
 
-: Note that all test cases get the `batchFlag` provided as part of the right argument, so they know what's required.
+Note that all test cases get the `batchFlag` provided as part of the right argument, so they know what's required.
     
 
 
@@ -223,18 +223,18 @@ Batchable tests
 
    1. `debugFlag`; 1 means that the test function runs in debug mode.
 
-      Assuming that all tests use the [flow control functions](#Flow control) provided by `Tester2` the difference is that with `debugFlag` being 0 the test function would finish and return the symbolic name `Failure` while with `debugFlag` being 1 the test function would crash on the spot when a particular check fails, allowing the user to investigate right away.
+      Assuming that all tests use the [flow control functions](#flow-control) provided by `Tester2` the difference is that with `debugFlag` being 0 the test function would finish and return the symbolic name `Failure` while with `debugFlag` being 1 the test function would crash on the spot when a particular check fails, allowing the user to investigate right away.
 
    1. `batchFlag`: 1 means that there is no user available in front of the monitor.
 
       That allows a test function that requires a human for confirmation or some action to _not_ carry out the test but return the symbolic name `_NoBatchTest`.
 
-1. Every test function must return a result. You are advised to assign one of the symbolic names defined as read-only fields every instance of `Tester2` comes with. This is much more readable than a simple integer, and it is easier to find as well. See [Symbolic names](#) for details.
+1. Every test function must return a result. You are advised to assign one of the symbolic names defined as read-only fields every instance of `Tester2` comes with. This is much more readable than a simple integer, and it is easier to find as well. See [Symbolic names](#symbolic-names) for details.
 
 
 ### Groups
 
-You will find that test cases need to be kept simple, and should not depend on each other (see [Best Practices](#)). That leads easily to a significant number of test cases in case of a complex subject like, say, MarkAPL ().
+You will find that test cases need to be kept simple, and should not depend on each other (see [Best Practices](#best-practices)). That leads easily to a significant number of test cases in case of a complex subject like, say, MarkAPL ().
 
 It is pretty easy to get lost in a large number of test cases, less so when writing the first ones but more so when later you need to delete obsolete test cases, add new test cases for new features or fixed bugs and make changes to test cases that need, well, changing.
 
@@ -242,10 +242,10 @@ That's why groups are quite important: they allow you to order test cases hierar
 
 It is also possible to execute all test cases belonging to a particular group with a single command.
 
-Note that you can have group-specific [initialization ](#Initialisation for groups) and [cleaning up](#Cleaning up for groups).
+Note that you can have group-specific [initialization ](#initialisation-for-groups) and [cleaning up](#cleaning-up-for-groups).
 
 
-### Custom constants{#constants}
+### Custom constants
 
 Although there are quite a number of symbolic names available to give feedback for many foreseeable problems (like a test that can run only on a certain platform,) there will always be circumstances that cannot be foreseen. Therefore `Tester2` allows you to define up to 9 custom constants.
 
@@ -258,8 +258,6 @@ T.custom_1←'Invalid version of Dyalog APL'
 ```
 
 ### Checks before and after a test case is executed
-
-This idea was born when a few of a large set of test cases left files behind in the temp folder, and I had no idea which one. Obviously that is easy to find out when you check right after a test case was executed.
 
 That's why `exec_before_each_test` and `exec_after_each_test` were added as properties with version 1.1 to `Tester2`.
 
@@ -275,11 +273,16 @@ Regarding the result there are two options:
 
 * In case no result is returned you need to make sure you make the function stop in case you find something not to your liking, or print a message to the session if that's sufficient.
 * In case the function returns a result it must be a text vector. If that text vector is empty then `Tester2` does not take any action. If it is a simple string this string will be printed to the session. Then `Tester2` carries on.
-  
+
+#### Application
+
+The idea was born when a few of a large set of test cases left files behind in the temp folder, and I had no idea which one. Obviously that is easy to find out when you check right after a test case was executed.
+
+Another application is when a test case causes a sys error (aplcore) but it is not that particular test case that is causing the real problem but an earlier one. In that case you can execute `2 ⎕NQ'.' 'wscheck'` after each test case, forcing the interpreter to perform a workspace integrity check.
 
 ## Work flow
 
-No matter which of the `Run*` functions you are going to call, the workflow is always the same. (There is a minor difference when `Run__` is used; this will be mentioned)
+No matter which of the `Run*` functions you are going to call, the workflow is always the same. (There is a minor difference when `Run__` is used; this will be discussed later)
 
 
 ### Create an instance
@@ -340,7 +343,7 @@ You may also put a variable inside that namespace which can later be referenced 
 
 Use `Initial` to create stuff that's needed by **all** test cases, or tell the user something important (only if the batch flag is false of course).
 
-Note that you can have separate [`Initial` functions for specific or all groups](#Initialisation for groups). Use this to initialize stuff that is only needed for a certain group, like a database connection etc.
+Note that you can have separate [`Initial` functions for specific or all groups](#initialisation-for-groups). Use this to initialize stuff that is only needed for a certain group, like a database connection etc.
 
 When everything else has been done then `Tester2` looks for a function `Cleanup` in the hosting nanmespace. If there is such a function it will be executed.
 
@@ -348,7 +351,7 @@ When everything else has been done then `Tester2` looks for a function `Cleanup`
 
 You can have initialisation functions for groups. It's recognzied by naming convention: for a group `foo` the function's name must be `Initial_foo`. 
 
-The rules are exactly the same as for the [global `Initial` function](#Initialisation), although the consequences are different:
+The rules are exactly the same as for the [global `Initial` function](#initialisation), although the consequences are different:
 
 When `Initial_foo` returns a Boolean and that is a zero, then no test function belonging to the group `foo` will be executed but `Tester2` will carry on executing other test cases.
 
@@ -357,11 +360,11 @@ When `Initial_foo` returns a Boolean and that is a zero, then no test function b
 Now the test cases are executed one by one, or, if groups are defiend, one group after the other.
 
 
-### Tidying up: `CleanUp`{#cleanUp}
+### Cleaning up
 
 After the last test case was executed the `Run*` function checks whether there is a function `Cleanup` in the namespace hosting your test cases. If that's the case then this function is executed. 
 
-Any `Cleanup` function should either return a shy result --- which will be inored --- or no result at all. It might accept a right argument, but this is optional: it might as well be niladic. If it _does_ accept a right argument it will get the parameter namespace passed.
+Any `Cleanup` function should either return a shy result (which will be inored) or no result at all. It might accept a right argument, but this is optional: it might as well be niladic. If it _does_ accept a right argument it will get the parameter namespace passed.
 
 Note that a function `Cleanup` would be executed no matter whether there was or was not a function `Initial`, and if there was, no matter whether it returned a 0 or a 1 or nothing at all.
 
@@ -369,7 +372,7 @@ Note that a function `Cleanup` would be executed no matter whether there was or 
 
 You can have clean-up functions for groups. It's recognzied by naming convention: for a group `foo` the function's name must be `Cleanup_foo`. 
 
-The rules are exactly the same as for the [global `Cleanup` function](#Initialisation).
+The rules are exactly the same as for the [global `Cleanup` function](#initialisation).
 
 Naturally a group-specific `Cleanup` function is called after the last test function of that group got executed.
 
@@ -398,7 +401,7 @@ The methods fall into four groups:
 
 ### Flow control
 
-`FailsIf`, `PassesIf` and `GoToTidyUp` control the program flow in test functions. The test template (see [`GetTestTemplate`](#Test function template) for details) contains examples for how to use these functions.
+`FailsIf`, `PassesIf` and `GoToTidyUp` control the program flow in test functions. The test template (see [`GetTestTemplate`](#test-function-template) for details) contains examples for how to use these functions.
 
 These functions return a result (Boolean) in case `debugFlag` is a 0 but make the calling `Test_*` function crash otherwise, allowing you to investigate a failing test case right on the spot. Note that the setting of the `trapFlag` has no bearing on this.
 
@@ -431,15 +434,15 @@ You can also provide a group name via the optional left argument.
 Check the examples which assume that an instance of `Tester2` is available as `T`, and that you are inside the (ordinary, non-scripted) namespace that hosts the test cases:
 
 ```
-      ≢'T'⎕NL 3
+      ⊃⍴'T'⎕NL 3
 0
       T.GetTestTemplate 3
 Test_003
-     ≢'T'⎕NL 3
+     ⊃⍴'T'⎕NL 3
 1
       'Misc' T.GetTestTemplate 1
 Test_Misc_001
-     ≢'T'⎕NL 3
+     ⊃⍴'T'⎕NL 3
 2
 ```
 
@@ -459,6 +462,7 @@ These are the public read-only instance fields that act like constants:
 | `_Failed`             | Unexpected result|
 | `_NoBatchTest`        | Not executed because `batchFlag` was 1.|
 | `_NotApplicable`      | This test is not applicable here and now |
+| `_NotImplemented`     | Attempts to test a feature that has yet not been implemented |
 | `_InActive`           | Not executed because the test case is inactive (not ready, buggy, ...) |
 | `_LinuxOnly`          | Not executed because runs under Linux only|
 | `_LinuxOrMacOnly`     | Not executed because runs under Linux/Mac OS only|
@@ -479,7 +483,7 @@ Note that there is a method `ListSymbolicNames` available that lists all symboli
 
 These are functions that are not actually required in order to run test cases but can make a programmer's life significantly easier.
 
-These function are discussed in detail at [Managing test cases](#).
+These function are discussed in detail at [Managing test cases](#managing-test-cases).
 
 ## Examples
 
@@ -588,6 +592,7 @@ Search
  _NoAcreTests        
  _NoBatchTest        
  _NotApplicable      
+ _NotImplemented
  _OK                 
  _WindowsOnly        
 ```
@@ -660,7 +665,7 @@ Therefore this would make sense:
 
 ## Best Practices
 
-* When starting to implement test cases you are advised to leave gaps: `Test_001`, `Test_010` etc. The same holds true for groups.
+* When starting to implement test cases you are advised to leave gaps: `Test_001`, `Test_010` etc. The same holds true for numbering within groups.
 
 * Try to keep your test cases simple and test just one thing at a time, for example just one method at a time. 
 
@@ -668,14 +673,14 @@ Therefore this would make sense:
 
 * Create everything you need on the fly and tidy up afterwards. Or more precisely, tidy up (leftovers!), prepare, test, tidy up again. In other words, make the test case "stand-alone".
 
-  The exception from this rule is when _all_ test cases require the same pre-condition like, say, a database connection. In that case establish what's needed in a function [`Initial`](#Initialisation) and use a function [`CleanUp`](#cleanUp) to get rid of it.
+  The exception from this rule is when _all_ test cases require the same pre-condition like, say, a database connection. In that case establish what's needed in a function [`Initial`](#initialisation) and use a function [`CleanUp`](#cleaning-up) to get rid of it.
 
-  If all test function of a certain group share the same requirement use [Initialisation for groups](#).
+  If all test function of a certain group share the same requirement use [Initialisation for groups](#initialisation-for-groups).
 
 * Avoid a test case relying on changes made by an earlier test case. This can be a tempting thing to do, but you will almost certainly regret this later.
 
 * Notice that the DRY principle (don't repeat yourself) can and should be ignored when it comes to test cases: any test case should read from top to bottom like an independent story that can be understood by itself.
 
-* It might  be a good idea for _all_ test functions to tidy up in line 1, just in case this test case has failed earlier and left some debris behind.
+* It might  be a good idea for _all_ test functions to tidy up first, just in case this test case has failed earlier and left some debris behind.
 
-* It's probably a good idea to implement for every fixed bug a separate test case, for bugs tend to make comebacks all the time, and such a test case would celebrate such a comeback.
+* It's probably a good idea to implement for every fixed bug a separate test case, for bugs tend to make comebacks all the time, and such a test case would discover such a comeback.
