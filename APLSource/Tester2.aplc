@@ -22,14 +22,16 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'2.1.0.42' '2020-04-07'
+      r←(Last⍕⎕THIS)'2.1.1.43' '2020-04-07'
     ∇
 
     ∇ History
       :Access Public shared
+      ⍝ * 2.1.1 ⋄ 2020-04-07
+      ⍝   * Typo fixed: constant `IncompatibleVersion` rather than `IncompatibelVersion`
       ⍝ * 2.1.0 ⋄ 2020-04-07
       ⍝   * Method `GetSymbolicName` added.
-      ⍝   * Constant `_IncompatibelVersion` added.
+      ⍝   * Constant `_IncompatibleVersion` added.
       ⍝   * Bug fixes:
       ⍝     * In case a test function spread its local vars over more than one line the leading comment line
       ⍝       was not identified correctly. This affected both the `ListTestFunctions` function and the GUI.
@@ -54,7 +56,7 @@
     :Field Public Instance Readonly _NoAcreTests←¯18
     :Field Public Instance Readonly _NotApplicable←¯19
     :Field Public Instance Readonly _NotImplemented←¯20
-    :Field Public Instance Readonly _IncompatibelVersion←21
+    :Field Public Instance Readonly _IncompatibleVersion←21
 
     :Field Public Instance ReadOnly QuitEvent←993
     :Field Public Instance ReadOnly PassEvent←994
