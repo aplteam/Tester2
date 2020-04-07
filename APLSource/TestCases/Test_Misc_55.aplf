@@ -1,0 +1,16 @@
+ r←Test_Misc_55(stopFlag batchFlag);ref;⎕TRAP;T2;constants;names
+⍝ Exercise the `GetSymbolicName`method
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ ref←⎕NS''
+ T2←⎕NEW ##.Tester2 ref
+ constants←T2.⍎¨names←{⍵/⍨'_'=↑¨⍵}T2.⎕NL-2
+
+ →T.PassesIf(1⊃names)≡T2.GetSymbolicName↑constants
+ →T.PassesIf names≡T2.GetSymbolicName constants
+ →T.PassesIf''≡T2.GetSymbolicName 123
+ →T.PassesIf((2↑names),⊂'')≡T2.GetSymbolicName(2↑constants),123
+
+ r←T._OK
+⍝Done

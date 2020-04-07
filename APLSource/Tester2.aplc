@@ -22,14 +22,18 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'2.0.1.40' '2020-04-07'
+      r←(Last⍕⎕THIS)'2.0.1.41' '2020-04-07'
     ∇
 
     ∇ History
       :Access Public shared
-      ⍝ * 2.0.1 ⋄ 2020-04-07
-      ⍝   In case a test function spread its local vars over more than one line the leading comment line was not identified
-      ⍝   correctly. This affected both the `ListTestFunctions` function and the GUI.
+      ⍝ * 2.1.0 ⋄ 2020-04-07
+      ⍝   * Method `GetSymbolicName` added.
+      ⍝   * Constant `_IncompatibelVersion` added.
+      ⍝   * Bug fixes:
+      ⍝     * In case a test function spread its local vars over more than one line the leading comment line
+      ⍝       was not identified correctly. This affected both the `ListTestFunctions` function and the GUI.
+      ⍝     * `ListSymbolicNames` carried an incorrect comment: it returns a two-column matrix.
       ⍝ * 2.0.0 ⋄ 2020-03-20
       ⍝   * BREAKING CHANGE: file extension is now .aplc rather than .dyalog
       ⍝   * The GUI is now pre-populated with the names and the comments of all test functions which
@@ -50,6 +54,7 @@
     :Field Public Instance Readonly _NoAcreTests←¯18
     :Field Public Instance Readonly _NotApplicable←¯19
     :Field Public Instance Readonly _NotImplemented←¯20
+    :Field Public Instance Readonly _IncompatibelVersion←21
 
     :Field Public Instance ReadOnly QuitEvent←993
     :Field Public Instance ReadOnly PassEvent←994
@@ -378,7 +383,7 @@
       :If ps.guiFlag
           :If 0<≢ps.list
               ps.ref2Gui.∆n.Grid.Values[⍳≢ps.list;2]←(≢'Test_')↓¨ps.list
-              ps.ref2Gui.∆n.Grid.Values[⍳≢ps.list;3]←_ref{{dlb ⍵↓⍨⍵⍳'⍝'}↑⍺{⍵↓⍨+/∧\';'=↑¨dlb ⍵} 1↓⍺.⎕NR ⍵}¨ps.list
+              ps.ref2Gui.∆n.Grid.Values[⍳≢ps.list;3]←_ref{{dlb ⍵↓⍨⍵⍳'⍝'}↑⍺{⍵↓⍨+/∧\';'=↑¨dlb ⍵}1↓⍺.⎕NR ⍵}¨ps.list
               {2 ⎕NQ ps.ref2Gui.∆n.Grid'SetColSize'⍵ ¯3}¨2 3
           :EndIf
           {}{_←⎕DQ ⍵ ⋄ ⎕DL 0.1}⍣(0=TestFlag)⊣ps.ref2Gui.∆n.Form
@@ -1173,7 +1178,8 @@
     ∇
 
     ∇ r←ListSymbolicNames;A;⎕ML;⎕IO;buff1;buff2;buff3;bool
-  ⍝ Returns a one-column matrix with all symbolic names any test function might return.
+  ⍝ Returns a two-column matrix with all symbolic names.
+  ⍝ The second column is empty for built-in constants but carries a description for custom ones.
       :Access Public Instance
       ⎕IO←1 ⋄ ⎕ML←1
       buff1←⍪' '~¨⍨↓'_'⎕NL 2.2
@@ -1187,6 +1193,34 @@
       :Else
           r←buff1⍪(bool/buff2),[1.5]buff3
       :EndIf
+    ∇
+
+    ∇ r←GetSymbolicName constant;names;values
+   ⍝ Takes a constant and returns it symbolic name.\\
+   ⍝ * If the constant is unknown `''` is returned
+   ⍝ * If it is a single integer a string is returned
+   ⍝ * If `constant` is more than one integer a vector of strings is returned
+      :Access Public Instance
+      'Invalid right argument: must be one or more integers'⎕SIGNAL 11/⍨~∧/{(0 1 2∊⍨≡⍵)∧83∧.=⎕DR ⍵}¨1(2 3)
+      names←,ListSymbolicNames[;1]
+      values←⍎¨names
+      :If 1<≢constant
+          r←(names,⊂'')[values⍳constant]
+      :Else
+          r←(values⍳constant)⊃names,⊂''
+      :EndIf
+    ∇
+
+    ∇ r←{currentVersion}AtLeastVersion min;⎕IO;⎕ML;currentVersion
+      ⍝ Returns 1 if the currently running version is at least `min`.
+      ⍝ If the current version is 17.1 then:
+      ⍝ 0 0 1 1 ←→ AtLeastVersion¨16 17 17.1 18
+      :Access Public Instance
+      currentVersion←{0<⎕NC ⍵:⍎⍵ ⋄ {↑↑(//)⎕VFI ⍵/⍨2>+\⍵='.'}2⊃'#'⎕WG'APLVersion'}'currentVersion'
+      ⎕IO←1 ⋄ ⎕ML←3
+      'Right argument must be length 1'⎕SIGNAL 11/⍨1≠≢min
+     
+      r←min≤currentVersion
     ∇
 
     ∇ r←{target}FindSpecialString what
