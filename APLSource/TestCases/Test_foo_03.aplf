@@ -1,0 +1,9 @@
+ r←Test_foo_03(stopFlag batchFlag);log;stopFlag;⎕TRAP
+⍝ This is used to check whether T._Inactive is processed as intended
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+⍝r←T._Inactive ⍝ To be ignored'
+ r←T._Inactive ⍝ This should show in the GUI
+ {}'r←T._Inactive ⍝ Also to be ignored'
+
+⍝Done

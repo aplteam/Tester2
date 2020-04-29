@@ -13,7 +13,7 @@
  →T.GoToTidyUp'#.TEMP'≢result
  →T.GoToTidyUp~0∊⍴##.FilesAndDirs.ListFiles folder,'/.acre/changes'
  T2←⎕NEW ##.Tester2 #.TEMP
- result←'#.TEMP.test_001'T2.RenameTestFnsTo'#.TEMP.test_groups_02'
+ result←'test_001'T2.RenameTestFnsTo'test_groups_02'
 
  →T.GoToTidyUp~0∊⍴result
  →T.GoToTidyUp 2≠⍴result←##.FilesAndDirs.ListFiles folder,'/.acre/changes'

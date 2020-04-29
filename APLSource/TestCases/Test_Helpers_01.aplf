@@ -14,7 +14,7 @@
  list2←T.ListTestFunctions'foo'
  →T.PassesIf 2=≡list2
  →T.PassesIf 2=⍴⍴list2
- →T.PassesIf 2=≢list2
+ →T.PassesIf 3=≢list2
 
  list3←2 T.ListTestFunctions'foo'
  →T.PassesIf 2=≡list3

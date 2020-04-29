@@ -22,25 +22,23 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'2.1.2.44' '2020-04-13'
+      r←(Last⍕⎕THIS)'2.2.0.50' '2020-04-25'
     ∇
 
     ∇ History
       :Access Public shared
-      ⍝ * 2.1.2 ⋄ 2020-04-13
-      ⍝   * In some instances test functions with multiple header lines were still not reported correctly.
-      ⍝ * 2.1.1 ⋄ 2020-04-07
-      ⍝   * Typo fixed: constant `IncompatibleVersion` rather than `IncompatibelVersion`
-      ⍝ * 2.1.0 ⋄ 2020-04-07
-      ⍝   * Method `GetSymbolicName` added.
-      ⍝   * Constant `_IncompatibleVersion` added.
+      ⍝ * 2.2.0 ⋄ 2020-04-25
+      ⍝   * The method `ListTestFunctions` now accepts 'view' as left argument as well as a nested one when
+      ⍝     numbers (of test functions) and 'view` are both specified, in any order.
+      ⍝   * Now a comment inside a test function on the line where a constant is assigned as result will
+      ⍝     show show in the "Result" column of the GUI together with the constant's name.
+      ⍝   * The GUI now offers a context menu command "Copy all comments".
+      ⍝   * `RenameTestFnsTo` can now rename groups.
+      ⍝   * acre is not called via ⎕SE.UCMD anymore but via its API.
+      ⍝   * Support for acre 3 has been rmeoved.
       ⍝   * Bug fixes:
-      ⍝     * In case a test function spread its local vars over more than one line the leading comment line
-      ⍝       was not identified correctly. This affected both the `ListTestFunctions` function and the GUI.
-      ⍝     * `ListSymbolicNames` carried an incorrect comment: it returns a two-column matrix.
-      ⍝ * 2.0.0 ⋄ 2020-03-20
-      ⍝   * BREAKING CHANGE: file extension is now .aplc rather than .dyalog
-      ⍝   * The GUI is now pre-populated with the names and the comments of all test functions which
+      ⍝     * The GUI showed a leading `⍝ ` when it shouldn't - it's wasted space.
+      ⍝     * `ListTestFunctions` did not show a `⍝` in front of the comment - it should.
       ⍝\\
       ⍝ For a full history (including older versions) see <https://github.com/aplteam/Tester2/releases>
     ∇
@@ -387,7 +385,7 @@
       :If ps.guiFlag
           :If 0<≢ps.list
               ps.ref2Gui.∆n.Grid.Values[⍳≢ps.list;2]←(≢'Test_')↓¨ps.list
-              ps.ref2Gui.∆n.Grid.Values[⍳≢ps.list;3]←_ref GetFirstCommentLine¨ps.list
+              ps.ref2Gui.∆n.Grid.Values[⍳≢ps.list;3]←2↓¨_ref GetFirstCommentLine¨ps.list
               {2 ⎕NQ ps.ref2Gui.∆n.Grid'SetColSize'⍵ ¯3}¨2 3
           :EndIf
           {}{_←⎕DQ ⍵ ⋄ ⎕DL 0.1}⍣(0=TestFlag)⊣ps.ref2Gui.∆n.Form
@@ -425,7 +423,7 @@
               rc←rc2
           :EndIf
           _ref.TestCasesExecutedAt←FormatDateTime ⎕TS
-          ShowLog'Time of execution recorded on variable ',(⍕_ref),'.TestCasesExecutedAt in: ',_ref.TestCasesExecutedAt
+          ShowLog'Time of execution recorded on variable ',(⍕_ref),'.TestCasesExecutedAt as: ',_ref.TestCasesExecutedAt
       :EndIf
       {}ExecuteCleanup⍣(0<≢ps.list)⊣_ref ps
       ShowLog'*** Tests done'
@@ -658,7 +656,7 @@
                   ps.returnCodes,←rc
               :EndIf
               ps AddReturCodeToGrid rc i
-              comment←ref GetFirstCommentLine testFns
+              comment←2↓ref GetFirstCommentLine testFns
               desc←(⎕PW-length2){⍺<≢⍵:'...',⍨⍵↑⍨⍺-4 ⋄ ⍵}⍣(~ps.guiFlag)⊢comment
               :If rc∊0 1
                   marker←('*✓'[1+rc=0])
@@ -667,6 +665,11 @@
               :EndIf
               ShowLog(length2↑(length↑marker,' ',testFns),' (',(cw 0⍕i),'/',max,')'),' ⍝ ',desc
               i AddToGui(length2↑(length↑marker,' ',testFns),' (',(cw 0⍕i),'/',max,')'),' ⍝ ',desc
+              :If ~rc∊_OK,_Failed
+              :AndIf ps.guiFlag
+              :AndIf ps.ref2Gui.∆n.∆Closed=0
+                  (GetSymbolicName rc)ReportInactiveToGUI i ref testFns ps.ref2Gui.∆n
+              :EndIf
               :If 0>rc
                   :If 0<ps.errCounter
                       rc←1
@@ -980,7 +983,7 @@
       ⍝Done
     ∇
 
-    ∇ r←OnContextMenuInGrid msg;n2;result;name;ref;row;caption;n;rc;log;ref2Gui;this;was;parms
+    ∇ r←OnContextMenuInGrid msg;n2;result;name;ref;row;caption;n;rc;log;ref2Gui;this;was;parms;cl;buff
       :Access Public Shared
       r←0
       ref←1⊃,msg
@@ -990,15 +993,20 @@
       name←2⊃ref.Values[row;]
       caption←' "',name,'"'
       n2.Edit←n2.Menu.⎕NEW'MenuItem'(⊂('Caption'('Edit',caption)))
+      n2.Copy←n2.Menu.⎕NEW'MenuItem'(⊂('Caption' 'Copy names and comments to ⎕ED'))
       {⍵.onSelect←1}¨'MenuItem'⎕WN n2.Menu
       result←⎕DQ n2.Menu
       :If 0<≢result
           n←ref.##.##.##.∆n
-          :If n2.Edit≡↑result
+          :Select ↑result
+          :Case n2.Edit
               _ref.⎕ED'Test_',name
+          :Case n2.Copy
+              buff←¯1↓↑,/{(dtb ⍵),⎕UCS 13}¨↓⎕FMT{((¯3↑¨⍕¨⍳≢⍵),¨⊂'. '),⍵}{⍵⌿⍨(↑∘⍴¨⍵)∨.≠0 0}n.Grid.Values[;2 3]
+              {{}(#.⎕NS'').(⎕ED⍠('ReadOnly' 1)&{'ed'}ed←⍵)}buff
           :Else
               ∘∘∘ ⍝ Huh?!
-          :EndIf
+          :EndSelect
       :EndIf
     ∇
 
@@ -1123,7 +1131,7 @@
       :EndIf
     ∇
 
-    ∇ r←{numbers}ListTestFunctions groupName;A;r2;⎕IO;⎕ML;b;max;longestName;buff
+    ∇ r←{x}ListTestFunctions groupName;A;r2;⎕IO;⎕ML;b;max;longestName;buff;numbers;view
 ⍝ Returns a matrix with two columns with the names of all test cases in the first column and the
 ⍝ first comment line in the second column.\\
 ⍝ If `groupName` is not empty then it will return only the members of that group (case dependent) or,
@@ -1133,7 +1141,20 @@
       :Access Public Instance
       ⎕IO←1 ⋄ ⎕ML←1
       A←GetRefToAPLTreeUtils
-      numbers←{(0<⎕NC ⍵):⍎⍵ ⋄ ⍬}'numbers'
+      x←{(0<⎕NC ⍵):⍎⍵ ⋄ ⍬}'x'
+      :If (≡x)∊0 1
+          :If 0=1↑0⍴x
+              numbers←x
+              view←0
+          :Else
+              view←'view'≡Lowercase x
+              numbers←⍬
+          :EndIf
+      :Else
+          ''⎕SIGNAL 11/⍨2≠≢x
+          (view numbers)←(0=1↑0⍴1⊃x)⌽x
+          view←'view'≡Lowercase view
+      :EndIf
       r2←↓'Test_'{⍵⌿⍨((≢⍺)↑[2]⍵)∧.=⍺}'T'_ref.⎕NL 3
       :If 0≠≢groupName
           groupName←'Test_'{⍵↓⍨(≢⍺)×⍺≡(≢⍺)↑⍵}groupName
@@ -1150,7 +1171,6 @@
               r2←((({⊃∘⊃∘(//)∘⎕VFI ⍵↑⍨-(-1)+'_'⍳⍨⌽⍵}¨r2))∊numbers)⌿r2
           :EndIf
           buff←_ref GetFirstCommentLine¨r2
-          buff←{⍵↓⍨⍵⍳'⍝'}¨buff
           buff←dlb buff
           r2←r2,[1.5]buff
           r2←r2[⍋↑A.Lowercase r2[;1];]
@@ -1162,6 +1182,10 @@
               (b⌿r2[;2])←((max-4)↑¨b/r2[;2]),¨⊂'...'
           :EndIf
           r←r2
+          :If view
+             {{}(#.⎕NS'').(⎕ED⍠('ReadOnly' 1)&{'ed'}ed←⍵)}r
+              r←0 0⍴⍬
+          :EndIf
       :EndIf
     ∇
 
@@ -1236,34 +1260,39 @@
       :EndIf
     ∇
 
-    ∇ {r}←oldName RenameTestFnsTo newName;body;rc;header;comment;res;name;right;left;newParent;oldParent;delFilanme;A;⎕ML;⎕IO
-         ⍝ Renames a test function and tells acre.\\
+    ∇ {r}←oldName RenameTestFnsTo newName;body;rc;header;comment;res;name;right;left;delFilanme;A;⎕ML;⎕IO;list;this;no;buff;val
+         ⍝ Renames a test function or a group of tests and tells acre.\\
+         ⍝ Neither `oldName` nor `newName` may contain a dot.
          ⍝ `r ← ⍬`
       :Access Public Instance
       ⎕IO←0 ⋄ ⎕ML←3
       A←GetRefToAPLTreeUtils
       r←⍬
       (oldName newName)←oldName newName~¨' '
-      :If '.'∊oldName
-          (oldParent oldName)←¯1 0↓¨'.'A.SplitPath oldName
-          oldParent←⍎oldParent
+      'Names must not contain dots'⎕SIGNAL 11/⍨↑∨/'.'∊¨oldName newName
+      :If ~'.'∊oldName
+      :AndIf ~'.'∊newName
+      :AndIf 0<≢buff←ListGroups
+      :AndIf (⊂oldName)∊(≢'Test_')↓¨{⍵[;0]}buff     ⍝ Group name?
+          list←{⍵[;0]}ListTestFunctions oldName
+          :For this :In list
+              no←{⍵↑⍨-(⌽⍵)⍳'_'}this
+              :If 0<_ref.⎕NC'Test_',newName,'_',no  ⍝ Already occupied
+                  val←⊃(//)⎕VFI no
+                  no←(-≢no)↑((≢no)⍴'0'),' '~⍨⍕1+⌈/{↑(//)⎕VFI ⍵↑⍨-(⌽⍵)⍳'_'}¨↓_ref.{l←'T'⎕NL 3 ⋄ l⌿⍨((≢⍵)↑[2]l)∧.=⍵}'Test_',newName,'_'
+              :EndIf
+              this RenameTestFnsTo'Test_',newName,'_',no
+          :EndFor
+          →∆Go
       :Else
-          oldParent←{⎕ML←1 ⋄ ⊃⍵}⎕RSI
+          'Function to be renamed not found'⎕SIGNAL 11/⍨3≠_ref.⎕NC oldName
+          'New name is already used'⎕SIGNAL 11/⍨0<_ref.⎕NC newName
+          'New name is invalid'⎕SIGNAL 11/⍨¯1=_ref.⎕NC newName
       :EndIf
-      :If '.'∊newName
-          (newParent newName)←¯1 0↓¨'.'A.SplitPath newName
-          newParent←⍎newParent
-      :Else
-          newParent←↑⎕RSI
-      :EndIf
-      ⎕SIGNAL 11/⍨oldParent≢newParent
-      'Function to be renamed not found'⎕SIGNAL 11/⍨3≠oldParent.⎕NC oldName
-      'New name is already used'⎕SIGNAL 11/⍨0<newParent.⎕NC newName
-      'New name is invalid'⎕SIGNAL 11/⍨¯1=newParent.⎕NC newName
-      body←oldParent.⎕NR oldName
+      body←_ref.⎕NR oldName
       header←⎕IO⊃body
       (header comment)←header{⎕IO←0 ⋄ ⍺{(⍵↑⍺)(⍵↓⍺)}⍵⍳'⍝'}header
-      :If (oldParent.⎕NC⊂oldName)∊3.2   ⍝ Dfns
+      :If (_ref.⎕NC⊂oldName)∊3.2   ⍝ Dfns
           :If 1=≢body
               (oldName body)←{⎕IO←0 ⋄ ⍵{(⍵↑⍺)(⍵↓⍺)}⍵⍳'←'}⎕IO⊃body
               body←,⊂newName,body
@@ -1303,14 +1332,14 @@
           name←newName
           (⎕IO⊃body)←res,left,' ',name,' ',right,comment
       :EndIf
-      :If ' '≠1↑0⍴rc←newParent.⎕FX{⎕ML←1 ⋄ ↑⍵}body
+      :If ' '≠1↑0⍴rc←_ref.⎕FX{⎕ML←1 ⋄ ↑⍵}body
           . ⍝ something went wrong
       :EndIf
       :If (0=#.⎕NC'acre')∧0=⎕SE.⎕NC'acre'
           ⎕←'acre not found in ⎕SE'
-          oldParent.⎕EX oldName
+          _ref.⎕EX oldName
       :Else
-          (oldName newName)←{(⍕newParent),'.',⍵}¨oldName newName
+          (oldName newName)←{(⍕_ref),'.',⍵}¨oldName newName
           :If 3=⎕SE.acre.⎕NC'Version'   ⍝ acre 6 or better?
               delFilanme←((-≢'.change')↓↑⎕SE.acre.Changefile newName),'.delete'
               :Trap 22
@@ -1331,27 +1360,18 @@
               :If ⎕NEXISTS delFilanme
                   ⎕NDELETE delFilanme
               :EndIf
-              :If 0=≢rc←⎕SE.UCMD'acre.SetChanged ',newName
+              :If 0=≢rc←⎕SE.acre.SetChanged newName
                   ⎕←'acre was told about the introduction of a new test fns but it was not interested.'
               :EndIf
-              :If 0=≢rc←⎕SE.UCMD'acre.Erase ',oldName
-                  ⎕←'acre was told about the deletion of a test fns but it was not interested.'
-              :EndIf
-          :Else
-              delFilanme←((-≢'.change')↓⎕SE.UCMD'acre.getchangefilename ',newName),'.DEL'
-              :If ⎕NEXISTS delFilanme
-                  ⎕NDELETE delFilanme
-              :EndIf
-              :If 0=≢rc←⎕SE.UCMD'acre.setchanged ',newName
-                  ⎕←'acre was told about the introduction of a new test fns but it was not interested.'
-              :EndIf
-              :If 0=≢rc←⎕SE.UCMD'acre.Erase ',oldName
+              :If 0=≢rc←⎕SE.acre.Erase oldName
                   ⎕←'acre was told about the deletion of a test fns but it was not interested.'
               :EndIf
           :EndIf
      ∆Go:
-          ⎕EX oldName
-          ⎕←'***Done'
+          _ref.⎕EX oldName
+          :If (↑⎕SI)≢↑1↓⎕SI
+              ⎕←'***Done'
+          :EndIf
       :EndIf
     ∇
 
@@ -1536,8 +1556,28 @@
       GetFirstCommentLine←{
           ⎕IO←1 ⋄ ⎕ML←1
           body←1↓⍺.⎕NR ⍵
+          body←(~body∧.=¨' ')/body
           body←⊃⍺{⍵↓⍨+/∧\';'=⊃¨dlb ⍵}body
           dlb body↓⍨¯1+body⍳'⍝'
       }
+
+    ∇ {r}←constant ReportInactiveToGUI(row ref testFns n);body;body2
+    ⍝ Tries to find `constant` in the code of the test function (text and comments are ignored).
+    ⍝ It then looks for a comment after the assignment. That comment, if there is any, will be
+    ⍝ shown in the GUI's "Result` column.
+    ⍝ `constant` is something like "_Inactive".
+      r←⍬
+      body←ref.⎕NR testFns
+      :If 0<≢body←(∨/¨('.',constant)∘⍷¨body)/body
+          body←'''[^'']+'''⎕R''⊣body
+          body2←({~∨\'⍝'=⍵}¨body)/¨body
+          body←(∨/¨('.',constant)∘⍷¨body2)/body
+      :AndIf 1=≢body
+          body←1⊃body
+      :AndIf '⍝'∊body
+          n.Grid.Values[row;4]←⊂(1↓constant),':',{⍵↓⍨⍵⍳'⍝'}body
+          2 ⎕NQ n.Grid'SetColSize' 4 ¯3
+      :EndIf
+    ∇
 
 :EndClass

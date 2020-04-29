@@ -477,7 +477,16 @@ Use these to assign an explicit result within any test function. The advantages 
 1. Much more readable than an integer.
 2. You can easily search for, say, `_InActive`.
 
-Note that there is a method `ListSymbolicNames` available that lists all symbolic names.
+Notes:
+
+* There is a method `ListSymbolicNames` available that lists all symbolic names.
+* By putting a comment on the line where a constant is assigned you can make sure that this comment is, together with the name of the constant, put into the GUI's "Result" comment.
+
+  For example, assuming that `Tester2` was instanciated with `T←⎕NEW Tester2`, then this:
+
+  `R←T._Inactive ⍝ Waiting for fix for bug 1291`
+
+   would pop up as "Inactive: Waiting for fix for bug 1291" in the "Result" column for the associated test function.
 
 ### Helpers
 
@@ -641,7 +650,7 @@ EditTestFunctions T.ListTestFunctions'ZZZ'   ⍝ Edit all test cases of the grou
 
 Renaming a test function is actually harder (and more dangerous) than you might think at first glance, hence the method `RenameTestFnsTo` is there to assist you.
 
-The syntax is easy:
+The syntax:
 
 ```
 'oldname' T.RenameTestFnsTo 'newname'
@@ -658,9 +667,19 @@ Therefore this would make sense:
 `RenameTestFnsTo` does a couple of things for you:
 
 1. It copies `Test_001` to `Test_Misc_001`
-1. If the project management system acre (https://github.com/the-carlisle-group/Acre-Desktop) is around it tells acre about the introduction of `Test_Misc_001`
+1. If the project management system [acre](https://github.com/the-carlisle-group/Acre-Desktop) is around it tells acre about the introduction of `Test_Misc_001`
 1. It deletes the function `Test_001`
 1. It tells acre about the deletion of `Test_001`
+
+Note that with version 2.2 `RenameTestFnsTo` has learned to deal with groups as well. This:
+
+```
+'Foo' T.RenameTestFnsTo  'Misc'
+```
+
+Assuming that there is a group "Foo" then all members of that group would be renamed so that they become members of the group "Misc".
+
+If there is already a group "Misc" then numbering would start with the highest previous number plus 1.
 
 
 ## Best Practices
