@@ -22,11 +22,18 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'2.2.0.50' '2020-04-25'
+      r←(Last⍕⎕THIS)'2.2.2.52' '2020-05-09'
     ∇
 
     ∇ History
-      :Access Public shared
+      :Access Public shared 
+      ⍝ * 2.2.2 ⋄ 2020-05-09
+      ⍝   * Bug fix: niladic group-specific result-returning `Initial_{something}` functions were not processed
+      ⍝     correctly
+      ⍝ * 2.2.1 ⋄ 2020-04-29
+      ⍝   * Bug fix: in case a group-specific `Initial` function was used to prevent a whole group of test
+      ⍝     functions to be executed that was processed incorrectly. Also, the GUI did not report on why those
+      ⍝     test function did not get executed.
       ⍝ * 2.2.0 ⋄ 2020-04-25
       ⍝   * The method `ListTestFunctions` now accepts 'view' as left argument as well as a nested one when
       ⍝     numbers (of test functions) and 'view` are both specified, in any order.
@@ -625,15 +632,20 @@
                       at←1⊃ref.⎕AT'Initial_',currentGroup
                       :If (2⊃at)∊1 ¯2           ⍝ Accepts a right argument (monadic=1, ambivalent=¯2)?
                           result←ps ref.{6::1 ⋄ ⍎⍵,' ⍺'}'Initial_',currentGroup
+                      :ElseIf |1⊃at
+                          result←ps ref.{6::1 ⋄ ⍎⍵}'Initial_',currentGroup
                       :Else
                           ref⍎'Initial_',currentGroup
                           result←1
                       :EndIf
                       :If ~1↑result∊⍬ 1
                           ShowLog'Function "Initial_',currentGroup,'" found and executed but did not return a 1'
-                          noOf←+/(i↓ps.list)≡¨⊂currentGroup
-                          ShowLog'Therefore ',(⍕1+noOf),' member',((1<noOf+1)/'s'),' of the group "',currentGroup,'" will not be executed'
-                          i+←+/(i↓ps.list)≡¨⊂currentGroup
+                          noOf←+/∨/('_',currentGroup,'_')⍷⊃(i-1)↓ps.list
+                          ShowLog'Therefore ',(⍕noOf),' member',((1<noOf)/'s'),' of the group "',currentGroup,'" will not be executed'
+                          :If ps.guiFlag
+                              ps.ref2Gui.∆n.Grid.Values[(i-1)+⍳noOf;4]←⊂'Prevented by Initial_',currentGroup
+                          :EndIf
+                          i+←noOf-1
                           :Continue
                       :Else
                           ShowLog'Function "Initial_',currentGroup,'" found and successfully executed'
@@ -1183,7 +1195,7 @@
           :EndIf
           r←r2
           :If view
-             {{}(#.⎕NS'').(⎕ED⍠('ReadOnly' 1)&{'ed'}ed←⍵)}r
+              {{}(#.⎕NS'').(⎕ED⍠('ReadOnly' 1)&{'ed'}ed←⍵)}r
               r←0 0⍴⍬
           :EndIf
       :EndIf
@@ -1581,3 +1593,4 @@
     ∇
 
 :EndClass
+

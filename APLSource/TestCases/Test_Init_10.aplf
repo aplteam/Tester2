@@ -5,6 +5,7 @@
 
  TestGroupInits.T←⎕NEW ##.Tester2 TestGroupInits
  (rc log)←TestGroupInits.T.Run 1
+ →T.PassesIf∨/∨/¨'6 test cases of 8 called'∘⍷¨log
 
  TestGroupInits.⎕EX'T'
 

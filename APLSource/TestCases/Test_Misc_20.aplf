@@ -1,16 +1,18 @@
- r←Test_Misc_20(stopFlag batchFlag);⎕TRAP
- ;list
+ r←Test_Misc_20(stopFlag batchFlag);⎕TRAP;list
 ⍝ Test whether local vars spreading over more than one line are handled correctly
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
 
- :If ~T.AtLeastVersion 17
-     R←T._IncompatibelVersion
-     :Return
+ :If T.AtLeastVersion 17
+
+     list←T.ListTestFunctions''
+     →T.PassesIf 0∧.<≢¨list[;2]
+
+     r←T._OK
+
+ :Else
+
+     r←T._IncompatibleVersion       ⍝ Multi-line locals were introduced in 17.0
+
  :EndIf
-
- list←T.ListTestFunctions''
- →T.PassesIf 0∧.<≢¨list[;2]
-
- r←T._OK
 ⍝Done
