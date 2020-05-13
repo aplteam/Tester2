@@ -259,7 +259,15 @@ T.custom_1←'Invalid version of Dyalog APL'
 
 ### Checks before and after a test case is executed
 
-That's why `exec_before_each_test` and `exec_after_each_test` were added as properties with version 1.1 to `Tester2`.
+#### Application
+
+Imagine that a few of a large set of test cases leave files behind in the temp folder, and you have no idea which ones. Obviously that is easy to find out when you check right after a test case was executed.
+
+That's why `exec_before_each_test` and `exec_after_each_test` were added as properties with version 1.1 to `Tester2`: they allow you to check whatever you want either just before or right after a test case was executed.
+
+Another application is when a test case causes a sys error (aplcore) but it is not that particular test case that is causing the real problem but an earlier one. In that case you can execute `2 ⎕NQ'.' 'wscheck'` after each test case, forcing the interpreter to perform a workspace integrity check.
+
+#### Overview
 
 When specified they must be the fully qualified name of a monadic function that may or may not return a result.
 
@@ -274,11 +282,6 @@ Regarding the result there are two options:
 * In case no result is returned you need to make sure you make the function stop in case you find something not to your liking, or print a message to the session if that's sufficient.
 * In case the function returns a result it must be a text vector. If that text vector is empty then `Tester2` does not take any action. If it is a simple string this string will be printed to the session. Then `Tester2` carries on.
 
-#### Application
-
-The idea was born when a few of a large set of test cases left files behind in the temp folder, and I had no idea which one. Obviously that is easy to find out when you check right after a test case was executed.
-
-Another application is when a test case causes a sys error (aplcore) but it is not that particular test case that is causing the real problem but an earlier one. In that case you can execute `2 ⎕NQ'.' 'wscheck'` after each test case, forcing the interpreter to perform a workspace integrity check.
 
 ## Work flow
 
@@ -628,6 +631,12 @@ Test_List_001             Unnamed NSs & GUI instances are ignored.
 Test_List_007             Search for "Hello" with a ref and an unnamed namespace   
       ⍴ListTestFunctions''
 99 2
+```
+
+With a large number of test cases you might prefer to get them into an edit windows. This can be achieved by this command:
+
+```
+'view' ListTestFunctions ''
 ```
 
 Notes:
