@@ -1,4 +1,4 @@
- r←Test_Run_04(stopFlag batchFlag);log;rc;expected;stopFlag;⎕TRAP;T2
+ r←Test_Run_04(stopFlag batchFlag);log;rc;expected;stopFlag;⎕TRAP;T2;total;noOf;noOf2
 ⍝ Exercise the `RunThese` method
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
@@ -33,5 +33,15 @@
  T2.TestFlag←1
  (rc log)←T2.RunThese'Test_Grp1' 0
  →T.FailsIf 3 0 0≢∆GetTotals log
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+ T2.TestFlag←1
+ (rc log)←T2.RunThese''
+ total←↑∆GetTotals log
+ (rc log)←T2.RunThese'Grp2' 0
+ noOf←↑∆GetTotals log
+ (rc log)←T2.RunThese'~Grp2' 0
+ noOf2←↑∆GetTotals log
+ →T.PassesIf noOf2=total-noOf
 
  r←T._OK

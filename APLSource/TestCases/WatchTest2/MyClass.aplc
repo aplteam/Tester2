@@ -1,0 +1,76 @@
+:Class MyClass
+⍝ Used for checking coverage and percentages or "normal" cases
+⍝ For nested dfns see MyClassNested
+
+    ∇ make
+      :Implements Constructor
+      :Access Public
+      ⎕IO←1
+    ∇
+
+    ∇ Cleanup
+      :Implements Destructor
+      ⎕EX'abc'
+    ∇
+
+    ∇ r←Run type;txt
+      :Access Public Shared
+      r←⍬
+      :If type=1
+          {}dfns1 1
+          {}dfns2 1
+          {}dfns3 1
+          {}dfns4 1
+          tfns1 ⍬
+          {}Partly 1
+      :ElseIf type=2
+          Assert 1
+          {}Partly 2
+      :Else
+          txt←'Never execute'
+      :EndIf
+    ∇
+
+    dfns1←{+/⍳≢⍵}
+
+      dfns2←{
+          +/⍳≢⍵}
+
+      dfns3←{
+          +/⍳≢⍵
+          ⍝ Comment
+      }
+
+      dfns4←{ ⍝ comment
+          +/⍳≢⍵
+     
+      }
+
+    Assert←{⍺←'' ⋄ (,1)≡,⍵:r←1 ⋄ ⎕ML←3 ⋄ ⍺ ⎕SIGNAL 1↓(↑∊⍵),11}
+
+    ∇ r←tfns1 dummy;txt
+      r←'Hello world'
+      ⍝ Comment
+      :Return
+     
+      txt←'Also never executed'
+    ∇
+
+    ∇ r←Partly type;a;b;c;never;foo
+      :Select type
+      :Case 1
+          r←'Hello world'
+          a←1
+      :Case 2
+          r←'Hello galaxy'
+          b←2
+          c←3
+      :Case 2
+          r←'Hello never'
+      :Else
+          r←'Hello universe'  ⍝ never executed
+          foo←1 2 3
+      :EndSelect
+    ∇
+
+:EndClass

@@ -1,0 +1,49 @@
+:Class MyClass
+⍝ This class contains plenty of private functions that are posing all possible obsticles against analyzing
+    ∇ foo1;abc ⍝ comment
+      r←{∇ ⍵}?10
+    ∇
+
+    ∇ r←fo10;abc ⍝ comment
+      r←{∇ ⍵}?10
+    ∇
+    ∇ r←fo11 arg;abc ⍝ comment
+      r←{∇ ⍵}?arg
+    ∇
+    ∇ r←fo12(x y);abc ⍝ comment
+      r←{∇ ⍵}?x×y
+    ∇
+    ∇ r←fo13(x y);abc ⍝ comment
+      r←{∇ ⍵}?x×y
+    ∇
+
+    ∇ {r}←fo21;abc ⍝ comment
+      r←{∇ ⍵}?10
+    ∇
+    ∇ {r}←fo22 arg;abc ⍝ comment
+      r←{∇ ⍵}?arg
+    ∇
+    ∇ {r}←fo23(x y);abc ⍝ comment
+      r←{∇ ⍵}?x×y
+    ∇
+
+    ∇ {(r z)}←fo31;abc ⍝ comment
+      r←{∇ ⍵}?10
+    ∇
+    ∇ {(r z)}←fo32 arg;abc ⍝ comment
+      r←{∇ ⍵}?arg
+    ∇
+    ∇ {(r z)}←fo33(x y);abc ⍝ comment
+      r←{∇ ⍵}?x×y
+    ∇
+
+    ∇ (r z)←fo41;abc ⍝ comment
+      r←{∇ ⍵}?10
+    ∇
+    ∇ (r z)←fo42 arg;abc ⍝ comment
+      r←{∇ ⍵}?arg
+    ∇
+    ∇ (r z)←fo43(x y);abc ⍝ comment
+      r←{∇ ⍵}?x×y
+    ∇
+:EndClass

@@ -1,0 +1,14 @@
+ r←Test_Misc_12(stopFlag batchFlag);⎕TRAP;rc;log;res
+⍝ Invalid setting of `codeCoverage
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+ T2.TestFlag←1
+
+ T2.codeCoverage←⎕NEW ##.CodeCoverage(,⊂'#.Tester2')
+ res←T2.Run 0
+ →T.PassesIf 1=1⊃res
+
+ r←T._OK
+⍝Done

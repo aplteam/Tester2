@@ -1,0 +1,29 @@
+:Class MyClassNestedDfns
+⍝ Used for checking coverage and percentages on nested dfns
+
+    ∇ Run
+      :Access Public Shared
+      {}dfns1⍳3
+      {}dfns3⍳3
+    ∇
+
+    dop1←{+⍺⍺ ⍵}
+
+      dfns1←{
+          a←10
+          dfns2←{
+              1:/dop1 ⍵
+     
+              a←'not executed'
+          }
+          1:dfns2 ⍵×a
+     
+          a←'NOT executed'
+      }
+
+      dfns3←{
+          ⍺←1
+          +/⍺,⍵
+      }
+
+:EndClass

@@ -1,0 +1,7 @@
+ r←{compNo}∆ReadComponent filename;tno
+⍝ The thid component carries the aggregated result and is therefore the default
+ compNo←{0<⎕NC ⍵:⍎⍵ ⋄ 3}'compNo'
+ tno←filename ⎕FSTIE 0
+ r←⎕FREAD tno 3
+ ⎕FUNTIE tno
+⍝Done

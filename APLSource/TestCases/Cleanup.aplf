@@ -1,4 +1,4 @@
- {R}←Cleanup ns
+ {R}←Cleanup dummy
  R←⍬
  ##.FilesAndDirs.DeleteFile'Testcases.ini'
  ##.FilesAndDirs.DeleteFile'Testcases-',(2 ⎕NQ'#' 'GetEnvironment' 'Computername'),'.ini'

@@ -1,0 +1,5 @@
+ r←Analyze(ref data verbose);T
+ r←⍬
+ T←#.Tester2.Tester2
+
+⍝Done

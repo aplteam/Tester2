@@ -1,10 +1,15 @@
 # Test framework for Unit tests in Dyalog APL
 
-`Tester2` is a member of the APLTree library. This library is a collection of classes etc. that aim to support the Dyalog APL programmer. Search GitHub for "apltree" and you will find solutions to many every-day problems Dyalog APL programmers might have to solve.
+`Tester2` is a member of the APLTree library, which is a collection of classes etc. that aim to support the Dyalog APL programmer. Search GitHub for "apltree" and you will find solutions to many every-day problems Dyalog APL programmers might have to solve.
 
 **_Note:_** `Tester2` is the successor of the `Tester` class. Although it has inherited the general ideas and concepts from the `Tester` class the new `Tester2` class has a very different workflow. Methods have been removed, added and renamed. It was therefore decided to start fresh with a new class.
 
-`Tester` was created roughly 10 years ago. Although it's solved its purpose technology has advanced. Also, during all these years a couple of design problems `Tester` was suffering from raised their heads. `Tester2` is an attempt to integrate (almost) latest technology (version 16.0 of Dyalog APL) and to overcome those aforementioned design obstacles.
+`Tester` was created roughly 10 years ago. Although it's solved its purpose technology has advanced. Also, during all these years a couple of design problems `Tester` was suffering from raised their heads. `Tester2` is an attempt to integrate (almost) latest technology (version 17.0 of Dyalog APL) and to overcome those aforementioned design obstacles.
+
+The framwork comprises two classes:
+
+* `Tester2` is a class requiered to manage and execute test cases.
+* `CodeCoverage` is needed only if you want to produce a code coverage report. 
 
 
 ## Overview 
@@ -387,10 +392,96 @@ Finally, the namespace `INI` holding variables populated from your INI file(s) i
 
 ### Premature exit
 
-There might be situations when you've executed some but not all test cases and now you want to exit the test framework, typically while you are in a test function. In such a case the framework should clean up (execute any `Cleanup` function etc.)
+There might be situations when you've executed some but not all test cases and now you want to exit the test framework, typically while you are in a test function. In such a case the framework should clean up (execute any `Cleanup` function) etc.
 
 This can be achieved by calling the instance method `QuitTests`. This function signals a `QuitEvent` which is trapped and processed in a specific way by the test framework.
 
+
+## Code coverage
+
+Ideally one would like to know how much of the code is actually covered by test cases. Ideally that should be 100%, but that is rarely achievable.
+
+However, in order to improve on this one needs to know how much code is covered, and ideally also which parts of the code are _not_ covered.
+
+Since version 2.3 `Tester2` offers an optional report regarding code coverage: it reports all functions and operators that are ...
+
+* not called at all
+* covered completely
+* called but not all lines got executed
+
+Note that `Tester2` tries to be smart: it does not count any lines that...
+
+* are empty
+* carry only a comment
+* carry only a control structur like `:Access`, `:Else`, all flavours of `:End*` and others that cannot in any meaningful way be "tested".
+
+Note that private functions and operators in classes are part of the report.
+
+For that to work you must specify the `watch` property: this holds the name of a class script or a namespace, or several of them as a simple text vector, separated by commas.
+
+### Restrictions
+
+* Properties contain at least a getter and may contain a setter, functions used to retrieve or set a property. Such functions are currently not covered by `Tester2`. 
+
+  This restriction might be lifted in a future release.
+
+* Classes, interfaces and namespaces nested in a single script are currently ignored, meaning that only the hosting script is taken into account.
+
+  This restriction might be lifted in a future release.
+
+* At the time of writing Dyalog provides an `⌶` for retrieving code for functions and operators, including private functions, from scripts, but it does not offer any help for analyzing a script in order to extract the names of all such functions and operators. Therefore `Tester2` does its own analyzing.
+
+  For that to work `Tester2` relies on the code to be formatted properly. For example, in order to tell any `∇` that is used for recursive calls in a dfn from a `∇` that functions as opening or closing tag for a traditional function, the number of leading spaces counts.
+
+* Dfns, named or unnamed, that are locally defined within a dfn (or dop) are not recognized as such but just as part of the outer function.
+
+* Dfns, named or unnamed, that are locally defined within a traditional function (or operator) are completely ignored. The lines they occupy in a tfn or top are therefore wrongly reported as not covered. 
+
+  `⎕PROFILE` does not provide the necessary information to get around this.
+
+* This statement:
+
+  ```
+  :If a≡1 ⋄ MyFns 1 ⋄ MyOtherFns 2 ⋄ :EndIf
+  ```
+
+  is reported as "covered" once the interpreter reaches that line. although clearly only one of the two function calls will be carried out.
+
+  Again this is a `⎕PROFILE` restriction that cannot be overcome.
+
+  There are already a number of good reasons to not use `⋄`, and this is just another one.
+
+### Running several test suites
+
+It is possible to run the test suite more than once (on different platform for example), or to run two test suites that share code (Client and Server part of an application for example) and make `Tester2` collect all the coverage data in a single component file. 
+
+After running the last test suite one can call the shared method `CodeCoverage.AggregateCoverageDataAndCreateReport` and pass the name of the component file holding all the  coverage data. The function will then merge the data, massage it and finally create an HTML file with the final report.
+
+See `Tester2`'s sinstance properties `saveWatchDetails` and optionally `watchFilename` for this.
+
+### The class `CodeCoverage`
+
+After having executed the test suite one or more times you need the class `CodeCoverage` to prepare a report.
+
+* `AggregateCoverageData` aggregates and massages the data
+* `CreateCoverageReport` for creating a report bases on the prepared data
+* `AggregateCoverageDataAndCreateReport` carries both steps out in one go
+
+#### The `verbose` option
+
+`verbose`, the optional left argument of both `CreateCoverageReport` and `AggregateCoverageDataAndCreateReport`, defaults to 0. This means that the body of any function or operator that is only partly covered is not listed in the report, only the fully qualified names and informaton regarding which lines did not get executed, the coverage percentage and the total number of lines.
+
+This makes sense when you generate the first coverage report because more often then not quite a number of functions are not covered by the tests yet, and you will most likely add more tests in order to cover some of them. 
+
+Others are not that important or so trial that there is no point in covering them, so you might want them ignore; see the next topic for that.
+
+After taking such action you are advised to run the tests again with the coverage option active, but this time you generate the report with `verbose←` because it now makes sense to look into the  detais.
+
+#### The `ignore` property
+
+This is a text vector that is by default empty. You may add fully qualified names of comma-separated functions and operators you want to be ignored wen reporting on code coverage.
+
+Note that `ignore` is a shared property.
 
 ## Instance stuff offered by `Tester2`
 
@@ -513,7 +604,9 @@ With `RunGUI` you can achieve the same as with `Run` but it is a Windows-only fe
 
 However, there are situations when `RunGUI` is indispensable: `Tester2`'s own test cases are almost impossible to follow without it, for example. It's also useful in order to demonstrate the features of the `Tester2` class.
 
-`RunGUI` requires only a right argument; if this is empty _all_ test cases will be executed. You can specify numbers or one or more group names or mix a single group name with numbers.
+`RunGUI` requires only a right argument; if this is empty _all_ test cases will be executed. You can specify numbers or a group name or mix a group name with ojne or more numbers. You can also precede a group name with a `~` (without) in order to execute all test cases but the members of that group.
+
+Note that you can specify only one group name.
 
 Notes:
 
@@ -530,13 +623,17 @@ If you now think, well, why not just call any function `Test_001` myself then im
 
 ```
 T.RunThese 1                 ⍝ Execute test cases 1 that do not belong to any group
-T.RunThese 'Group1'          ⍝ Execute all test cases belonging to group 1
-T.RunThese 'Group1' (2 3)    ⍝ Execute test cases 2 & 3 of group 1
+T.RunThese 'Group1'          ⍝ Execute all test cases belonging to Group1
+T.RunThese '~Group1'         ⍝ Execute all test cases but those belonging to Group1 (without)
+T.RunThese 'Group1' (2 3)    ⍝ Execute test cases 2 & 3 of Group1
 T.RunThese 'Group1' 2 3      ⍝ Same as before
 T.RunThese 'Misc'            ⍝ Execute all test cases of the group "Misc"
 T.RunThese 'L*'              ⍝ Execute all test cases of all groups starting with "L"
-T.RunThese 'Test_Group1_001' ⍝ Executes just this test case
+T.RunThese 'Group1_001'      ⍝ Executes just this test case
+T.RunThese 'Test_Group1_001' ⍝ Same as before
 ```
+
+Note that you can specify only one group.
 
 Sometimes you want to trace through test cases. This can be achieved be specifying a 1 as the (optional) left argument. `RunThese` would then stop just before any test case is actually executed, after processing any INI file(s) and executing any `Initial` function.
 

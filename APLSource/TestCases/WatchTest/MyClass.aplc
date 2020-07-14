@@ -1,0 +1,106 @@
+:Class MyClass
+⍝ This class contains plenty of private functions that are posing all possible obsticles against analyzing
+
+⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝ Functions
+
+    ∇ r←Run
+      :Access Public Shared
+      r←'Hello world'
+    ∇
+
+
+⍝ --- Most simple case
+    ∇ foo1;abc ⍝ comment
+      r←{∇ ⍵}?10
+    ∇
+
+⍝ --- Most cxomplex cases as public functions
+    ∇ (r z)←foo11;abc ⍝ comment
+      :Access Public Shared
+      r←{∇ ⍵}?10
+    ∇
+    ∇ (r z)←foo12 arg;abc ⍝ comment
+      :Access Public Shared
+      r←{∇ ⍵}?arg
+    ∇
+    ∇ (r z)←foo13(x y);abc ⍝ comment
+      :Access Public Shared
+      r←{∇ ⍵}?x×y
+    ∇
+
+⍝ --- Explicit result with all combinations of a right argument
+    ∇ r←foo21;abc ⍝ comment
+      r←{∇ ⍵}?10
+    ∇
+    ∇ r←foo22 arg;abc ⍝ comment
+      r←{∇ ⍵}?arg
+    ∇
+    ∇ r←foo23(x y);abc ⍝ comment
+      r←{∇ ⍵}?x×y
+    ∇
+
+      dfns1←{
+          ∇ ⍵
+      }
+
+    dfns2←{+/⍳≢⍵}
+
+    result←{+/⍳≢⍵} 1 2 3
+
+⍝ --- Shy explicit result with all combinations of a right argument
+    ∇ {r}←foo31;abc ⍝ comment
+      r←{∇ ⍵}?10
+    ∇
+    ∇ {r}←foo32 arg;abc ⍝ comment
+      r←{∇ ⍵}?arg
+    ∇
+    ∇ {r}←foo33(x y);abc ⍝ comment
+      r←{∇ ⍵}?x×y
+    ∇
+
+⍝ --- Two shy explicit results with all combinations of a right argument
+    ∇ {(r z)}←foo41;abc ⍝ comment
+      r←{∇ ⍵}?10
+    ∇
+    ∇ {(r z)}←foo42 arg;abc ⍝ comment
+      r←{∇ ⍵}?arg
+    ∇
+    ∇ {(r z)}←foo43(x y);abc ⍝ comment
+      r←{∇ ⍵}?x×y
+    ∇
+
+⍝ --- Two explicit results with all combinations of a right argument
+    ∇ (r z)←foo51;abc ⍝ comment
+      r←{∇ ⍵}?10
+    ∇
+    ∇ (r z)←foo52 arg;abc ⍝ comment
+      r←{∇ ⍵}?arg
+    ∇
+    ∇ (r z)←foo53(x y);abc ⍝ comment
+      r←{∇ ⍵}?x×y
+    ∇
+
+    ⍝ --- Two explicit results with all combinations of a left argument and a right argument in ()
+    ∇ (r z)←boo foo61(x y);abc ⍝ comment
+      r←{∇ ⍵}?10
+    ∇
+    ∇ (r z)←{boo}foo62(x y);abc ⍝ comment
+      r←{∇ ⍵}?x×y
+    ∇
+
+⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝ Operators
+
+    ∇ r←(f foo71)y;abc ⍝ comment
+      r←{∇ ⍵}?10
+    ∇
+    ∇ r←(f1 foo72 f2)y;abc ⍝ comment
+      r←{∇ ⍵}?10
+    ∇
+    ∇ r←(f foo73)yarg;abc ⍝ comment
+      r←{∇ ⍵}?arg
+    ∇
+    ∇ r←(f foo74)(x y);abc ⍝ comment
+      r←{∇ ⍵}?x×y
+    ∇
+
+:EndClass

@@ -25,7 +25,7 @@
 
     ∇ r←Version
       :Access Public shared
-      r←(Last⍕⎕THIS)'2.3.0.67' '2020-07-11'
+      r←(Last⍕⎕THIS)'2.3.0.64' '2020-06-29'
     ∇
 
     ∇ History
@@ -175,7 +175,6 @@
           r←_codeCoverage
         ∇
         ∇ set value;buff;bool
-          'Is not an instance of the "CodeCoverage" class'⎕SIGNAL 11/⍨~∨/'[CodeCoverage]'⍷⍕value.NewValue
           :If 0<≢value.NewValue
               _codeCoverage←value.NewValue
           :Else

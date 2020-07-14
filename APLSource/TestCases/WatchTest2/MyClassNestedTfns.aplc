@@ -1,0 +1,29 @@
+:Class MyClassNestedTfns
+⍝ Used for checking coverage and percentages on nested tfns
+
+    ∇ Run
+      :Access Public Shared
+      {}tfns1 ⍬
+      {}tfns2 ⍬
+    ∇
+
+    ∇ result←tfns1 dummy
+      result←{
+          a←1
+          b←2
+          c←3
+          a+b+c+⍵
+      }1 2 3
+    ∇
+
+    ∇ result←tfns2 dummy;myDfns
+      myDfns←{
+          a←1
+          b←2
+          c←3
+          a+b+c+⍵
+      }
+      result←myDfns 1 2 3
+    ∇
+
+:EndClass

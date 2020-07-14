@@ -1,0 +1,9 @@
+ r←Test_04(stopFlag batchFlag);⎕TRAP;T2
+⍝ Execute some more stuff
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←##.T2._Failed
+
+ MyClassNestedTfns.Run
+
+ r←##.T2._OK
+⍝Done
