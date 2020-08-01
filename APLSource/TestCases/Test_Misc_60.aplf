@@ -1,0 +1,52 @@
+ r←Test_Misc_60(stopFlag batchFlag);ref;⎕TRAP;T2;names;res
+⍝ Exercise stop flags for test cases, Initial- and Cleanup functions; simple cases: no groups.
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ #.TEMP.(didInitialize didCleanup didTestRun)←0
+ T2←⎕NEW ##.Tester2 #.TEMP
+ #.TEMP.⎕FX⊃'r←Test_1 dummy;⎕TRAP' 'r←0' 'didTestRun←1'
+ #.TEMP.⎕FX⊃'Initial' ' didInitialize←1'
+ #.TEMP.⎕FX⊃'Cleanup' ' didCleanup←1'
+
+ res←0 T2.Run 0
+ →T.PassesIf 0=1⊃res
+ →T.PassesIf 1≡#.TEMP.didTestRun
+ →T.PassesIf 1≡#.TEMP.didInitialize
+ →T.PassesIf 1≡#.TEMP.didCleanup
+ #.TEMP.(didTestRun didInitialize didCleanup)←0
+
+ :Trap 1001
+     res←1 T2.Run 0
+     →T.FailsIf 1
+ :Else
+     →T.PassesIf 0≡#.TEMP.didTestRun
+     →T.PassesIf 1≡#.TEMP.didInitialize
+     →T.PassesIf 0≡#.TEMP.didCleanup
+ :EndTrap
+ #.TEMP.(didTestRun didInitialize didCleanup)←0
+
+ :Trap 1001
+     res←2 T2.Run 0
+     →T.FailsIf 1
+ :Else
+     →T.PassesIf 0≡#.TEMP.didTestRun
+     →T.PassesIf 0≡#.TEMP.didInitialize
+     →T.PassesIf 0≡#.TEMP.didCleanup
+ :EndTrap
+ #.TEMP.(didTestRun didInitialize didCleanup)←0
+
+ :Trap 1001
+     res←4 T2.Run 0
+     →T.FailsIf 1
+ :Else
+     →T.PassesIf 1≡#.TEMP.didTestRun
+     →T.PassesIf 1≡#.TEMP.didInitialize
+     →T.PassesIf 0≡#.TEMP.didCleanup
+ :EndTrap
+ #.TEMP.(didInitialize didCleanup)←0
+
+ r←T._OK
+⍝Done

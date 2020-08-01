@@ -1,0 +1,109 @@
+ r←Test_Misc_62(stopFlag batchFlag);ref;⎕TRAP;T2;names;rc;log;parms
+⍝ Exercise stop flags for test cases, Initial- and Cleanup functions; with a group in the GUI
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ #.TEMP.(didInitialize didCleanup didTestRun)←0
+ T2←⎕NEW ##.Tester2 #.TEMP
+ T2.TestFlag←1
+ #.TEMP.⎕FX⊃'r←Test_Foo_001 dummy;⎕TRAP' 'r←0' 'didTestRun←1'
+ #.TEMP.⎕FX⊃'Initial_Foo' ' didInitialize←1'
+ #.TEMP.⎕FX⊃'Cleanup_Foo' ' didCleanup←1'
+
+ (rc log)←T2.RunGUI'Foo'
+ T2.CloseGUI
+ →T.PassesIf 0=rc
+ →T.PassesIf 1≡#.TEMP.didTestRun
+ →T.PassesIf 1≡#.TEMP.didInitialize
+ →T.PassesIf 1≡#.TEMP.didCleanup
+ #.TEMP.(didTestRun didInitialize didCleanup)←0
+
+ :Trap 1001
+     parms←T2.CreateParms ⍬
+     parms.stopFlag←1
+     (rc log)←parms T2.RunGUI'Foo'
+     →T.FailsIf 1
+ :Else
+     T2.CloseGUI
+     →T.PassesIf 0≡#.TEMP.didTestRun
+     →T.PassesIf 1≡#.TEMP.didInitialize
+     →T.PassesIf 0≡#.TEMP.didCleanup
+ :EndTrap
+ #.TEMP.(didTestRun didInitialize didCleanup)←0
+
+ :Trap 1001
+     parms←T2.CreateParms ⍬
+     parms.stopFlag←2
+     (rc log)←parms T2.RunGUI'Foo'
+     →T.FailsIf 1
+ :Else
+     →T.PassesIf 0≡#.TEMP.didTestRun
+     →T.PassesIf 0≡#.TEMP.didInitialize
+     →T.PassesIf 0≡#.TEMP.didCleanup
+ :EndTrap
+ #.TEMP.(didTestRun didInitialize didCleanup)←0
+
+ :Trap 1001
+     parms←T2.CreateParms ⍬
+     parms.stopFlag←4
+     (rc log)←parms T2.RunGUI'Foo'
+     →T.FailsIf 1
+ :Else
+     →T.PassesIf 1≡#.TEMP.didTestRun
+     →T.PassesIf 1≡#.TEMP.didInitialize
+     →T.PassesIf 0≡#.TEMP.didCleanup
+ :EndTrap
+ #.TEMP.(didTestRun didInitialize didCleanup)←0
+
+ :Trap 1001
+     parms←T2.CreateParms ⍬
+     parms.stopFlag←3
+     (rc log)←parms T2.RunGUI'Foo'
+     →T.FailsIf 1
+ :Else
+     →T.PassesIf 0≡#.TEMP.didTestRun
+     →T.PassesIf 0≡#.TEMP.didInitialize
+     →T.PassesIf 0≡#.TEMP.didCleanup
+ :EndTrap
+ #.TEMP.(didTestRun didInitialize didCleanup)←0
+
+ :Trap 1001
+     parms←T2.CreateParms ⍬
+     parms.stopFlag←5
+     (rc log)←parms T2.RunGUI'Foo'
+     →T.FailsIf 1
+ :Else
+     →T.PassesIf 0≡#.TEMP.didTestRun
+     →T.PassesIf 1≡#.TEMP.didInitialize
+     →T.PassesIf 0≡#.TEMP.didCleanup
+ :EndTrap
+ #.TEMP.(didTestRun didInitialize didCleanup)←0
+
+ :Trap 1001
+     parms←T2.CreateParms ⍬
+     parms.stopFlag←7
+     (rc log)←parms T2.RunGUI'Foo'
+     →T.FailsIf 1
+ :Else
+     →T.PassesIf 0≡#.TEMP.didTestRun
+     →T.PassesIf 0≡#.TEMP.didInitialize
+     →T.PassesIf 0≡#.TEMP.didCleanup
+ :EndTrap
+ #.TEMP.(didTestRun didInitialize didCleanup)←0
+
+ :Trap 1001
+     parms←T2.CreateParms ⍬
+     parms.stopFlag←6
+     (rc log)←parms T2.RunGUI'Foo'
+     →T.FailsIf 1
+ :Else
+     →T.PassesIf 0≡#.TEMP.didTestRun
+     →T.PassesIf 0≡#.TEMP.didInitialize
+     →T.PassesIf 0≡#.TEMP.didCleanup
+ :EndTrap
+ #.TEMP.(didTestRun didInitialize didCleanup)←0
+
+ r←T._OK
+⍝Done

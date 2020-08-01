@@ -392,9 +392,42 @@ Finally, the namespace `INI` holding variables populated from your INI file(s) i
 
 ### Premature exit
 
-There might be situations when you've executed some but not all test cases and now you want to exit the test framework, typically while you are in a test function. In such a case the framework should clean up (execute any `Cleanup` function) etc.
+There might be situations when you've executed some but not all test cases and now you want to exit the test framework, typically while you are in a test function. Now the obvious choice is )Reset, or execute just `→`.
+
+However, there are situations when you need things to be cleared up, like closing file, deleting folder, shutting down a server and stuff like that. You would do this 
+
+In such a case the framework should clean up (execute any `Cleanup` function) etc.
 
 This can be achieved by calling the instance method `QuitTests`. This function signals a `QuitEvent` which is trapped and processed in a specific way by the test framework.
+
+
+### Make the test framework stop 
+
+`Tester2` allows you to stop at strategic important points in time. 
+
+#### Stopping on a test function
+
+You might want to trace trough a test function from top to bottom. That can be achieved by passing a 1 as left argument to any of the `Run*` functions. The test framework will stop just before the test function(s) get executed.
+
+#### Stopping on `Initial` function(s)
+
+You can force `Tester2` to stop just before any `Initial` function gets executed. That can be achieved by passing a 2 as left argument to any of the `Run*` functions. 
+
+#### Stopping on `Cleanup` function(s)
+
+You can force `Tester2` to stop just before any `Cleanup` function gets executed. That can be achieved by passing a 4 as left argument to any of the `Run*` functions. 
+
+#### Mixing stops
+
+You may mix things up. For example, to make `Tester2` stop on every `Initial`, every test and every `Cleanup` function just specify the total : `1+2+5 = 7`
+
+Any other combination (3, 6) is valid as well.
+
+#### Stops with the GUI
+
+Note that the GUI provides a combo box with all possible values:
+
+![Stop options](gui_4.png "Stop options")
 
 
 ## Code coverage
