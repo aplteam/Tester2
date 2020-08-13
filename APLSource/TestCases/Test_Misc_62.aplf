@@ -1,5 +1,5 @@
  r←Test_Misc_62(stopFlag batchFlag);ref;⎕TRAP;T2;names;rc;log;parms
-⍝ Exercise stop flags for test cases, Initial- and Cleanup functions; with a group in the GUI
+⍝ Exercise stop flags for test cases, Initial- and Cleanup functions  with `RunGUI`; with a group in the GUI
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
 
