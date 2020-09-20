@@ -277,11 +277,12 @@ html{line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;}b
 <h3 data-id="Groups">Groups</h3>
 </a>
 </div>
-<p>You will find that test cases need to be kept simple, and should not depend on each other (see <a href="#best-practices" class="bookmark_link">Best Practices</a>). That leads easily to a significant number of test cases in case of a complex subject like, say, <a href="https://github.com/aplteam/MarkAPL" class="external_link">MarkAPL</a>.</p>
+<p>You will find that test cases need to be kept simple, and should not depend on each other (see <a href="#best-practices" class="bookmark_link">Best Practices</a>). That leads easily to a significant number of test cases in case you throw it at something complex like, say, <a href="https://github.com/aplteam/MarkAPL" class="external_link">MarkAPL</a>.</p>
 <p>It is pretty easy to get lost in a large number of test cases, less so when writing the first ones but more so when later you need to delete obsolete test cases, add new test cases for new features or fixed bugs and make changes to test cases that need, well, changing.</p>
 <p>That's why groups are quite important: they allow you to order test cases hierarchically.</p>
 <p>It is also possible to execute all test cases belonging to a particular group with a single command.</p>
 <p>Note that you can have group-specific <a href="#initialisation-for-groups" class="bookmark_link">initialization</a> and <a href="#cleaning-up-for-groups" class="bookmark_link">cleaning up</a>.</p>
+<p>You may also specify more than one group by providing a comma-separated list of them, use <code>*</code> as a wildcard character for matching one or more groups or exclude one or more groups by starting the definition with a tilde (<code>~</code>) character (“without”).</p>
 <div class="h_tag">
 <a href="#Custom-constants" id="Custom-constants" class="autoheader_anchor">
 <h3 data-id="Custom-constants">Custom constants</h3>

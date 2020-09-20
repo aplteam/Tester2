@@ -1,0 +1,12 @@
+ r←Test_Misc_74(stopFlag batchFlag);log;⎕TRAP;rc;T2;qdmx;names
+⍝ RunThese with a group definition that excluded all groups by a wildcard expression
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+
+ (rc log)←T2.RunThese'~Gr*'
+ names←{⍵↑⍨¯1+⍵⍳' '}¨2↓¨{⍵↑⍨¯1+1⍳⍨∨/¨'----'∘⍷¨⍵}{⍵↓⍨1⍳⍨∨/¨'--- Tests started'∘⍷¨⍵}log
+ →T.PassesIf∧/{≢'Test_[0-9]+ '⎕S 0⊣⍵}¨names,¨' '
+
+ r←T._OK

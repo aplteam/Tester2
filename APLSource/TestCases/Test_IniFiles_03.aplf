@@ -6,12 +6,12 @@
  iniFilename1←'Testcases.ini'
  ##.FilesAndDirs.DeleteFile iniFilename1
  ini←'[Config]' 'foo = 1' 'goo = ''Hello'''
- ##.APLTreeUtils.WriteUtf8File iniFilename1 ini
+ {(⊂⍵)##.FilesAndDirs.NPUT ⍺}/iniFilename1 ini
 
  iniFilename2←'Testcases-',(2 ⎕NQ'#' 'GetEnvironment' 'Computername'),'.ini'
  ##.FilesAndDirs.DeleteFile iniFilename2
  ini←'[Config]' 'foo = 2' 'too = ''Universe'''
- ##.APLTreeUtils.WriteUtf8File iniFilename2 ini
+ {(⊂⍵)##.FilesAndDirs.NPUT ⍺}/iniFilename2 ini
 
  #.⎕SHADOW'TEMP'
  'TEMP'#.⎕NS''

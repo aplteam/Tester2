@@ -6,6 +6,6 @@
  #.Tester2.TestCases.TestCasesSimu.T←⎕NEW ##.Tester2 TestCasesSimu
  (rc log)←#.Tester2.TestCases.TestCasesSimu.T.RunThese'Grouping'
  →T.PassesIf 0=rc
- →T.PassesIf 3=+/⊃∨/∨/¨'Test_Grouping_001 ' 'Test_Grouping_002 ' 'Test_Grouping_003 '⍷¨⊂⊃log
+ →T.PassesIf 3=+/↑∨/∨/¨'Test_Grouping_001 ' 'Test_Grouping_002 ' 'Test_Grouping_003 '⍷¨⊂↑log
 
  r←T._OK

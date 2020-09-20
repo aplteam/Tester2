@@ -22,5 +22,5 @@
      report,←⊂'    Nothing found!'
  :Else
      ⎕←'Checking for ⍝TODO⍝ and ⍝CHECK⍝ '{⍵↑,'--- ',⍺,' ',⍵⍴'-'}80⌊⎕PW-1
-     ⎕←⊃report
+     ⎕←↑report
  :EndIf

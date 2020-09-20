@@ -20,7 +20,7 @@
  T2←⎕NEW ##.Tester2 tmp
 
 ⍝ The tests
- →T.PassesIf(↑⍴T2.ListTestFunctions'')=≢'T'tmp.⎕NL 3
+ →T.PassesIf(⊃⍴T2.ListTestFunctions'')=≢'T'tmp.⎕NL 3
  →T.PassesIf(+/'Test_Grp'{((≢⍺)↑[2]⍵)∧.=⍺}'T'tmp.⎕NL 3)=≢T2.ListTestFunctions'Grp*'
  →T.PassesIf 5=1↑⍴T2.ListGroups
 

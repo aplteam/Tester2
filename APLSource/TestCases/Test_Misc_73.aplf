@@ -1,0 +1,16 @@
+ r←Test_Misc_73(stopFlag batchFlag);log;⎕TRAP;rc;T2;qdmx
+⍝ RunThese with a group definition that carries both "," and "~" (illegal)
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+
+ :Trap 11
+     (rc log)←T2.RunThese'Grouping,~Grp1'
+     →T.FailsIf 1
+ :Else
+     qdmx←⎕DMX
+     →T.PassesIf'"~" must be the very first character in a group definition'≡qdmx.EM
+ :EndTrap
+
+ r←T._OK

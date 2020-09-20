@@ -37,11 +37,11 @@
  T2←⎕NEW ##.Tester2 TestCasesSimu
  T2.TestFlag←1
  (rc log)←T2.RunThese''
- total←↑∆GetTotals log
- (rc log)←T2.RunThese'Grp2' 0
- noOf←↑∆GetTotals log
- (rc log)←T2.RunThese'~Grp2' 0
- noOf2←↑∆GetTotals log
+ total←⊃∆GetTotals log
+ (rc log)←T2.RunThese'Grp2'
+ noOf←⊃∆GetTotals log
+ (rc log)←T2.RunThese'~Grp2'
+ noOf2←⊃∆GetTotals log
  →T.PassesIf noOf2=total-noOf
 
  r←T._OK

@@ -9,7 +9,7 @@
  →T.PassesIf 2=≡list1
  →T.PassesIf 2=⍴⍴list1
  →T.PassesIf 1<≢list1
- Assert∨/∨⌿'foo'⍷⊃list1[;1]
+ Assert∨/∨⌿'foo'⍷↑list1[;1]
 
  list2←T.ListTestFunctions'foo'
  →T.PassesIf 2=≡list2

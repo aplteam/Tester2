@@ -4,7 +4,7 @@
  r←T._Failed
  T2←⎕NEW ##.Tester2 ⎕THIS
 
- noOfConstants←≢{⍵/⍨'_'=↑¨⍵}T2.⎕NL-2
+ noOfConstants←≢{⍵/⍨'_'=⊃¨⍵}T2.⎕NL-2
  →T.PassesIf noOfConstants=≢T2.ListSymbolicNames
  T2.custom_1←'Message1'
  T2.custom_2←'Message2'

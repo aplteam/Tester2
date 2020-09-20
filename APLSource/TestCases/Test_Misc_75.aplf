@@ -1,0 +1,16 @@
+ r←Test_Misc_75(stopFlag batchFlag);log;⎕TRAP;rc;T2;qdmx
+⍝ RunThese with a group definition that carries both "*" and "," (illegal)
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+
+ :Trap 11
+     (rc log)←T2.RunThese'Grouping,Grp*'
+     →T.FailsIf 1
+ :Else
+     qdmx←⎕DMX
+     →T.PassesIf'You cannot mix "*" (wildcard) with ","'≡qdmx.EM
+ :EndTrap
+
+ r←T._OK

@@ -7,9 +7,9 @@
  'TEMP'#.⎕NS''
  #.TEMP.(didInitialize didCleanup didTestRun)←0
  T2←⎕NEW ##.Tester2 #.TEMP
- #.TEMP.⎕FX⊃'r←Test_Foo_001 dummy;⎕TRAP' 'r←0' 'didTestRun←1'
- #.TEMP.⎕FX⊃'Initial_Foo' ' didInitialize←1'
- #.TEMP.⎕FX⊃'Cleanup_Foo' ' didCleanup←1'
+ #.TEMP.⎕FX↑'r←Test_Foo_001 dummy;⎕TRAP' 'r←0' 'didTestRun←1'
+ #.TEMP.⎕FX↑'Initial_Foo' ' didInitialize←1'
+ #.TEMP.⎕FX↑'Cleanup_Foo' ' didCleanup←1'
 
  res←0 T2.Run 1
  →T.PassesIf 0=1⊃res

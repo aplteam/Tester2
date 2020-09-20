@@ -240,7 +240,7 @@ Note that all test cases get the `batchFlag` provided as part of the right argum
 
 ### Groups
 
-You will find that test cases need to be kept simple, and should not depend on each other (see [Best Practices](#best-practices)). That leads easily to a significant number of test cases in case of a complex subject like, say, [MarkAPL](https://github.com/aplteam/MarkAPL).
+You will find that test cases need to be kept simple, and should not depend on each other (see [Best Practices](#best-practices)). That leads easily to a significant number of test cases in case you throw it at something complex like, say, [MarkAPL](https://github.com/aplteam/MarkAPL).
 
 It is pretty easy to get lost in a large number of test cases, less so when writing the first ones but more so when later you need to delete obsolete test cases, add new test cases for new features or fixed bugs and make changes to test cases that need, well, changing.
 
@@ -249,6 +249,8 @@ That's why groups are quite important: they allow you to order test cases hierar
 It is also possible to execute all test cases belonging to a particular group with a single command.
 
 Note that you can have group-specific [initialization ](#initialisation-for-groups) and [cleaning up](#cleaning-up-for-groups).
+
+You may also specify more than one group by providing a comma-separated list of them, use `*` as a wildcard character for matching one or more groups or exclude one or more groups by starting the definition with a tilde (`~`) character ("without").
 
 
 ### Custom constants

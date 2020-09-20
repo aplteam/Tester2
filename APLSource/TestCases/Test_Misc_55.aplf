@@ -5,9 +5,9 @@
 
  ref←⎕NS''
  T2←⎕NEW ##.Tester2 ref
- constants←T2.⍎¨names←{⍵/⍨'_'=↑¨⍵}T2.⎕NL-2
+ constants←T2.⍎¨names←{⍵/⍨'_'=⊃¨⍵}T2.⎕NL-2
 
- →T.PassesIf(1⊃names)≡T2.GetSymbolicName↑constants
+ →T.PassesIf(1⊃names)≡T2.GetSymbolicName⊃constants
  →T.PassesIf names≡T2.GetSymbolicName constants
  →T.PassesIf''≡T2.GetSymbolicName 123
  →T.PassesIf((2↑names),⊂'')≡T2.GetSymbolicName(2↑constants),123

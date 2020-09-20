@@ -3,13 +3,14 @@
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
  :If batchFlag
-     r←T.∆NoBatchTest
+
+     r←T._NoBatchTest
 
  :Else
 
      r←T._Failed
 
-     ⎕←⎕PW↑'   --- ',(↑⎕SI),⎕PW⍴'-'
+     ⎕←⎕PW↑'   --- ',(⊃⎕SI),⎕PW⍴'-'
      ⎕←'   This text case needs you: it opens an edit window, and you must close it!'
      ⎕←'   Press enter to continue'
      {}⍞

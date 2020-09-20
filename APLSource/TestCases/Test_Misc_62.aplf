@@ -8,9 +8,9 @@
  #.TEMP.(didInitialize didCleanup didTestRun)←0
  T2←⎕NEW ##.Tester2 #.TEMP
  T2.TestFlag←1
- #.TEMP.⎕FX⊃'r←Test_Foo_001 dummy;⎕TRAP' 'r←0' 'didTestRun←1'
- #.TEMP.⎕FX⊃'Initial_Foo' ' didInitialize←1'
- #.TEMP.⎕FX⊃'Cleanup_Foo' ' didCleanup←1'
+ #.TEMP.⎕FX↑'r←Test_Foo_001 dummy;⎕TRAP' 'r←0' 'didTestRun←1'
+ #.TEMP.⎕FX↑'Initial_Foo' ' didInitialize←1'
+ #.TEMP.⎕FX↑'Cleanup_Foo' ' didCleanup←1'
 
  (rc log)←T2.RunGUI'Foo'
  T2.CloseGUI

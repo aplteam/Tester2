@@ -5,7 +5,7 @@
  R←T._Failed
 
  report←''
- xml←⎕XML'flat'##.APLTreeUtils.ReadUtf8File'publish.config'
+ xml←⎕XML↑##.FilesAndDirs.NGET'publish.config'
  →T.FailsIf~(⊂'container')∊xml[;1]
 
  R←T._OK

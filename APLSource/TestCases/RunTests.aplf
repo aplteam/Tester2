@@ -1,8 +1,20 @@
- RunTests groupName;ps;rc;log
+ RunTests;dcfFilename;htmlFilename;tno;ps;rc;log
  Prepare
- ps←T.CreateParms ⍬
- ps.debugFlag←1
- ps.trapFlag←0
- (rc log)←ps T.RunGUI groupName
+ dcfFilename←(⊃,/¯1↓⎕NPARTS T.codeCoverage.filename),'.dcf'
+ :If ##.FilesAndDirs.IsFile dcfFilename
+ :AndIf ∆YesOrNo'CodeCovarge data file already exists; override?'
+     tno←dcfFilename ⎕FTIE 0
+     dcfFilename ⎕FERASE tno
+ :EndIf
+ :If 'Win'≡##.APLTreeUtils2.GetOperatingSystem''
+     ps←T.CreateParms ⍬
+     ps.debugFlag←1
+     ps.trapFlag←0
+     (rc log)←ps T.RunGUI''
+ :Else
+     (rc log)←0 T.RunBatchTests 1
+ :EndIf
  Assert 0=rc
- ⍝Done
+ htmlFilename←##.CodeCoverage.ProcessDataAndCreateReport T.codeCoverage.filename
+ ##.APLTreeUtils2.GoToWebPage'file://',htmlFilename
+⍝Done

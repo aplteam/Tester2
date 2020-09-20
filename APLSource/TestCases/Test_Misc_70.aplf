@@ -1,0 +1,10 @@
+ r←Test_Misc_70(stopFlag batchFlag);log;⎕TRAP;rc;T2
+⍝ RunThese with multiple groups
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+ (rc log)←T2.RunThese'Grouping,Grp2'
+ →T.PassesIf∧/0<+/¨∨/¨'Test_Grouping_' 'Test_Grp2_'⍷¨⊂↑log
+
+ r←T._OK

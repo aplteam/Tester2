@@ -9,8 +9,8 @@
  TestCasesSimu.⎕EX'T'
  →T.PassesIf 4=+/': not found'⍷∊log  ⍝ No function `Initial`, no INI file and no function `Cleanup`
  →T.PassesIf∨/'13 test cases of 13 called'⍷∊log
- →T.PassesIf∨/'0 test cases failed'⍷∊log
- →T.PassesIf∨/'2 test cases broken'⍷∊log
+ →T.PassesIf∨/'2 test cases failed'⍷∊log
+ →T.PassesIf∨/'0 test cases broken'⍷∊log
  →T.PassesIf∨/'2 test cases not executed because they are not "batchable"'⍷∊log
 
  r←T._OK

@@ -6,7 +6,7 @@
  iniFilename←'Testcases.ini'
  ##.FilesAndDirs.DeleteFile iniFilename
  ini←'[Config]' 'foo = 1' 'goo = ''Hello'''
- ##.APLTreeUtils.WriteUtf8File iniFilename ini
+ {(⊂⍵)##.FilesAndDirs.NPUT ⍺}/iniFilename ini
 
  #.⎕SHADOW'TEMP'
  'TEMP'#.⎕NS''

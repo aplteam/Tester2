@@ -7,7 +7,7 @@
  (rc log)←TestCasesSimu.T.RunBatchTests 1
  TestCasesSimu.⎕EX'T'
  →T.FailsIf 1≠rc
- →T.FailsIf 13 0 2 2≢∆GetTotals log
+ →T.FailsIf 13 2 0 2≢∆GetTotals log
 
  r←T._OK
 ⍝Done

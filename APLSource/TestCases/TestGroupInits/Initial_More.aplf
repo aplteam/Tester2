@@ -1,6 +1,7 @@
- Initial_More ns
+ r←Initial_More ns
 ⍝ Check the right argument
  {⍵:1}9.1≠⎕NC⊂'ns'
  {⍵:.}3≠ns.⎕NC'List'
  {⍵:.}0=≢ns.List
+ r←1
 ⍝Done
