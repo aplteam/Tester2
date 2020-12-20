@@ -250,7 +250,13 @@ It is also possible to execute all test cases belonging to a particular group wi
 
 Note that you can have group-specific [initialization ](#initialisation-for-groups) and [cleaning up](#cleaning-up-for-groups).
 
-You may also specify more than one group by providing a comma-separated list of them, use `*` as a wildcard character for matching one or more groups or exclude one or more groups by starting the definition with a tilde (`~`) character ("without").
+You may also specify more than one group by...
+
+* providing a comma-separated list of them
+* use `*` as a wildcard character for matching one or more groups
+
+
+You may also exclude one or more groups by starting the definition with a tilde (`~`) character ("without").
 
 
 ### Custom constants

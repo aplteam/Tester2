@@ -12,8 +12,8 @@
 ⍝ `Tester2` tries to find two INI files: "Testcases.INI" and "Testcases_{computername}.INI". If it finds one or
 ⍝ both of them it will merge and flatten them and assign them to the `INI` property of `Tester2` instance.
 ⍝ ## Dependencies
-⍝ `Tester2` requires the namespace script `APLTreeUtils` and the class `CodeCoverage`, but the latter only in
-⍝ case you want code coverage to be watched; for that you need to set the `codeCoverage` property.
+⍝ `Tester2` requires the classes `APLTreeUtils2` and `CodeCoverage`, but the latter only in case you want code 
+⍝ coverage to be checked; for that you need to set the `codeCoverage` property.
 ⍝ ## Misc
 ⍝ This class is part of the APLTree Open Source project.\\
 ⍝ Home page: <https://github.com/aplteam/Tester2>\\
@@ -23,11 +23,15 @@
 
     ∇ r←Version
       :Access Public shared
-      r←'Tester2' '3.0.0.81' '2020-09-08'
+      r←'Tester2' '3.0.1.87' '2020-11-28'
     ∇
 
     ∇ History
       :Access Public shared
+      ⍝ * 3.0.1 ⋄ 2020-11-28
+      ⍝   * `GetRefToAPLTreeUtils` removed
+      ⍝   * Bug fix: invalid calls to `dtb` removed by calls to `A.DTB`.
+      ⍝   * Documentation improved
       ⍝ * 3.0.0 ⋄ 2020-09-20
       ⍝   * BREAKING CHANGES:
       ⍝     * At least Dyalog 18.0 is required
@@ -35,7 +39,7 @@
       ⍝   * `RunThese` now allows the specification of several groups (comma-separated), even with "~"
       ⍝   * Internal changes
       ⍝     * Uses now `⎕ML←1`
-      ⍝     * Does not `:Include APLTreeUtils` anymore
+      ⍝     * Does not `:Include APLTreeUtils` anymore (but requires `APLTreeUtils2` as a sibling)
       ⍝\\
       ⍝ For a full history (including older versions) see <https://github.com/aplteam/Tester2/releases>
     ∇
@@ -1120,7 +1124,7 @@
           :Case n2.Edit
               _ref.⎕ED'Test_',name
           :Case n2.Copy
-              buff←¯1↓⊃,/{(dtb ⍵),⎕UCS 13}¨↓⎕FMT{((¯3↑¨⍕¨⍳≢⍵),¨⊂'. '),⍵}{⍵⌿⍨(≢¨⍵)∨.≠0 0}n.Grid.Values[;2 3]
+              buff←¯1↓⊃,/{(A.DTB ⍵),⎕UCS 13}¨↓⎕FMT{((¯3↑¨⍕¨⍳≢⍵),¨⊂'. '),⍵}{⍵⌿⍨(≢¨⍵)∨.≠0 0}n.Grid.Values[;2 3]
               {{}(#.⎕NS'').(⎕ED⍠('ReadOnly' 1)&{'ed'}ed←⍵)}buff
           :Else
               ∘∘∘ ⍝ Huh?!
@@ -1484,24 +1488,6 @@
       :EndIf
     ∇
 
-    ∇ ref←GetRefToAPLTreeUtils
-      :If 9={0=#.⎕NC'_dependencies':0 ⋄ #._dependencies.⎕NC ⍵}'APLTreeUtils'
-          ref←#._dependencies.APLTreeUtils
-      :ElseIf 9=#.⎕NC'APLTreeUtils'
-          ref←#.APLTreeUtils
-      :ElseIf 9=⎕NC'APLTreeUtils'
-          ref←APLTreeUtils
-      :ElseIf 9=##.⎕NC'APLTreeUtils'
-          ref←##.APLTreeUtils
-      :ElseIf 9∊⊃¨⎕RSI.⎕NC⊂'APLTreeUtils'
-          ref←(⊃(9=⊃¨⎕RSI.⎕NC⊂'APLTreeUtils')/⎕RSI).APLTreeUtils
-      :ElseIf 9∊⊃¨⎕RSI.##.⎕NC⊂'APLTreeUtils'
-          ref←(⊃(9=⊃¨⎕RSI.##.⎕NC⊂'APLTreeUtils')/⎕RSI.##).APLTreeUtils
-      :Else
-          'Missing: APLTreeUtils'⎕SIGNAL 6
-      :EndIf
-    ∇
-
     ∇ {r}←{groupName}GetTestTemplate no;newName;body;cl
       :Access Public Instance
       ⍝ Injects the code (body) of the test template function into the namespace hosting the test cases if that is an
@@ -1511,7 +1497,7 @@
       groupName←{0<⎕NC ⍵:⍎⍵ ⋄ ''}'groupName'
       'Invalid right argumet: must be an integer between 1 and 999'⎕SIGNAL 11/⍨~(⊂no)∊(⍳999)
       'Invalid left argumet: must be a char vector'⎕SIGNAL 11/⍨~((≡groupName)∊0 1)∧' '≡↑0⍴groupName
-      body←dtb↓180⌶'Test_000'
+      body←A.DTB↓180⌶'Test_000'
       :If 0=≢groupName
           newName←'Test_',(¯3↑'000',⍕no)
           (1⊃body)←'←Test_000\('⎕R('←',newName,'(')⍠('Greedy' 0)⊣1⊃body
