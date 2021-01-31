@@ -3,7 +3,7 @@
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
 
- A←##.APLTreeUtils2
+ A←APLTreeUtils2
 
 ⍝ Pre-conditions
  tmp←⎕NS''

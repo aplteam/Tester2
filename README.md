@@ -2,23 +2,20 @@
 
 `Tester2` is a member of the APLTree library, which is a collection of classes etc. that aim to support the Dyalog APL programmer. Search GitHub for "apltree" and you will find solutions to many every-day problems Dyalog APL programmers might have to solve.
 
-**_Note:_** `Tester2` is the successor of the `Tester` class. Although it has inherited the general ideas and concepts from the `Tester` class the new `Tester2` class has a very different workflow. Methods have been removed, added and renamed. It was therefore decided to start fresh with a new class.
+If you are using the predeccessor `Tester` and want to migrate to `Tester2` then please read the document `Tester2VersusTester.html`.
 
-`Tester` was created roughly 10 years ago. Although it's solved its purpose technology has advanced. Also, during all these years a couple of design problems `Tester` was suffering from raised their heads. `Tester2` is an attempt to integrate (almost) latest technology (version 17.0 of Dyalog APL) and to overcome those aforementioned design obstacles.
+## Overview
 
 The framework comprises two classes:
 
 * `Tester2` is a class required to manage and execute test cases.
-* `CodeCoverage` is needed only if you want to produce a code coverage report. 
+* `CodeCoverage` is needed if you want to produce a code coverage report, something that is recommended.
 
+The purpose of `Tester2` is to provide a framework for testing all the projects of the APLTree library. Only with such a framework is it possible to make changes to any APLTree project with confidence.
 
-## Overview 
+You might find the framework flexible enough to suit your own needs when it comes to implementing tests, even independently from the APLTree library.
 
-The purpose of this class is to provide a framework for testing all the projects of the APLTree library. Only with such a framework is it possible to make changes to any APLTree project with confidence.
-
-You might find the framework flexible enough to suit your own needs when it comes to implementing tests, even independently from the APLTree project.
-
-Depending on how the Test framework is used it might or might not present a GUI. Note that the GUI is a Windows-only feature (for the time being) although in all other respects `Tester2` works on all platforms; if you decide to avoid the GUI, messages of any kind are printed to the Dyalog session window.
+Depending on how the Test framework is used it might or might not present a GUI. Note that the GUI is a Windows-only feature (for the time being) although in all other respects `Tester2` works on all platforms; if you decide to avoid the GUI, messages are printed to the Dyalog session window.
 
 If the GUI shows that's how it looks like:
 
@@ -68,92 +65,6 @@ Note that all `Run*` functions return  a two-element vector:
 
 
 A reference pointing to the GUI is assigned internally. That's why the GUI does not disappear straight away after all test cases have been executed. To get rid of it either click the "Close" box or call the `T.CloseGUI` method which does not require an argument.
-
-
-## Differences between `Tester` and `Tester2`
-
-Since `Tester2` is supposed to replace `Tester` without being 100% compatible it is probably worthwhile to see the main differences on a glance because the two are pretty similar, and if you've used `Tester` you probably want to convert your tests to `Tester2`.
-
-### `Tester2` needs to be instantiated.
-
-While `Tester` offered a function `EstablishHelpersIn` which injected a significant number of functions into the namespace that hosts test cases `Tester2` _must_ be instantiated.
-
-All methods and all symbolic names are available via the instance, and only via the instance. Therefore:
-
-```
-      T←⎕NEW Tester2 HomeOfYourTestCases
-      ⊃⍴T.⎕nl -3
-24
-      ⊃⍴T.⎕nl -2
-13
-```
-
-The advantage is that your namespace is not cluttered with those methods and symbolic names. The disadvantage is that you must use the instance name now.
-
-### Symbolic names got renamed
-
-In `Tester` all symbolic names started with a `∆` character.
-
-In `Tester2` they start with an underscore (`_`). This is a very common convention for symbolic names (or constants) and was therefore adapted.
-
-
-### Custom constants added
-
-In addition to the pre-defined symbolic names you can define your own ones; see [Custom constants](#custom-constants) for details.
-
-
-### Couple of helpers have been renamed
-
-
-| Old name | New name              |
-|----------|-----------------------|
-| `E`      | `T.EditTestFunctions` |
-| `L`      | `T.ListTestFunctions` |
-| `G`      | `T.ListGroups`        |
-
-### INI files
-
-When `Tester` found one or two INI files they were merged, converted into a single flat namespace holding variables, and that namespace was created in the hosting namespace as `INI`.
-
-With `Tester2` you won't be surprised to learn that the INI file is now part of the instance. With an instance `T` you can address a variable `foo` as `T.INI.foo`.
-
-
-### The `Run*` functions
-
-The number of `Run*` functions has been reduced, but at the same time a general function `Run__` is now available that can be used for all possible scenarios.
-
-
-### The result of the `Run*` functions
-
-With `Tester2` all `Run*` function return 0, 1 or 2 as return code:
-
-* `0` means that all test cases that got executed returned `_OK`.
-* `1` means that at least one test function either crashed or returned `_Failed`.
-* `2` means that a function `Initial` was found and executed but failed to return a 0, meaning it could not initialize.
-
-
-### `Cleanup` function may accept a right argument
-
-In `Tester` the function `Cleanup` was expected to be niladic. With `Tester2` it may be monadic.
-
-
-### Initialising on a per-group basis
-
-In addition to the [global `Initial` function](#initialisation) you can also have [group-specific `Initial` functions](#initialisation-for-groups), a feature that was not available with `Tester`.
-
-A function is recognized as a group-specific `Initial` function by naming convention: for a group `Foo` the function's name must be `Initial_Foo` for it to be recognized.
-
-
-### The `List` function got renamed
-
-When a parameter namespace is created by calling the instance method `CreateParms` it comes with a built-in function `List`. In `Tester` the name of that function was `∆List`.
-
-
-### New method `QuitTests`
-
-`Tester` did not offer a way to quit from a test suite after having executed only a subset of the test functions, for example after a test function breaks and you don't want to continue.
-
-`Tester2` offers the method `QuitTests` for this purpose. When executed it prints a `⎕SIGNAL` command to the session that when executed will make `Tester2` finish the currently running tests in an orderly fashion, including executing any `Cleanup` function(s).
 
 
 ## Details 
@@ -445,9 +356,9 @@ Note that the GUI provides a combo box with all possible values:
 
 ## Code coverage
 
-Ideally one would like to know how much of the code is actually covered by test cases. Ideally that should be 100%, but that is rarely achievable.
+Usually one would like to know how much of the code is actually covered by test cases. Ideally that should be 100%, but that is rarely achievable.
 
-However, in order to improve on this one needs to know how much code is covered, and ideally also which parts of the code are _not_ covered.
+However, in order to improve on this one needs to know how much code is covered, and also which parts of the code are _not_ covered.
 
 Since version 2.3 `Tester2` can cooperate with the class [CodeCoverage](https://github.com/aplteam/CodeCoverage) which is capable of collecting the necessary data and compile a report from them. 
 

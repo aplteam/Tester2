@@ -1,6 +1,6 @@
  {r}←Initial parms
  r←1
- ##.FilesAndDirs.PolishCurrentDir
+ FilesAndDirs.PolishCurrentDir
  :If 0=parms.debugFlag
      ⎕←'******* Sorry, but for technical reasons this test suite'
      ⎕←'        can only be executed without error trapping'

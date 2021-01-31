@@ -112,9 +112,18 @@ ul li, ol li {margin: 8pt 3pt;}
 <body>
 <h1 id="top">Coverage Report</h1>
 <p>Watched: 84 fns/opr within <code>#.Tester2.Tester2</code></p>
+<p>The test test suite was execute once:</p>
+<table>
+<thead>
+<tr><th>Executed at</th><th>APLVersion</th><th>Memory (MB)</th></tr>
+<thead>
+</tbody>
+<tr><td>2021-01-31 08:53:11</td><td>Windows-64 ⋄ 18.0.39845.0 ⋄ W ⋄ Development</td><td>53</td></tr>
+</tbody>
+</table>
 <p>Overall 81% of the testable code is  covered.</p>
 <p>(Comment lines, empty lines, all <code>:End</code>* lines etc. are all ignored)</p>
-<p>60 of the fns/opr are 100% covered.</p>
+<p>57 of the fns/opr are 100% covered.</p>
 <p>11 are not covered at all:</p>
 <table>
 <tbody>
@@ -125,38 +134,41 @@ ul li, ol li {margin: 8pt 3pt;}
 <tr><td>#.Tester2.Tester2.get_exec_after_each_test</td></tr>
 <tr><td>#.Tester2.Tester2.OnContextMenuInGrid</td></tr>
 <tr><td>#.Tester2.Tester2.OnClose</td></tr>
-<tr><td>#.Tester2.Tester2.GetRefToAPLTreeUtils</td></tr>
+<tr><td>#.Tester2.Tester2.OnKeyPress</td></tr>
 <tr><td>#.Tester2.Tester2.GetTestTemplate</td></tr>
 <tr><td>#.Tester2.Tester2.Test_000</td></tr>
 <tr><td>#.Tester2.Tester2.YesOrNo</td></tr>
 </tbody>
 </table>
 <div id="partly-covered" class="keep-together">
-<p>13 are partly covered:</p>
+<p>16 are partly covered:</p>
 <table>
 <thead>
 <tr><th style="text-align:left;">Function/Operator</th><th style="text-align:left;">Lines not executed</th><th style="text-align:left;">Coverage</th><th style="text-align:right;">≢</th></tr>
 </thead>
 <tbody>
-<tr><td>#.Tester2.Tester2.OnKeyPress</td><td>5,6,11</td><td>63%</td><td class="align-right">8</td></tr>
+<tr><td>#.Tester2.Tester2.NotifyAcreAndDeleteOldVersion</td><td>11←≢3-4,14,20,23-25,27-28,30-31</td><td>52%</td><td class="align-right">23</td></tr>
 <tr><td>#.Tester2.Tester2.EditTestFunctions</td><td>4←≢9,14,17,19</td><td>64%</td><td class="align-right">11</td></tr>
+<tr><td>#.Tester2.Tester2.GoToTidyUp</td><td>6,7</td><td>67%</td><td class="align-right">6</td></tr>
 <tr><td>#.Tester2.Tester2.ListTestFunctions</td><td>10←≢14-15,18-20,44-46,50-51</td><td>72%</td><td class="align-right">36</td></tr>
 <tr><td>#.Tester2.Tester2.AddToGui</td><td>4←≢13-15,21</td><td>80%</td><td class="align-right">20</td></tr>
-<tr><td>#.Tester2.Tester2.RenameTestFnsTo</td><td>15←≢50,64,71,74-75,82,88,91,94-96,98-99,101-102</td><td>81%</td><td class="align-right">79</td></tr>
+<tr><td>#.Tester2.Tester2.ExecuteInitial</td><td>4←≢17-18,20,23</td><td>81%</td><td class="align-right">21</td></tr>
 <tr><td>#.Tester2.Tester2.ReportInactiveToGUI</td><td>14,15</td><td>82%</td><td class="align-right">11</td></tr>
 <tr><td>#.Tester2.Tester2.ProcessTestCases</td><td>18←≢11,28-29,54,68-70,95,101-109,135</td><td>83%</td><td class="align-right">107</td></tr>
 <tr><td>#.Tester2.Tester2.Run__</td><td>9←≢36-37,60-62,75-76,78,87</td><td>86%</td><td class="align-right">66</td></tr>
+<tr><td>#.Tester2.Tester2.ExecuteTestFunction</td><td>6,26,27</td><td>86%</td><td class="align-right">21</td></tr>
+<tr><td>#.Tester2.Tester2.RunGUI</td><td>15</td><td>88%</td><td class="align-right">8</td></tr>
 <tr><td>#.Tester2.Tester2.ShowLog</td><td>16,25</td><td>89%</td><td class="align-right">18</td></tr>
-<tr><td>#.Tester2.Tester2.ExecuteInitial</td><td>18,23</td><td>90%</td><td class="align-right">21</td></tr>
-<tr><td>#.Tester2.Tester2.ExecuteTestFunction</td><td>26,27</td><td>90%</td><td class="align-right">21</td></tr>
+<tr><td>#.Tester2.Tester2.ProcessGroup</td><td>11</td><td>90%</td><td class="align-right">10</td></tr>
 <tr><td>#.Tester2.Tester2.ProcessIniFiles</td><td>25</td><td>95%</td><td class="align-right">20</td></tr>
+<tr><td>#.Tester2.Tester2.RenameTestFnsTo</td><td>68,82,89</td><td>95%</td><td class="align-right">64</td></tr>
 <tr><td>#.Tester2.Tester2.ProcessGroupAndTestCaseNumbers</td><td>60,61</td><td>96%</td><td class="align-right">50</td></tr>
 </tbody>
 </table>
 </div>
 <div id="footer">
 <hr>
-<p>Created by "CodeCoverage" version 0.6.1.13 from 2020-09-16</p>
+<p>Created by "CodeCoverage" version 0.7.1.37 from 2020-12-20</p>
 </div>
 </body>
 </html>

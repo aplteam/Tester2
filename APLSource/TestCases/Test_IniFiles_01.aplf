@@ -4,9 +4,9 @@
  r←T._Failed
 
  iniFilename←'Testcases.ini'
- ##.FilesAndDirs.DeleteFile iniFilename
+ FilesAndDirs.DeleteFile iniFilename
  ini←'[Config]' 'foo = 1' 'goo = ''Hello'''
- {(⊂⍵)##.FilesAndDirs.NPUT ⍺}/iniFilename ini
+ {(⊂⍵)FilesAndDirs.NPUT ⍺}/iniFilename ini
 
  #.⎕SHADOW'TEMP'
  'TEMP'#.⎕NS''
@@ -33,5 +33,5 @@
  r←T._OK
 
 ∆TidyUp:
- :Trap 0 ⋄ ##.FilesAndDirs.DeleteFile iniFilename ⋄ :EndTrap
+ :Trap 0 ⋄ FilesAndDirs.DeleteFile iniFilename ⋄ :EndTrap
 ⍝Done

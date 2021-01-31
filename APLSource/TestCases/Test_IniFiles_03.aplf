@@ -4,14 +4,14 @@
  r←T._Failed
 
  iniFilename1←'Testcases.ini'
- ##.FilesAndDirs.DeleteFile iniFilename1
+ FilesAndDirs.DeleteFile iniFilename1
  ini←'[Config]' 'foo = 1' 'goo = ''Hello'''
- {(⊂⍵)##.FilesAndDirs.NPUT ⍺}/iniFilename1 ini
+ {(⊂⍵)FilesAndDirs.NPUT ⍺}/iniFilename1 ini
 
  iniFilename2←'Testcases-',(2 ⎕NQ'#' 'GetEnvironment' 'Computername'),'.ini'
- ##.FilesAndDirs.DeleteFile iniFilename2
+ FilesAndDirs.DeleteFile iniFilename2
  ini←'[Config]' 'foo = 2' 'too = ''Universe'''
- {(⊂⍵)##.FilesAndDirs.NPUT ⍺}/iniFilename2 ini
+ {(⊂⍵)FilesAndDirs.NPUT ⍺}/iniFilename2 ini
 
  #.⎕SHADOW'TEMP'
  'TEMP'#.⎕NS''
@@ -39,5 +39,5 @@
  r←T._OK
 
 ∆TidyUp:
- :Trap 0 ⋄ ##.FilesAndDirs.DeleteFile iniFilename1 ⋄ :EndTrap
- :Trap 0 ⋄ ##.FilesAndDirs.DeleteFile iniFilename2 ⋄ :EndTrap
+ :Trap 0 ⋄ FilesAndDirs.DeleteFile iniFilename1 ⋄ :EndTrap
+ :Trap 0 ⋄ FilesAndDirs.DeleteFile iniFilename2 ⋄ :EndTrap

@@ -6,7 +6,7 @@
  T2←⎕NEW ##.Tester2 TestCasesSimu
  T2.TestFlag←1
  ⎕TRAP←(1001 'E' '→⎕lc')(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
- :If 'Win'≡##.APLTreeUtils2.GetOperatingSystem''
+ :If 'Win'≡APLTreeUtils2.GetOperatingSystem''
      (rc log)←T2.RunGUI 2
      T2.CloseGUI
      expected←'  1 test case of 1 called' '  0 test cases failed' '  0 test cases broken'

@@ -3,10 +3,10 @@
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
 
- path←##.FilesAndDirs.GetTempSubDir''
- {(⊂⍵)##.FilesAndDirs.NPUT ⍺}/(path,'\Testcases.ini')('[CONFIG]' 'file1= ''Main file''')
+ path←FilesAndDirs.GetTempSubDir''
+ {(⊂⍵)FilesAndDirs.NPUT ⍺}/(path,'\Testcases.ini')('[CONFIG]' 'file1= ''Main file''')
  computername←2 ⎕NQ #'GetEnvironment' 'Computername'
- {(⊂⍵)##.FilesAndDirs.NPUT ⍺}/(path,'\Testcases-',computername,'.ini')('[CONFIG]' 'file2= ''Sub file''')
+ {(⊂⍵)FilesAndDirs.NPUT ⍺}/(path,'\Testcases-',computername,'.ini')('[CONFIG]' 'file2= ''Sub file''')
  #.⎕SHADOW'TEMP'
  'TEMP'#.⎕NS''
  #.TEMP.⎕FX'r←Test_01 y;⎕TRAP' ' r←T._Failed' '→T.PassesIf 2=≢T.INI.⎕NL 2' '→T.PassesIf''Main file''≡T.INI.file1' '→T.PassesIf''Sub file''≡T.INI.file2' 'r←T._OK'
@@ -18,4 +18,4 @@
  r←T._OK
 
 ∆TidyUp:
- ##.FilesAndDirs.RmDir path
+ FilesAndDirs.RmDir path
