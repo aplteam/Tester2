@@ -7,17 +7,20 @@
  'TEMP'#.⎕NS''
  #.TEMP.⎕FX'Initial' '∆Initalized←1'
  #.TEMP.⎕FX'Cleanup' '⎕ex''∆Initalized'''
+ #.TEMP.⎕FX'Initial_Misc' '∆Initalized_Misc←1'
+ #.TEMP.⎕FX'Cleanup_Misc' '⎕ex''∆Initalized_Misc'''
  trap←'⎕TRAP←(999 ''C'' ''∘∘∘ ⍝ Deliberate error'')(0 ''N'')'
- #.TEMP.⎕FX'r←Test_001(stopFlag batchFlag);⎕TRAP'trap'∆GLOBAL←1' 'r←T._OK'
- #.TEMP.⎕FX'r←Test_002(stopFlag batchFlag);⎕TRAP'trap'r←T._OK' ':If 0=⎕NC''∆Initalized''' 'r←T._Failed' ':EndIf'
- #.TEMP.⎕FX'r←Test_003(stopFlag batchFlag);⎕TRAP'trap'T.QuitTests' '⎕←''To continue execute the ⎕SIGNAL statement''' '.'
+ #.TEMP.⎕FX'r←Test_Misc_001(stopFlag batchFlag);⎕TRAP'trap'∆GLOBAL←1' 'r←T._OK'
+ #.TEMP.⎕FX'r←Test_Misc_002(stopFlag batchFlag);⎕TRAP'trap'r←T._OK' ':If 0=⎕NC''∆Initalized''' 'r←T._Failed' ':EndIf'
+ #.TEMP.⎕FX'r←Test_Misc_003(stopFlag batchFlag);⎕TRAP'trap'T.QuitTests' '⎕←''To continue execute the ⎕SIGNAL statement''' '.'
 
  #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
  (rc log)←#.TEMP.T.Run 1
  →#.TEMP.T.PassesIf 0=rc
- →#.TEMP.T.PassesIf 0<#.TEMP.⎕NC'∆GLOBAL'       ⍝ Because Test_001 introduced it and Cleanup did not delete it
- →#.TEMP.T.PassesIf 0=#.TEMP.⎕NC'∆Initalized'   ⍝ Because Cleanup did delete it
- →#.TEMP.T.PassesIf 2 0 0≡∆GetTotals log        ⍝ Because the last one was NOT executed!
+ →#.TEMP.T.PassesIf 0<#.TEMP.⎕NC'∆GLOBAL'           ⍝ Because Test_001 introduced it and neither Cleanup nor Cleanup_Misc deleted it
+ →#.TEMP.T.PassesIf 0=#.TEMP.⎕NC'∆Initalized'       ⍝ Because Cleanup did delete it
+ →#.TEMP.T.PassesIf 0=#.TEMP.⎕NC'∆Initalized_Misc'  ⍝ Because Cleanup_Misc did delete it
+ →#.TEMP.T.PassesIf 2 0 0≡∆GetTotals log            ⍝ Because the last one was NOT executed!
 
  r←T._OK
 ⍝Done
