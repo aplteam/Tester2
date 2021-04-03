@@ -1,0 +1,17 @@
+ r←Test_Init_04(stopFlag batchFlag);Foo;ref;rc;log;⎕TRAP;T2
+⍝ Exercise `Run` with an `Initial` function that returns 0 (failed) and check whether `Cleanup` was executed
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⎕FX'r←Initial' '∆Testing←0' 'r←0'
+ #.Temp.⎕FX'r←Test_01 x;⎕TRAP' '∘∘∘'                        ⍝ Not to be executed
+ #.Temp.⎕FX'Cleanup' '⎕EX ''∆Testing'''
+ (rc log)←T2.Run 1
+ →T.PassesIf∨/'*** "Initial" could not initialize'⍷∊log
+ →T.PassesIf 1=rc
+ →T.PassesIf 0=#.Temp.⎕NC'∆Testing'
+
+ r←T._OK

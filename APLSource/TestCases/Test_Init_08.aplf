@@ -1,0 +1,19 @@
+ r←Test_Init_08(stopFlag batchFlag);Foo;ref;rc;log;⎕TRAP
+⍝ Exercise `Run` with an `Initial` and `Initial_foo` and correspnding `Cleanup*` functions and singl a "QuitEvent" from the test function
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ #.Temp.T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⎕FX'Initial' '∆Testing1←0'
+ #.Temp.⎕FX'Initial_foo' '∆Testing2←0'
+ #.Temp.⎕FX'r←Test_foo_01 x;⎕TRAP' '⎕signal T2.QuitEvent'
+ #.Temp.⎕FX'Cleanup_foo' '⎕EX ''∆Testings+←1'''
+ #.Temp.⎕FX'Cleanup' '⎕EX ''∆Testing1+←1'''
+ (rc log)←#.Temp.T2.Run 1
+ →T.PassesIf 0=rc
+ →T.PassesIf 2=#.Temp.⎕NC'∆Testing1'
+ →T.PassesIf 2=#.Temp.⎕NC'∆Testing2'
+
+ r←T._OK
