@@ -6,7 +6,7 @@
  T2←⎕NEW ##.Tester2 TestCasesSimu
 
  (rc log)←T2.RunThese'~Gr*'
- names←{⍵↑⍨¯1+⍵⍳' '}¨2↓¨{⍵↑⍨¯1+1⍳⍨∨/¨'----'∘⍷¨⍵}{⍵↓⍨1⍳⍨∨/¨'--- Tests started'∘⍷¨⍵}log
- →T.PassesIf∧/{≢'Test_[0-9]+ '⎕S 0⊣⍵}¨names,¨' '
+ names←{⍵↓⍨1⍳⍨∨/¨'--- Tests started'∘⍷¨⍵}log
+ →T.PassesIf 5=+/{≢'Test_[0-9]+ '⎕S 0⊣⍵}¨names,¨' '
 
  r←T._OK

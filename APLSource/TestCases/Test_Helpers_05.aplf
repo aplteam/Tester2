@@ -1,4 +1,4 @@
- r←Test_Helpers_05(stopFlag batchFlag);stopFlag;⎕TRAP;T2
+ r←Test_Helpers_05(stopFlag batchFlag);stopFlag;⎕TRAP;T2;tempDir;res;expected
 ⍝ Exercise the `RenameTestFnsTo` method.
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
@@ -176,5 +176,25 @@
  →T.PassesIf 0 0≡#.TEMP.⎕NC↑'Test_Foo_001' 'Test_Foo_002'
  →T.PassesIf 3 3≡#.TEMP.⎕NC↑'Test_GooZoo_001' 'Test_GooZoo_005'
 
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.TEMP
+ #.TEMP.⎕FX↑'r←Test_Foo_001 dummy' 'r←0'
+ #.TEMP.⎕FX↑'r←Test_Foo_002 dummy' 'r←0'
+ #.TEMP.⎕FX↑'r←Test_GooZoo_002 dummy' 'r←0'
+ #.TEMP.⎕FX↑'r←Test_GooZoo_004 dummy' 'r←0'
+ tempDir←FilesAndDirs.GetTempSubDir⊃⎕SI
+ res←⎕SE.Link.Create'#.TEMP'tempDir
+ Assert'Linked: '{⍺≡(≢⍺)↑⍵}res
+ 'Foo'T2.RenameTestFnsTo'GooZoo'
+ →T.GoToTidyUp 0 0≢#.TEMP.⎕NC↑'Test_Foo_001' 'Test_Foo_002'
+ →T.GoToTidyUp 3 3≢#.TEMP.⎕NC↑'Test_GooZoo_001' 'Test_GooZoo_005'
+ expected←'Test_GooZoo_001.aplf' 'Test_GooZoo_002.aplf' 'Test_GooZoo_004.aplf' 'Test_GooZoo_005.aplf'
+ →T.GoToTidyUp({⊃,/1↓⍵}¨⎕NPARTS¨FilesAndDirs.ListFiles tempDir)≢expected
+
  r←T._OK
+
+∆TidyUp:
+ :Trap 0 ⋄ {}⎕SE.Link.Break'#.TEMP' ⋄ :EndTrap
+ :Trap 0 ⋄ FilesAndDirs.RmDir tempDir ⋄ :EndTrap
 ⍝Done

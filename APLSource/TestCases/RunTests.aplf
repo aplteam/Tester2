@@ -1,12 +1,16 @@
  RunTests;htmlFilename;parms
+⍝ Not that TTester2's test cases MUST be run from the GUI for technical reasons.
+⍝ It's also the only way to be able to follow the stream of tests since Tester2 tests itself.
  Prepare
  parms←T.CreateParms ⍬
  parms.debugFlag←1
  parms.trapFlag←0
  parms.guiFlag←1
  parms T.RunGUI''
- htmlFilename←CodeCoverage.ProcessDataAndCreateReport T.codeCoverage.filename
- :If 1 ∆YesOrNo'View CodeCoverage report?'
-     APLTreeUtils2.GoToWebPage'file://',htmlFilename
+ :If ⎕NEXISTS T.codeCoverage.filename
+     htmlFilename←CodeCoverage.ProcessDataAndCreateReport T.codeCoverage.filename
+     :If 1 ∆YesOrNo'View CodeCoverage report?'
+         APLTreeUtils2.GoToWebPage'file://',htmlFilename
+     :EndIf
  :EndIf
 ⍝Done
