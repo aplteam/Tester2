@@ -22,15 +22,15 @@
 
     ∇ r←Version
       :Access Public shared
-      r←'Tester2' '3.2.0+102' '2021-09-19'
+      r←'Tester2' '3.2.0+102' '2021-10-06'
     ∇
 
     ∇ History
       :Access Public shared
       ⍝ * 3.2.0 ⋄ 2021-10-01
-      ⍝   * `Tester2` now tells `Link` in case an APL object was changed under the condition that it is at least
-      ⍝     Link 3.0 that is managing the code
-      ⍝   * New constant `NoCiderTests` introduced
+      ⍝   * `Tester2` now informs `Link` in case an APL object was changed (`RenameTestFnsTo`) under the condition 
+      ⍝     that it is at least Link 3.0 that is managing the code.
+      ⍝   * New constant `NoCiderTests` introduced.
       ⍝   * The test case that is executed next is now printed to the session BEFORE its execution. Same for the GUI.
       ⍝     As a consequence the order of the items of a single test call needed to change, but the same information
       ⍝     is provided as before anyway.
@@ -39,6 +39,8 @@
       ⍝       now always flagged with a lamp symbol (⍝).
       ⍝     * `ListTestFunctions` does not show the lamp symbol anymore.
       ⍝     * `RenameTestFnsTo` printed to the session rather than returning the messages as result.
+      ⍝     * `CodeCoverage.Finalyze` (which has been marked as deprecated for quite a while) got replaced by 
+      ⍝       `CodeCoverage.Finalise`, finally fixing the typo.
       ⍝\\
       ⍝ For a full history (including older versions) see <https://github.com/aplteam/Tester2/releases>
     ∇
@@ -472,7 +474,7 @@
       :EndIf
       {}ExecuteCleanup _ref ps
       :If 0<≢_codeCoverage
-          :If 0=≢res←_codeCoverage.Finalyze 1
+          :If 0=≢res←_codeCoverage.Finalise 1
               ⎕←'Coverage report: nothing to report'
           :Else
               ShowLog'Coverage report: ',res
