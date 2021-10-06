@@ -235,7 +235,7 @@ When you call one of the `Run*` functions the same steps are executed:
 
 ### INI files (optional)
 
-Note that there is an instance property `IniFolder`. By default this points to `AcreConfig.ProjectFolder` if a namespace `AcreConfig` can be found in the namespace that hosts the test cases or one of its parents up to the `#` namespace.
+Note that there is an instance property `IniFolder`. By default this points to `CiderConfig.HOME` if a namespace `CiderConfig` can be found in the namespace that hosts the test cases or its parent.
 
 If there is no such namespace the default falls back to the current directory.
 
@@ -358,7 +358,7 @@ Note that the GUI provides a combo box with all possible values:
 
 Usually one would like to know how much of the code is actually covered by test cases. Ideally that should be 100%, but that is rarely achievable.
 
-However, in order to improve on this one needs to know how much code is covered, and also which parts of the code are _not_ covered.
+However, in order to improve on this, one needs to know how much code is covered, and also which parts of the code are _not_ covered.
 
 Since version 2.3 `Tester2` can cooperate with the class [CodeCoverage](https://github.com/aplteam/CodeCoverage) which is capable of collecting the necessary data and compile a report from them. 
 
@@ -555,7 +555,8 @@ The examples stem from the `Fire` project (<https://github.com/aplteam/Fire>).
 
 ```
       ListGroups
-acre           
+acre
+Cider
 InternalMethods
 List           
 Misc           
@@ -654,8 +655,9 @@ For example:
 
 1. It copies `Test_001` to `Test_Misc_001`
 1. If the project management system [acre](https://github.com/the-carlisle-group/Acre-Desktop) is around it tells acre about the introduction of `Test_Misc_001`
+1. If Link version 3.0.0 or better is available it is told about the introduction of `Test_Misc_001`
 1. It deletes the function `Test_001`
-1. It tells acre about the deletion of `Test_001`
+1. It tells acre (if it's around) and Link (if at least version 3.0.0 is available) about the deletion of `Test_001`
 
 Note that with version 2.2 `RenameTestFnsTo` has learned to deal with groups as well. For example:
 
