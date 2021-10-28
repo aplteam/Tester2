@@ -1,0 +1,13 @@
+ r←Test_Misc_80(stopFlag batchFlag);log;⎕TRAP
+⍝ Establish test function template and run it
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP' ⋄ 'TEMP'#.⎕NS''
+
+ #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
+ #.TEMP.T.GetTestTemplate 1
+
+ →T.PassesIf T._OK≡#.TEMP.Test_001 1 0
+
+ r←T._OK
