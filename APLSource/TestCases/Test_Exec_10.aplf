@@ -9,7 +9,7 @@
  #.TEMP.⎕FX'r←Test_01 flags;⎕TRAP' 'r←T._Failed' '∆flag←1'
  #.TEMP.⎕FX'r←Test_02 flags;⎕TRAP' 'r←T._OK'
  #.TEMP.⎕FX'r←Test_03 flags;⎕TRAP' 'r←T._OK'
- #.TEMP.⎕FX'∆Check arg;⎕TRAP' '→(0=∆flag)/0' '∘∘∘ ⍝ exec_before_each_test'
+ #.TEMP.⎕FX'∆Check (name parms);⎕TRAP' '→(0=∆flag)/0' '∘∘∘ ⍝ exec_before_each_test'
  #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
  #.TEMP.T.exec_before_each_test←'#.TEMP.∆Check'
 

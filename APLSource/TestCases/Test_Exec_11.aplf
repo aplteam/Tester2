@@ -9,7 +9,7 @@
  #.TEMP.⎕FX'r←Test_01 flags;⎕TRAP' 'r←T._Failed'
  #.TEMP.⎕FX'r←Test_02 flags;⎕TRAP' 'r←T._OK' '∆flag←1'
  #.TEMP.⎕FX'r←Test_03 flags;⎕TRAP' 'r←T._OK'
- #.TEMP.⎕FX'r←∆Check (fnsName ps);⎕TRAP' 'r←∆flag/''Before '',fnsName,'' it went wrong''' ':If ∆flag' '∆Cause←fnsName' ':EndIf' '∆flag←0'
+ #.TEMP.⎕FX'r←∆Check (fnsName ps)' 'r←∆flag/''Before '',fnsName,'' it went wrong''' ':If ∆flag' '∆Cause←fnsName' ':EndIf' '∆flag←0'
  #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
  #.TEMP.T.exec_before_each_test←'#.TEMP.∆Check'
 

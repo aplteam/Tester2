@@ -22,11 +22,14 @@
 
     ∇ r←Version
       :Access Public shared
-      r←'Tester2' '3.2.1+102' '2021-10-28'
+      r←'Tester2' '3.2.2+103' '2022-04-06'
     ∇
 
     ∇ History
-      :Access Public shared
+      :Access Public shared 
+      ⍝ * 3.2.2 ⋄ 2022-04-06
+      ⍝   * Bug fix for `exec_before_each_test` and `exec_after_each_test`:\\
+      ⍝     When the check function did not a return a result an ERROR occured.
       ⍝ * 3.2.1 ⋄ 2021-10-28
       ⍝   * Minor bug fix in GetTestTemplate: explicit result was ill-named ("r" rather than "R").
       ⍝ * 3.2.0 ⋄ 2021-10-01
@@ -883,7 +886,7 @@
       :EndIf
       :If 0<≢_exec_before_each_test
           :If 0=1 1⊃⎕AT _exec_before_each_test
-              ⍎_exec_before_each_test,' ps'
+              ⍎_exec_before_each_test,' fnsName ps'
           :Else
               :If 0<≢buff←⍎_exec_before_each_test,' fnsName ps'
                   ⎕←buff
@@ -893,7 +896,7 @@
      ∆StopHere:rc←ref.⍎fnsName,' ',(⍕ps.debugFlag),' ',(⍕ps.batchFlag)
       :If 0<≢_exec_after_each_test
           :If 0=1 1⊃⎕AT _exec_after_each_test
-              ⍎_exec_after_each_test,' ps'
+              ⍎_exec_after_each_test,' fnsName ps'
           :Else
               :If 0<≢buff←⍎_exec_after_each_test,' fnsName ps'
                   ⎕←buff
