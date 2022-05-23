@@ -1,6 +1,6 @@
 # Test framework for Unit tests in Dyalog APL
 
-`Tester2` is a member of the APLTree library, which is a collection of classes etc. that aim to support the Dyalog APL programmer. Search GitHub for "apltree" and you will find solutions to many every-day problems Dyalog APL programmers might have to solve.
+`Tester2` is a member of the APLTree library, which is a collection of classes etc. that aim to support the Dyalog APL programmer. (Search GitHub for "apltree" and you will find solutions to many every-day problems Dyalog APL programmers might have to solve)
 
 If you are using the predeccessor `Tester` and want to migrate to `Tester2` then please read the document `Tester2VersusTester.html`.
 
@@ -52,7 +52,7 @@ The status column shows:
 * `#` broken
 * `⍝` inactive
 
-Different status show in different colours.
+Different statuse show in different colours.
 
 After all test cases got processed the user might interact with the GUI. These are the commands presented by the context menu:
 
@@ -93,7 +93,7 @@ Note that test cases causing a crash are considered "broken". Test cases that do
 
 1. In each test function the first line after the header (which includes any lines that start with a `;`) must carry a comment telling what is actually tested.
 
-   Keep in mind that later this is the only way to tell one test case from the others without reading the code, so be as clear as you can possibly be. 
+   Keep in mind that later this is the only way to tell one test case from the others without reading the code, so be as clear as you can possibly be, but be also brief. 
 
    You are restricted to a single line, and you should keep it short enough to be displayed with a reasonably setting of `⎕PW`.
 
@@ -107,7 +107,7 @@ There are some typical scenarios:
 * Run _only "batchable"_ test cases, with or without error trapping and with or without stop flag: see the function `RunBatchTests`.
 * Run _all_ test cases _with a GUI_, with or without error trapping and with or without stop flag: see the function `RunGUI`.
 
-All these functions call `Run__` under the hood, which means that this is a generalized all-singing all-dancing function. If none of the above functions fulfil your needs consider calling `Run__` yourself.
+All these functions call the function `Run__` under the hood, which means that this is a generalized all-singing all-dancing function. If none of the above functions fulfil your needs consider calling `Run__` yourself.
 
 
 ### Definitions
@@ -120,17 +120,17 @@ Traps all errors except that is does not influence the workings of the `debugFla
 
 If this flag is 0 any failing test within any test function just makes the test function quit, returning a return code that has the symbolic name `_Failure`. See [Symbolic names](#symbolic-names) for details.
 
-If this is 1 then any failing check crashes right on the spot. This allows one to investigate what went wrong, and why.
+If this is 1 (`_OK`) then any failing check crashes right on the spot. This allows one to investigate what went wrong, and why.
 
 #### Suspend execution (`stopFlag`)
 
-This makes the test framework stop just before the next test function is about to be executed. This allows you to trace any test cases from top to bottom.
+This makes the test framework stop just before the next test function is about to be executed. This allows you to trace test cases from top to bottom.
 
 #### Batchable tests
 
-These are tests that do not need a human in front of the monitor. Ideally all tests should be "batchable" of course. However, in real life this is not always possible for technical reasons, or the effort would be way too high.
+These are tests that do not need a human in front of the monitor. Ideally all tests should be "batchable" of course. However, in real life this is not always possible for technical reasons, or the effort would be just too high.
 
-Note that all test cases get the `batchFlag` provided as part of the right argument, so they know what's required.
+Note that all test cases get the `batchFlag` provided as part of the right argument, so they know what's required, and can act accordingly.
     
 
 
@@ -192,13 +192,15 @@ That's why `exec_before_each_test` and `exec_after_each_test` were added as prop
 
 Another application is when a test case causes a sys error (aplcore) but it is not that particular test case that is causing the real problem but an earlier one. In that case you can execute `2 ⎕NQ'.' 'wscheck'` after each test case, forcing the interpreter to perform a workspace integrity check; that will bring you much closer to the real culprit.
 
+I found many other applications for this over the years.
+
 #### Overview
 
 When specified they must be the fully qualified name of a monadic function that may or may not return a result.
 
 The right argument will be a two-element vector:
 
-1. The name of the test function that is about to be executed (in case of `exec_before_each_test`) or was just executed (in case of `exec_after_each_test`).
+1. The name of the test function that is about to be executed (in case of `exec_before_each_test`) or was just executed (in case of `exec_after_each_test`). You might need to keep `⎕TRAP` local for this.
 
 2. A namespace with all the parameters.
 
@@ -261,7 +263,7 @@ In the next step the `Run*` method checks whether there is a function `Initial` 
 
 Note that the function must be either niladic or monadic, and it may return no result at all or a Boolean result. A 1 means that function did what it is supposed to do (=same as no result) while a 0 means it could not initialize (success flag).
 
-Of course, you can simply execute `→` on a single line in your `Initial` function if any requirement is not met, but that would also mean that if you run your test cases automatically as part of, say, an automated build process, then this would disrupt the workflow.
+Of course, you can simply execute `→` on a single line in your `Initial` function if any requirement is not met, but that would also mean that if you run your test cases automatically as part of, say, an automated build process, then this would disrupt the workflow. (There are other reasons why this is not a great idea)
 
 In such cases `Initial` should return a 0 indicating failure. Also, part of the initialization might have been carried out, and a function `Cleanup` (discussed in a second) might get rid of any left-overs.
 
@@ -431,21 +433,22 @@ Note that for technical reasons such a template function cannot be established b
 These are the public read-only instance fields that act like constants:
 
 
-| Name                  | Meaning                                                                     |
-|-----------------------|-----------------------------------------------------------------------------|
-| `_OK`                 | Passed |
-| `_Failed`             | Unexpected result|
-| `_NoBatchTest`        | Not executed because `batchFlag` was 1.|
-| `_NotApplicable`      | This test is not applicable here and now |
-| `_NotImplemented`     | Attempts to test a feature that has yet not been implemented |
-| `_InActive`           | Not executed because the test case is inactive (not ready, buggy, ...) |
-| `_LinuxOnly`          | Not executed because runs under Linux only|
-| `_LinuxOrMacOnly`     | Not executed because runs under Linux/Mac OS only|
-| `_LinuxOrWindowsOnly` | Not executed because runs under Linux/Windows only|
-| `_MacOrWindowsOnly`   | Not executed because runs under Mac OS/Windows only|
-| `_MacOnly`            | Not executed because runs under Mac OS only|
-| `_NoAcreTests`        | Not executed because it's acre related|
-| `_WindowsOnly`        | Not executed because runs under Windows only|
+| Name                   | Meaning                                                                     |
+|------------------------|-----------------------------------------------------------------------------|
+| `_OK`                  | Passed |
+| `_Failed`              | Unexpected result|
+| `_NoBatchTest`         | Not executed because `batchFlag` was 1.|
+| `_NotApplicable`       | This test is not applicable here and now |
+| `_NotImplemented`      | Attempts to test a feature that has yet not been implemented |
+| `_InActive`            | Not executed because the test case is inactive (not ready, buggy, ...) |
+| `_LinuxOnly`           | Not executed because runs under Linux only|
+| `_LinuxOrMacOnly`      | Not executed because runs under Linux/Mac OS only|
+| `_LinuxOrWindowsOnly`  | Not executed because runs under Linux/Windows only|
+| `_MacOrWindowsOnly`    | Not executed because runs under Mac OS/Windows only|
+| `_MacOnly`             | Not executed because runs under Mac OS only|
+| `_NoAcreTests`         | Not executed because it's acre related|
+| `_NoCiderTest`         | Not executed because it's Cider related
+| `_WindowsOnly`         | Not executed because runs under Windows only|
 
 Use these to assign an explicit result within any test function. The advantages of this approach:
 

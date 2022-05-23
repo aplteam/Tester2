@@ -12,7 +12,7 @@
  trap←'⎕TRAP←(999 ''C'' ''∘∘∘ ⍝ Deliberate error'')(0 ''N'')'
  #.TEMP.⎕FX'r←Test_Misc_001(stopFlag batchFlag);⎕TRAP'trap'∆GLOBAL←1' 'r←T._OK'
  #.TEMP.⎕FX'r←Test_Misc_002(stopFlag batchFlag);⎕TRAP'trap'r←T._OK' ':If 0=⎕NC''∆Initalized''' 'r←T._Failed' ':EndIf'
- #.TEMP.⎕FX'r←Test_Misc_003(stopFlag batchFlag);⎕TRAP'trap'T.QuitTests' '⎕←''To continue execute the ⎕SIGNAL statement''' '.'
+ #.TEMP.⎕FX'r←Test_Misc_003(stopFlag batchFlag);⎕TRAP'trap '⎕←''>>>>> To continue execute this statement:''' '⎕←''T.QuitTests ⍝ <<<<<'''  '.'
 
  #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
  (rc log)←#.TEMP.T.Run 1
