@@ -1,6 +1,0 @@
- {r}←Initialize;⎕TRAP
- ⎕TRAP←0 'S'
- r←⍬
- {}⎕SE.UCMD'cd ',CiderConfig.HOME
- ⎕WSID←CiderConfig.HOME,'/project.dws'
-⍝Done
