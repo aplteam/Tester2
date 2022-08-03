@@ -1,4 +1,5 @@
 aplcore
-Dist/
-change_history/
-.gitignore
+/Dist/
+CONTINUE.dws
+conga.crash
+/TestResults/

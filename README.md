@@ -15,7 +15,11 @@ The purpose of `Tester2` is to provide a framework for testing all the projects 
 
 You might find the framework flexible enough to suit your own needs when it comes to implementing tests, even independently from the APLTree library.
 
-Depending on how the Test framework is used it might or might not present a GUI. Note that the GUI is a Windows-only feature (for the time being) although in all other respects `Tester2` works on all platforms; if you decide to avoid the GUI, messages are printed to the Dyalog session window.
+Depending on how the Test framework is used it might or might not present a GUI. Note that the GUI is a Windows-only feature (at least for the time being) although in all other respects `Tester2` works on all platforms; if you decide to avoid the GUI, messages are printed to the Dyalog session window.
+
+The GUI was mainly introduced for `Tester2`'s own sake: `Tester2` is used to test itself, and the messages printed to the session can be very confusing while the GUI is clean even then.
+
+However, executing a large test suite with the GUI is significantly slower than doing the same without the GUI.
 
 If the GUI shows that's how it looks like:
 
@@ -52,7 +56,7 @@ The status column shows:
 * `#` broken
 * `⍝` inactive
 
-Different statuse show in different colours.
+Different statuses show in different colours.
 
 After all test cases got processed the user might interact with the GUI. These are the commands presented by the context menu:
 
@@ -77,7 +81,7 @@ Note that test cases causing a crash are considered "broken". Test cases that do
 
 ### Assumptions and preconditions
 
-1. The `#.Tester2` class assumes that all your tests are hosted by a namespace. It may be an ordinary (recommended) or a scripted namespace, but it must not be an unnamed namespace. 
+1. The `#.Tester2` class assumes that all your tests are hosted by a namespace. It may be an ordinary (recommended) or a scripted namespace, but it **must not** be an unnamed namespace. 
 
 1. You must create an instance of the `Tester2` class in order to do anything useful. This is _the_ major difference to the now deprecated `Tester` class.
 
@@ -345,9 +349,9 @@ You can force `Tester2` to stop just before any `Cleanup` function gets executed
 
 #### Mixing stops
 
-You may mix things up. For example, to make `Tester2` stop on every `Initial`, every test and every `Cleanup` function just specify the total : `1+2+5 = 7`
+You may mix things up. For example, to make `Tester2` stop on every `Initial`, every test and every `Cleanup` function just specify the total : `1+2+4 = 7`
 
-Any other combination (3, 6) is valid as well.
+Any other combination (3, 5, 6) is valid as well.
 
 #### Stops with the GUI
 
@@ -441,12 +445,14 @@ These are the public read-only instance fields that act like constants:
 | `_NotApplicable`       | This test is not applicable here and now |
 | `_NotImplemented`      | Attempts to test a feature that has yet not been implemented |
 | `_InActive`            | Not executed because the test case is inactive (not ready, buggy, ...) |
+| `_IncompatibleVersion` | Regarding the version of Dyalog currently running |   
 | `_LinuxOnly`           | Not executed because runs under Linux only|
 | `_LinuxOrMacOnly`      | Not executed because runs under Linux/Mac OS only|
 | `_LinuxOrWindowsOnly`  | Not executed because runs under Linux/Windows only|
 | `_MacOrWindowsOnly`    | Not executed because runs under Mac OS/Windows only|
 | `_MacOnly`             | Not executed because runs under Mac OS only|
-| `_NoAcreTests`         | Not executed because it's acre related|
+| `_NoAcreTests`         | Not executed because it's acre related but acre is not around|
+| `_NoCiderTests`        | Not executed because it's Cider related but Cider is not around|
 | `_NoCiderTest`         | Not executed because it's Cider related
 | `_WindowsOnly`         | Not executed because runs under Windows only|
 
@@ -614,7 +620,7 @@ Test_List_007             Search for "Hello" with a ref and an unnamed namespace
 99 2
 ```
 
-With a large number of test cases you might prefer to get them into an edit window. This can be achieved by this command:
+With a large number of test cases you might prefer to get them into an edit window rather than printing them to the session. This can be achieved by this command:
 
 ```
 'view' ListTestFunctions ''
@@ -657,8 +663,9 @@ For example:
 `RenameTestFnsTo` does a couple of things for you:
 
 1. It copies `Test_001` to `Test_Misc_001`
-1. If the project management system [acre](https://github.com/the-carlisle-group/Acre-Desktop) is around it tells acre about the introduction of `Test_Misc_001`
-1. If Link version 3.0.0 or better is available it is told about the introduction of `Test_Misc_001`
+1. It cooperate with code management systems
+   * If [acre](https://github.com/the-carlisle-group/Acre-Desktop) is around it tells acre about the introduction of `Test_Misc_001`
+   * If Link version 3.0.0 or better is available it is told about the introduction of `Test_Misc_001`
 1. It deletes the function `Test_001`
 1. It tells acre (if it's around) and Link (if at least version 3.0.0 is available) about the deletion of `Test_001`
 
@@ -685,7 +692,7 @@ If there is already a group "Misc" then numbering would start with the highest p
 
   The exception from this rule is when _all_ test cases require the same pre-condition like, say, a database connection. In that case establish what's needed in a function [`Initial`](#initialisation) and use a function [`CleanUp`](#cleaning-up) to get rid of it.
 
-  If all test function of a certain group share the same requirement use [Initialisation for groups](#initialisation-for-groups).
+  If all test functions of a certain group share the same requirement use [Initialisation for groups](#initialisation-for-groups).
 
 * Avoid a test case relying on changes made by an earlier test case. This can be a tempting thing to do, but you will almost certainly regret this later.
 
