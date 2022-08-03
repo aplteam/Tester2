@@ -4,6 +4,8 @@
 
 If you are using the predeccessor `Tester` and want to migrate to `Tester2` then please read the document `Tester2VersusTester.html`.
 
+**Note:** `Tester2` releases are published as [Tatin](https://tatin.dev "Link to the principal Tatin Registry") packages, see there.
+
 ## Overview
 
 The framework comprises two classes:
