@@ -78,8 +78,8 @@
     :Field Public Instance Readonly _LinuxOrMacOnly←¯15
     :Field Public Instance Readonly _LinuxOrWindowsOnly←¯16
     :Field Public Instance Readonly _MacOrWindowsOnly←¯17
-    :Field Public Instance Readonly _NoAcreTests←¯18
-    :Field Public Instance Readonly _NoCiderTests←¯19
+    :Field Public Instance Readonly _NoAcreTest←¯18
+    :Field Public Instance Readonly _NoCiderTest←¯19
     :Field Public Instance Readonly _NotApplicable←¯20
     :Field Public Instance Readonly _NotImplemented←¯21
     :Field Public Instance Readonly _IncompatibleVersion←¯22
