@@ -1,5 +1,5 @@
  r←Test_Custom_03(stopFlag batchFlag);⎕TRAP;qdmx;i;T2;log;rc
-⍝ Run a test function that uses all custom messages
+⍝ Run a test suite that uses all custom messages
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
 
@@ -28,7 +28,7 @@
  #.TEMP.⎕FX'r←Test_10 arg;⎕TRAP' '⍝ Test 10' 'r←T.custom_9'
  (rc log)←#.TEMP.T.Run 1
  →T.PassesIf 0=rc
- →T.PassesIf 10 0 0 10≡∆GetTotals log
+ →T.PassesIf 10 0 0≡∆GetTotals log
 
  r←T._OK
 

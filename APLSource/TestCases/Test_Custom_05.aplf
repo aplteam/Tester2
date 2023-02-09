@@ -1,5 +1,5 @@
  r←Test_Custom_05(stopFlag batchFlag);⎕TRAP;qdmx;i;T2;log;rc
-⍝ Run a test function that uses some custom messages with GUI
+⍝ Run a test suite that uses some custom messages with GUI
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
  :If batchFlag
@@ -30,7 +30,7 @@
  (rc log)←#.TEMP.T.RunGUI ⍬
  #.TEMP.T.CloseGUI
  →T.PassesIf 0=rc
- →T.PassesIf 9 0 0 8≡∆GetTotals log
+ →T.PassesIf 9 0 0 3 1 2 2≡∆GetTotals log
 
  r←T._OK
 

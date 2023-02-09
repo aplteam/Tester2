@@ -30,6 +30,7 @@
       ⍝ * 3.3.0 ⋄ 2023-02-09
       ⍝   * ReadMe polished
       ⍝   * New constanc _SkippedByUser introduced
+      ⍝   * Custom return codes are now fully reported 
       ⍝   * Bug fixes
       ⍝     _NotImplemented was not correctly reported
       ⍝ * 3.2.7 ⋄ 2022-08-03
@@ -831,18 +832,23 @@
       :EndIf
     ∇
 
-    ∇ (rc log)←ReportTestResults ps;noOf;constant;constants
+    ∇ (rc log)←ReportTestResults ps;noOf;constant;constants;comment
       log←''
       log,←⊂'-----'
       log,←⊂'  ',(⍕ps.totalCounter),' test case',((1≠ps.totalCounter)/'s'),' of ',(⍕≢ps.list),' called'
       log,←⊂'  ',(⍕ps.failedCounter),' test case',((1≠+/ps.failedCounter)/'s'),' failed',(0<ps.failedCounter)/' (flagged with "*")'
       log,←⊂'  ',(⍕ps.errCounter),' test case',((1≠+/ps.errCounter)/'s'),' broken',(0<ps.errCounter)/' (flagged with "#")'
       :If 0≠≢ps.returnCodes
-          constants←ListSymbolicNames[;1]
-          constants/⍨←'_custom'{⍺∘≢¨(≢⍺)↑¨⍵}constants
-          constants~←'_OK' '_Failed'
-          :For constant :In constants
-              log,←⊂'  ',(⍕(⍎constant)+.=ps.returnCodes),' test cases not executed because of "',(1↓constant),'" (flagged with "⍝")'
+          constants←ListSymbolicNames
+          constants←(~constants[;1]∊'_OK' '_Failed')⌿constants
+          :For constant comment :In ↓constants
+              :If '_custom'{⍺≡(≢⍺)↑⍵}constant
+              :AndIf 0<≢comment
+              :AndIf 0<noOf←ps.returnCodes+.=-⊃(//)⎕VFI(≢'_custom_')↓constant
+                  log,←⊂'  ',(⍕noOf),' test cases not executed because of "',comment,'" (flagged with "⍝")'
+              :ElseIf 0<noOf←ps.returnCodes+.=⍎constant
+                  log,←⊂'  ',(⍕noOf),' test cases not executed because of "',(1↓constant),'" (flagged with "⍝")'
+              :EndIf
           :EndFor
       :EndIf
       ShowLog log
