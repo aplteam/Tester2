@@ -1,8 +1,8 @@
 # Test framework for Unit tests in Dyalog APL
 
-`Tester2` is a member of the APLTree library, which is a collection of classes etc. that aim to support the Dyalog APL programmer. (Search GitHub for "apltree" and you will find solutions to many every-day problems Dyalog APL programmers might have to solve)
+`Tester2` is a member of the APLTree library, which is a collection of classes etc. that aim to support the Dyalog APL programmer. (Search GitHub for "apltree" and you will find solutions to many everyday problems Dyalog APL programmers might have to solve)
 
-If you are using the predeccessor `Tester` and want to migrate to `Tester2` then please read the document `Tester2VersusTester.html`.
+If you are using the predecessor `Tester` and want to migrate to `Tester2` then please read the document `Tester2VersusTester.html`.
 
 **Note:** `Tester2` releases are published as [Tatin](https://tatin.dev "Link to the principal Tatin Registry") packages, see there.
 
@@ -37,7 +37,7 @@ The "Log" tab shows all the messages the `Tester2` class provides:
   * Number of test cases executed
   * Number of test cases that crashed
   * Number of test cases that failed
-  * Number of test cases that were inactive
+  * Number of inactive test cases
   * Number of test cases that were not applicable
   * Number of test cases that are designed to run on different platforms
 * Whether  a function  `Cleanup` was found and executed
@@ -85,7 +85,7 @@ Note that test cases causing a crash are considered "broken". Test cases that do
 
 1. The `#.Tester2` class assumes that all your tests are hosted by a namespace. It may be an ordinary (recommended) or a scripted namespace, but it **must not** be an unnamed namespace. 
 
-1. You must create an instance of the `Tester2` class in order to do anything useful. This is _the_ major difference to the now deprecated `Tester` class.
+1. You must create an instance of the `Tester2` class to do anything useful. This is _the_ major difference to the now deprecated `Tester` class.
 
    The constructor demands a right argument: that must be a reference to the namespace that hosts all your test cases.
 
@@ -97,11 +97,11 @@ Note that test cases causing a crash are considered "broken". Test cases that do
 
 1. The number of digits you use for numbering is not restricted: `Test_foo_1` is fine, and so is `Test_foo_0000001`. However, they should be consistent, at least within a group.
 
-1. In each test function the first line after the header (which includes any lines that start with a `;`) must carry a comment telling what is actually tested.
+1. In each test function the first line after the header (which includes any lines that start with a `;`) must carry a comment telling what is tested.
 
-   Keep in mind that later this is the only way to tell one test case from the others without reading the code, so be as clear as you can possibly be, but be also brief. 
+   Keep in mind that later this is the only way to tell one test case from the others without reading the code, so be as clear as you can be, but be also brief. 
 
-   You are restricted to a single line, and you should keep it short enough to be displayed with a reasonably setting of `⎕PW`.
+   You are restricted to a single line, and you should keep it short enough to be displayed with a reasonable setting of `⎕PW`.
 
 
 ### Executing test cases
@@ -113,14 +113,14 @@ There are some typical scenarios:
 * Run _only "batchable"_ test cases, with or without error trapping and with or without stop flag: see the function `RunBatchTests`.
 * Run _all_ test cases _with a GUI_, with or without error trapping and with or without stop flag: see the function `RunGUI`.
 
-All these functions call the function `Run__` under the hood, which means that this is a generalized all-singing all-dancing function. If none of the above functions fulfil your needs consider calling `Run__` yourself.
+All these functions call the function `Run__` under the hood, which means that this is a generalized all-singing all-dancing function. If none of the above functions fulfils your needs consider calling `Run__` yourself.
 
 
 ### Definitions
 
 #### Error trapping (`trapFlag`)
 
-Traps all errors except that is does not influence the workings of the `debugFlag`.
+Traps all errors except that it does not influence the workings of the `debugFlag`.
 
 #### Debugging (`debugFlag`)
 
@@ -134,7 +134,7 @@ This makes the test framework stop just before the next test function is about t
 
 #### Batchable tests
 
-These are tests that do not need a human in front of the monitor. Ideally all tests should be "batchable" of course. However, in real life this is not always possible for technical reasons, or the effort would be just too high.
+These are tests that do not need a human in front of the monitor. Ideally, all tests should be "batchable" of course. However, in real life this is not always possible for technical reasons, or the effort would be just too high.
 
 Note that all test cases get the `batchFlag` provided as part of the right argument, so they know what's required, and can act accordingly.
     
@@ -165,7 +165,7 @@ That's why groups are quite important: they allow you to order test cases hierar
 
 It is also possible to execute all test cases belonging to a particular group with a single command.
 
-Note that you can have group-specific [initialization ](#initialisation-for-groups) and [cleaning up](#cleaning-up-for-groups).
+Note that you can have group-specific [initialization](#initialisation-for-groups) and [cleaning up](#cleaning-up-for-groups).
 
 You may also specify more than one group by...
 
@@ -192,7 +192,7 @@ T.custom_1←'Invalid version of Dyalog APL'
 
 #### Application
 
-Imagine that a few of a large set of test cases leave behind files in the temp folder, and you have no idea which one it is. Obviously that is easy to find out when you check right after a test case was executed.
+Imagine that a few of a large set of test cases leave behind files in the temp folder, and you have no idea which one it is. That is easy to find out when you check right after a test case was executed.
 
 That's why `exec_before_each_test` and `exec_after_each_test` were added as properties with version 1.1 to `Tester2`: they allow you to check whatever you want either just before or right after a test case was executed.
 
@@ -216,7 +216,7 @@ Regarding the result there are two options:
 * In case the function returns a result it must be a text vector. If that text vector is empty then `Tester2` does not take any action. If it is a simple string this string will be printed to the session. Then `Tester2` carries on.
 
 
-## Work flow
+## Workflow
 
 No matter which of the `Run*` functions you are going to call, the workflow is always the same. (There is a minor difference when `Run__` is used; this will be discussed later)
 
@@ -249,7 +249,7 @@ If there is no such namespace the default falls back to the current directory.
 
 If your INI file(s) do not live in either place then you must set the `IniFolder` property in order to allow `Tester2` to find the INI file(s).
 
-First the `Run*` methods check whether there is a file `testcases.ini`. If this is the case that INI file is processed. Use this INI file to specify general stuff that does not depend on a certain computer/environment.
+First the `Run*` methods check whether there is a file `testcases.ini`. If this is the case the INI file is processed. Use this INI file to specify general stuff that does not depend on a certain computer/environment.
 
 Then the `Run*` methods checks for a file `testcases-{computername}.ini`. If this file exists it is processed. Use this to specify stuff that does depend on a certain computer or environment.
 
@@ -267,11 +267,11 @@ An example: if your test functions are hosted by a namespace `Foo.TestCases` and
 
 In the next step the `Run*` method checks whether there is a function `Initial` in the hosting namespace. If that is the case then this function is executed.
 
-Note that the function must be either niladic or monadic, and it may return no result at all or a Boolean result. A 1 means that function did what it is supposed to do (=same as no result) while a 0 means it could not initialize (success flag).
+Note that the function must be either niladic or monadic, and it may return no result at all or a Boolean result. A 1 means that the function did what it is supposed to do (=same as no result) while a 0 means it could not initialize (success flag).
 
 Of course, you can simply execute `→` on a single line in your `Initial` function if any requirement is not met, but that would also mean that if you run your test cases automatically as part of, say, an automated build process, then this would disrupt the workflow. (There are other reasons why this is not a great idea)
 
-In such cases `Initial` should return a 0 indicating failure. Also, part of the initialization might have been carried out, and a function `Cleanup` (discussed in a second) might get rid of any left-overs.
+In such cases `Initial` should return a 0 indicating failure. Also, part of the initialization might have been carried out, and a function `Cleanup` (discussed in a second) might get rid of any leftovers.
 
 If the function is monadic then a reference pointing to the parameter space is passed as the right argument. By checking this parameter space `Initial` can, for example, find out whether the `batchFlag` is set or not. 
 
@@ -285,13 +285,13 @@ Notes:
 
 * After executing all test cases `Tester2` will look for a function `Cleanup` in the hosting namespace. If there is such a function it will be executed.
 
-  Of course you can also have [group-specific `Cleanup` functions](#Cleaning up for groups).
+  Of course you can also have [group-specific `Cleanup` functions](#cleaning-up-for-groups).
 
 ### Initialisation for groups
 
 You can have initialisation functions for groups. It's recognized by naming convention: for a group `foo` the function's name must be `Initial_foo`. 
 
-The rules are exactly the same as for the [global `Initial` function](#initialisation), although the consequences are different:
+The rules are the same as for the [global `Initial` function](#initialisation), although the consequences are different:
 
 When `Initial_foo` returns a Boolean and that is a zero, then no test function belonging to the group `foo` will be executed but `Tester2` will carry on executing other test cases.
 
@@ -312,7 +312,7 @@ Note that a function `Cleanup` would be executed no matter whether there was or 
 
 You can have clean-up functions for groups. It's recognized by naming convention: for a group `foo` the function's name must be `Cleanup_foo`. 
 
-The rules are exactly the same as for the [global `Cleanup` function](#initialisation).
+The rules are the same as for the [global `Cleanup` function](#initialisation).
 
 Naturally a group-specific `Cleanup` function is called after the last test function of that group got executed.
 
@@ -326,7 +326,7 @@ Finally, the namespace `INI` holding variables populated from your INI file(s) i
 
 There might be situations when you've executed some but not all test cases and now you want to exit the test framework, typically while you are in a test function. Now the obvious choice is )Reset, or execute just `→`.
 
-However, there are situations when you need things to be cleaned up, like closing file, deleting folder, shutting down a server and stuff like that.
+However, there are situations when you need things to be cleaned up, like closing files, deleting folder(s), shutting down a server, stuff like that.
 
 In such a case the framework should clean up (execute any `Cleanup` function) etc.
 
@@ -335,11 +335,11 @@ This can be achieved by calling the instance method `QuitTests`. This function s
 
 ### Make the test framework stop 
 
-`Tester2` allows you to stop at strategic important points in time. 
+`Tester2` allows you to stop at strategically important points in time. 
 
 #### Stopping on a test function
 
-You might want to trace trough a test function from top to bottom. That can be achieved by passing a 1 as left argument to any of the `Run*` functions. The test framework will stop just before the test function(s) get executed.
+You might want to trace through a test function from top to bottom without tracing through the test framework. That can be achieved by passing a 1 as left argument to any of the `Run*` functions. The test framework will stop just before the test function(s) get executed.
 
 #### Stopping on `Initial` function(s)
 
@@ -364,11 +364,11 @@ Note that the GUI provides a combo box with all possible values:
 
 ## Code coverage
 
-Usually one would like to know how much of the code is actually covered by test cases. Ideally that should be 100%, but that is rarely achievable.
+Usually one would like to know how much of the code is covered by test cases. Ideally that should be 100%, but that is rarely achievable.
 
 However, in order to improve on this, one needs to know how much code is covered, and also which parts of the code are _not_ covered.
 
-Since version 2.3 `Tester2` can cooperate with the class [CodeCoverage](https://github.com/aplteam/CodeCoverage) which is capable of collecting the necessary data and compile a report from them. 
+Since version 2.3 `Tester2` can cooperate with the class [CodeCoverage](https://github.com/aplteam/CodeCoverage) which is capable of collecting the necessary data and compiling a report. 
 
 If you want `Tester2` to cooperate with `CodeCoverage`, assign a reference pointing to an instance of `CodeCoverage` to the `Tester2` property `codeCoverage`.
 
@@ -384,7 +384,7 @@ The methods fall into four groups:
 
 ### Flow control
 
-`FailsIf`, `PassesIf` and `GoToTidyUp` control the program flow in test functions. The test template (see [`GetTestTemplate`](#test-function-template) for details) contains examples for how to use these functions.
+`FailsIf`, `PassesIf` and `GoToTidyUp` control the program flow in test functions. The test template (see [`GetTestTemplate`](#test-function-template) for details) contains examples of how to use these functions.
 
 These functions return a result (Boolean) in case `debugFlag` is a 0 but make the calling `Test_*` function crash otherwise, allowing you to investigate a failing test case right on the spot. Note that the setting of the `trapFlag` has no bearing on this.
 
@@ -402,7 +402,7 @@ Note that `GoToTidyUp` allows you to jump to a label `∆TidyUp` with a statemen
  →GoToTidyUp ~expected≡result
 ```
 
-This is useful in case a test case needs to do some cleaning up like deleting a temporary file created by the test case, so just jumping out is not an option In case the right argument is 1 (rather than 0) it causes a crash in debug mode and carries out the jump otherwise.
+This is useful in case a test case needs to do some cleaning up like deleting a temporary file created by the test case, so just jumping out is not an option. In case the right argument is 1 (rather than 0) it causes a crash in debug mode and carries out the jump otherwise.
 
 
 ### Test function template
@@ -417,15 +417,15 @@ You can also provide a group name via the optional left argument.
 Check the examples which assume that an instance of `Tester2` is available as `T`, and that you are inside the (ordinary, non-scripted) namespace that hosts the test cases:
 
 ```
-      ⊃⍴'T'⎕NL 3
+     ≢'T'⎕NL 3
 0
       T.GetTestTemplate 3
 Test_003
-     ⊃⍴'T'⎕NL 3
+     ≢'T'⎕NL 3
 1
       'Misc' T.GetTestTemplate 1
 Test_Misc_001
-     ⊃⍴'T'⎕NL 3
+     ≢'T'⎕NL 3
 2
 ```
 
@@ -453,20 +453,21 @@ These are the public read-only instance fields that act like constants:
 | `_LinuxOrWindowsOnly`  | Not executed because runs under Linux/Windows only|
 | `_MacOrWindowsOnly`    | Not executed because runs under Mac OS/Windows only|
 | `_MacOnly`             | Not executed because runs under Mac OS only|
-| `_NoAcreTests`         | Not executed because it's acre related but acre is not around|
-| `_NoCiderTests`        | Not executed because it's Cider related but Cider is not around|
+| `_NoAcreTests`         | Not executed because it's acre-related but acre is not around|
+| `_NoCiderTests`        | Not executed because it's Cider-related but Cider is not around|
 | `_NoCiderTest`         | Not executed because it's Cider related
+| `_SkippedByUser`       | Returned in case the user refused to execute a test case
 | `_WindowsOnly`         | Not executed because runs under Windows only|
 
 Use these to assign an explicit result within any test function. The advantages of this approach:
 
-1. Much more readable than an integer.
-2. You can easily search for, say, `_InActive`.
+1. Much more readable than an integer
+2. You can easily search for, say, `_InActive` while searching for its number is pointless
 
 Notes:
 
-* There is a method `ListSymbolicNames` available that lists all symbolic names.
-* By putting a comment on the line where a constant is assigned you can make sure that this comment is, together with the name of the constant, put into the GUI's "Result" comment.
+* There is a method `ListSymbolicNames` available
+* By putting a comment on the line where a constant is assigned you can make sure that this comment is, together with the name of the constant, put into the GUI's "Result" comment
 
   For example, assuming that `Tester2` was instantiated with `T←⎕NEW Tester2`, then this:
 
@@ -476,7 +477,7 @@ Notes:
 
 ### Helpers
 
-These are functions that are not actually required in order to run test cases but can make a programmer's life significantly easier.
+These are functions that are not required in order to run test cases but can make a programmer's life significantly easier.
 
 These functions are discussed in detail at [Managing test cases](#managing-test-cases).
 
@@ -488,15 +489,15 @@ These functions are discussed in detail at [Managing test cases](#managing-test-
 
 Run requires a Boolean right argument. A 1 makes the test framework stop on a line that fails to return the expected result (`PassesIf`, `FailsIf`, `GotoTidyUp`) while a 0 does not.
 
-The optional left argument must also be Boolean and defines whether the `Run` function should stop right before any of the test cases is executed (1) or not (0, which is the default).
+The optional left argument must also be Boolean and defines whether the test framework should stop right before any of the test cases is executed (1) or not (0, which is the default).
 
 #### `RunGUI`
 
 With `RunGUI` you can achieve the same as with `Run` but it is a Windows-only feature. It might be easier to start with `RunGUI` but you might switch to `Run` later, if only because it is significantly faster.
 
-However, there are situations when `RunGUI` is indispensable: `Tester2`'s own test cases are almost impossible to follow without it, for example. It's also useful in order to demonstrate the features of the `Tester2` class.
+However, there are situations when `RunGUI` is indispensable: `Tester2`'s own test cases are almost impossible to follow without it, for example. It's also useful to demonstrate the features of the `Tester2` class.
 
-`RunGUI` requires only a right argument; if this is empty _all_ test cases will be executed. You can specify numbers or a group name or mix a group name with one or more numbers. You can also precede a group name with a `~` (without) in order to execute all test cases but the members of that group.
+`RunGUI` requires only a right argument; if this is empty _all_ test cases will be executed. You can specify numbers or a group name or mix a group name with one or more numbers. You can also precede a group name with a `~` (without) to execute all test cases but the members of that group.
 
 Notes:
 
@@ -526,12 +527,12 @@ T.RunThese 'Test_Group1_001' ⍝ Same as before
 
 Note that you can specify only one group.
 
-Sometimes you want to trace through test cases. This can be achieved be specifying a 1 as the (optional) left argument. `RunThese` would then stop just before any test case is actually executed, after processing any INI file(s) and executing any `Initial` function.
+Sometimes you want to trace through test cases. This can be achieved by specifying a 1 as the (optional) left argument. `RunThese` would then stop just before any test case is executed, after processing any INI file(s) and executing any `Initial` function.
 
 
 ### `RunBatchTests`
 
-This is the same as `Run` except that it passes a 1 as `batchFlag` to the test functions. This allows the test function itself to _not_ run any tests. This is usually because a test requires a human in front of the monitor, and if such a human is not available right now then there is no point running such tests.
+This is the same as `Run` except that it passes a 1 as `batchFlag` to the test functions. This allows the test function itself to quit under some circumstances. This is usually because a test requires a human in front of the monitor, and if such a human is not available right now then there is no point running such tests.
 
 
 ### `Run__`
@@ -594,7 +595,8 @@ Search
  _NoBatchTest        
  _NotApplicable      
  _NotImplemented
- _OK                 
+ _OK  
+ _SkippedByUser               
  _WindowsOnly        
 ```
 
@@ -622,7 +624,7 @@ Test_List_007             Search for "Hello" with a ref and an unnamed namespace
 99 2
 ```
 
-With a large number of test cases you might prefer to get them into an edit window rather than printing them to the session. This can be achieved by this command:
+With a large number of test cases you might prefer to get them into an edit window rather than printing them to the session. This can be achieved by passing "view" as left argument:
 
 ```
 'view' ListTestFunctions ''
@@ -630,9 +632,9 @@ With a large number of test cases you might prefer to get them into an edit wind
 
 Notes:
 
-* Group names must be specified fully or you must specify an asterisk at the end.
-* Test case numbers that do not exist are simply ignored.
-* The result is a matrix with two columns: names in the first column and the first line after the header in the second column.
+* Group names must be specified fully or you must specify an asterisk at the end
+* Test case numbers that do not exist are simply ignored
+* The result is a matrix with two columns: names in the first column and the first line after the header in the second column
 
 #### Editing test cases
 
@@ -646,7 +648,7 @@ EditTestFunctions T.ListTestFunctions'ZZZ'   ⍝ Edit all test cases of the grou
 
 #### Rename a test function
 
-Renaming a test function is actually harder (and more dangerous) than you might think at first glance, hence the method `RenameTestFnsTo` is there to assist you.
+Renaming a test function is harder (and more dangerous) than you might think at first glance, hence the method `RenameTestFnsTo` is there to assist you.
 
 The syntax:
 
@@ -654,7 +656,7 @@ The syntax:
 'oldname' T.RenameTestFnsTo 'newname'
 ```
 
-Let's assume that at first you started numbering your test functions. Soon you come to realize that groups would be helpful. But it is awkward to have some test functions carrying just numbers and others group names _and_ numbers. Therefore, it is the good idea to rename those with just a number into, say, `Test_Misc_` followed by the number.
+Let's assume that at first you started numbering your test functions. Soon you come to realize that groups would be helpful. But it is awkward to have some test functions carrying just numbers and others group names _and_ numbers. Therefore, it is a good idea to rename those with just a number into, say, `Test_Misc_` followed by the number.
 
 For example:
 
@@ -665,7 +667,7 @@ For example:
 `RenameTestFnsTo` does a couple of things for you:
 
 1. It copies `Test_001` to `Test_Misc_001`
-1. It cooperate with code management systems
+1. It cooperates with code management systems
    * If [acre](https://github.com/the-carlisle-group/Acre-Desktop) is around it tells acre about the introduction of `Test_Misc_001`
    * If Link version 3.0.0 or better is available it is told about the introduction of `Test_Misc_001`
 1. It deletes the function `Test_001`
@@ -677,14 +679,14 @@ Note that with version 2.2 `RenameTestFnsTo` has learned to deal with groups as 
 'Foo' T.RenameTestFnsTo  'Misc'
 ```
 
-Assuming that there is a group "Foo", then all members of that group would be renamed, so that they become members of the group "Misc".
+Assuming that there is a group "Foo", then all members of that group would be renamed so that they become members of the group "Misc".
 
 If there is already a group "Misc" then numbering would start with the highest previous number plus 1.
 
 
 ## Best Practices
 
-* When starting to implement test cases you are advised to leave gaps: `Test_001`, `Test_010` etc. The same holds true for numbering within groups.
+* When starting to implement test cases you are advised to leave gaps: `Test_001`, `Test_010` etc. The same holds for numbering within groups.
 
 * Try to keep your test cases simple and test just one thing at a time, for example just one method at a time. 
 
@@ -696,10 +698,10 @@ If there is already a group "Misc" then numbering would start with the highest p
 
   If all test functions of a certain group share the same requirement use [Initialisation for groups](#initialisation-for-groups).
 
-* Avoid a test case relying on changes made by an earlier test case. This can be a tempting thing to do, but you will almost certainly regret this later.
+* Avoid a test case relying on changes made by an earlier test case. This can be a tempting thing to do, but you will almost certainly regret it later.
 
 * Notice that the DRY principle (don't repeat yourself) can and should be ignored when it comes to test cases: any test case should read from top to bottom like an independent story that can be understood by itself.
 
-* It might  be a good idea for _all_ test functions to tidy up first, just in case this test case has failed earlier and left some debris behind.
+* It might be a good idea for _all_ test functions to tidy up first, just in case this test case has failed earlier and left some debris behind.
 
-* It's probably a good idea to implement for every fixed bug a separate test case, for bugs tend to make comebacks all the time, and such a test case would discover such a comeback.
+* It's common practice to implement a test case for every bug, for bugs tend to make comebacks all the time, therefore such tests would prevent the comeback.
