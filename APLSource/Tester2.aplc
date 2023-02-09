@@ -26,10 +26,12 @@
     ∇
 
     ∇ History
-      :Access Public shared 
+      :Access Public shared
       ⍝ * 3.3.0 ⋄ 2023-02-09
       ⍝   * ReadMe polished
       ⍝   * New constanc _SkippedByUser introduced
+      ⍝   * Bug fixes
+      ⍝     _NotImplemented was not correctly reported
       ⍝ * 3.2.7 ⋄ 2022-08-03
       ⍝   * Bug fix in `ListTestFunctions`: must not cut lines short when view←1
       ⍝   * New `Make` added
@@ -868,6 +870,15 @@
           :EndIf
           :If _NotApplicable∊ps.returnCodes
               log,←⊂'  ',(⍕_NotApplicable+.=ps.returnCodes),' test cases not executed because they were not applicable (flagged with "⍝")'
+          :EndIf
+          :If _NotImplemented∊ps.returnCodes
+              log,←⊂'  ',(⍕_NotImplemented+.=ps.returnCodes),' test cases not executed because they have not been fully implemented yet (flagged with "⍝")'
+          :EndIf
+          :If _IncompatibleVersion∊ps.returnCodes
+              log,←⊂'  ',(⍕_IncompatibleVersion+.=ps.returnCodes),' test cases not executed because they required a different version of Dyalog (flagged with "⍝")'
+          :EndIf
+          :If _SkippedByUser∊ps.returnCodes
+              log,←⊂'  ',(⍕_SkippedByUser+.=ps.returnCodes),' test cases not executed because they were skipped by the user (flagged with "⍝")'
           :EndIf
           :If 0<noOf←+/ps.returnCodes∊ListCustomNumbers
               log,←⊂'  ',(⍕noOf),' test cases not executed because of custom checks (flagged with "⍝")'

@@ -6,19 +6,27 @@
  #.⎕SHADOW'TEMP'
  'TEMP'#.⎕NS''
  #.TEMP.⎕FX'r←Test_01 y;⎕TRAP' 'r←0' ⍝ Okay
- #.TEMP.⎕FX'r←Test_03 y;⎕TRAP'('r←',⍕T._Failed)
- #.TEMP.⎕FX'r←Test_04 y;⎕TRAP'('r←',⍕T._NoBatchTest)
- #.TEMP.⎕FX'r←Test_05 y;⎕TRAP'('r←',⍕T._Inactive)
- #.TEMP.⎕FX'r←Test_06 y;⎕TRAP'('r←',⍕T._WindowsOnly)
- #.TEMP.⎕FX'r←Test_07 y;⎕TRAP'('r←',⍕T._LinuxOnly)
+ #.TEMP.⎕FX'r←Test_02 y;⎕TRAP'('r←',⍕T._Failed)
+ #.TEMP.⎕FX'r←Test_03 y;⎕TRAP'('r←',⍕T._NoBatchTest)
+ #.TEMP.⎕FX'r←Test_04 y;⎕TRAP'('r←',⍕T._Inactive)
+ #.TEMP.⎕FX'r←Test_05 y;⎕TRAP'('r←',⍕T._WindowsOnly)
+ #.TEMP.⎕FX'r←Test_06 y;⎕TRAP'('r←',⍕T._LinuxOnly)
+ #.TEMP.⎕FX'r←Test_07 y;⎕TRAP'('r←',⍕T._MacOnly)
  #.TEMP.⎕FX'r←Test_08 y;⎕TRAP'('r←',⍕T._LinuxOrMacOnly)
  #.TEMP.⎕FX'r←Test_09 y;⎕TRAP'('r←',⍕T._LinuxOrWindowsOnly)
  #.TEMP.⎕FX'r←Test_10 y;⎕TRAP'('r←',⍕T._MacOrWindowsOnly)
+ #.TEMP.⎕FX'r←Test_11 y;⎕TRAP'('r←',⍕T._NoAcreTests)
+ #.TEMP.⎕FX'r←Test_12 y;⎕TRAP'('r←',⍕T._NoCiderTests)
+ #.TEMP.⎕FX'r←Test_13 y;⎕TRAP'('r←',⍕T._NotApplicable)
+ #.TEMP.⎕FX'r←Test_14 y;⎕TRAP'('r←',⍕T._NotImplemented)
+ #.TEMP.⎕FX'r←Test_15 y;⎕TRAP'('r←',⍕T._IncompatibleVersion)
+ #.TEMP.⎕FX'r←Test_16 y;⎕TRAP'('r←',⍕T._SkippedByUser)
+
  #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
 
  (rc log)←#.TEMP.T.Run 0
  →T.PassesIf 1=rc
- shouldBe←{(1+⍵)↑⍵,1 0,⍵⍴1}9
+ shouldBe←{(1+⍵)↑⍵,1 0,⍵⍴1}≢T.ListSymbolicNames
  →T.PassesIf shouldBe≡∆GetTotals log
 
  r←T._OK
