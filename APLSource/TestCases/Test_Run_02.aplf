@@ -11,7 +11,7 @@
  →T.PassesIf∨/'13 test cases of 13 called'⍷∊log
  →T.PassesIf∨/'2 test cases failed'⍷∊log
  →T.PassesIf∨/'0 test cases broken'⍷∊log
- →T.PassesIf∨/'2 test cases not executed because they are not "batchable"'⍷∊log
+ →T.PassesIf∨/'2 test cases not executed because of "NoBatchTest"'⍷∊log
 
  r←T._OK
 ⍝Done

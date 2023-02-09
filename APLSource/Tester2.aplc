@@ -30,9 +30,10 @@
       ⍝ * 3.3.0 ⋄ 2023-02-09
       ⍝   * ReadMe polished
       ⍝   * New constanc _SkippedByUser introduced
-      ⍝   * Custom return codes are now fully reported 
+      ⍝   * Custom return codes are now fully reported
       ⍝   * Bug fixes
-      ⍝     _NotImplemented was not correctly reported
+      ⍝     * `_NotImplemented` was not correctly reported
+      ⍝     * In case `Initial` was not executed `Cleanup` should not be executed either
       ⍝ * 3.2.7 ⋄ 2022-08-03
       ⍝   * Bug fix in `ListTestFunctions`: must not cut lines short when view←1
       ⍝   * New `Make` added
@@ -428,7 +429,7 @@
       r.⎕FX'r←List' 'r←↑{⍵(⍎⍵)}¨'' ''~¨⍨↓⎕NL 2'
     ∇
 
-    ∇ {r}←Run__ ps;rc;log;⎕TRAP;rc2;filename;tno;buff;res
+    ∇ {r}←Run__ ps;rc;log;⎕TRAP;rc2;filename;tno;buff;res;initialFlag
         ⍝ Run all test cases to be found in `_ref`.\\
         ⍝ The right argument is a parameter space, typically created by calling `CreateParms ⍬`.\\
         ⍝ The shy explicit result is a two-element vector:
@@ -448,6 +449,7 @@
       ShowLog{'--- Test framework "Tester2" version ',(2⊃⍵),' from ',(3⊃⍵),' ----'}Version
       _ref←ProcessIniFiles _ref ps
       ps.returnCodes←⍬
+      initialFlag←0 ⍝ Tells whether `Initial was executed or not
       :If 0=≢ps.list←{⍵[;1]}ListTestFunctions''
           →∆GetOutOfHere,rc←0
       :EndIf
@@ -469,14 +471,16 @@
           :EndIf
           ps←CopyGUI2Parms ps
       :EndIf
-      :If 0=ExecuteInitial _ref ps
-          ShowLog'*** "Initial" could not initialize'
-          ps.errCounter←1
-          rc←2
-          ps.list←''
-          →∆GetOutOfHere
-      :Else
-          rc←0
+      :If initialFlag←0<≢ps.list
+          :If 0=ExecuteInitial _ref ps
+              ShowLog'*** "Initial" could not initialize'
+              ps.errCounter←1
+              rc←2
+              ps.list←''
+              →∆GetOutOfHere
+          :Else
+              rc←0
+          :EndIf
       :EndIf
       ps.returnCodes←⍬
       ps.processedGroups←''
@@ -494,6 +498,7 @@
       :EndIf
       _INI←⍬                    ⍝ Flatten any leftovers
       :If 0<ps.⎕NC'list'        ⍝ Then no test cases got executed, probably because `Initial` failed.
+      :AndIf 0<≢ps.list
           (rc2 log)←ReportTestResults ps
           :If rc2≠2
               rc←rc2
@@ -501,7 +506,9 @@
           _ref.TestCasesExecutedAt←A.FormatDateTime ⎕TS
           ShowLog'Time of execution recorded on variable ',(⍕_ref),'.TestCasesExecutedAt as: ',_ref.TestCasesExecutedAt
       :EndIf
-      {}ExecuteCleanup _ref ps
+      :If initialFlag
+          {}ExecuteCleanup _ref ps
+      :EndIf
       :If 0<≢_codeCoverage
           :If 0=≢res←_codeCoverage.Finalise 1
               ⎕←'Coverage report: nothing to report'
@@ -838,7 +845,7 @@
       log,←⊂'  ',(⍕ps.totalCounter),' test case',((1≠ps.totalCounter)/'s'),' of ',(⍕≢ps.list),' called'
       log,←⊂'  ',(⍕ps.failedCounter),' test case',((1≠+/ps.failedCounter)/'s'),' failed',(0<ps.failedCounter)/' (flagged with "*")'
       log,←⊂'  ',(⍕ps.errCounter),' test case',((1≠+/ps.errCounter)/'s'),' broken',(0<ps.errCounter)/' (flagged with "#")'
-      :If 0≠≢ps.returnCodes
+      :If 0≠ps.totalCounter
           constants←ListSymbolicNames
           constants←(~constants[;1]∊'_OK' '_Failed')⌿constants
           :For constant comment :In ↓constants
@@ -850,6 +857,8 @@
                   log,←⊂'  ',(⍕noOf),' test cases not executed because of "',(1↓constant),'" (flagged with "⍝")'
               :EndIf
           :EndFor
+      :Else
+          log,←⊂'0 test cases executed'
       :EndIf
       ShowLog log
       rc←0<ps.failedCounter+ps.errCounter

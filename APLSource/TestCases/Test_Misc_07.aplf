@@ -36,7 +36,7 @@
  →T.FailsIf 1 0 0≢∆GetTotals log
 
  (rc log)←tmp.T.RunThese'Test_Grp'
- →T.PassesIf 0 0 0≡∆GetTotals log   ⍝ Because no group was identified
+ →T.PassesIf 0=≢∆GetTotals log   ⍝ Because no group was identified
 
  (rc log)←tmp.T.RunThese'Test_Grp*'
  →T.PassesIf 5 3 0≡∆GetTotals log

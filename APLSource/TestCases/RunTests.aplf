@@ -7,7 +7,8 @@
  parms.trapFlag←0
  parms.guiFlag←1
  parms T.RunGUI''
- :If ⎕NEXISTS T.codeCoverage.filename
+ :If ''≢T.codeCoverage
+ :AndIf ⎕NEXISTS T.codeCoverage.filename
      htmlFilename←CodeCoverage.ProcessDataAndCreateReport T.codeCoverage.filename
      :If 1 ∆YesOrNo'View CodeCoverage report?'
          APLTreeUtils2.GoToWebPage'file://',htmlFilename

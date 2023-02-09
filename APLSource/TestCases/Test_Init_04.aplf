@@ -11,7 +11,7 @@
  #.Temp.⎕FX'Cleanup' '⎕EX ''∆Testing'''
  (rc log)←T2.Run 1
  →T.PassesIf∨/'*** "Initial" could not initialize'⍷∊log
- →T.PassesIf 1=rc
+ →T.PassesIf rc=2
  →T.PassesIf 0=#.Temp.⎕NC'∆Testing'
 
  r←T._OK

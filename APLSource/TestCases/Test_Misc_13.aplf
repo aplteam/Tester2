@@ -1,0 +1,17 @@
+ r←Test_Misc_13(stopFlag batchFlag);log;⎕TRAP;rc
+⍝ Run a test suite with "Cleanup" depending on "Initial" being executed but wihtout any test cases.
+⍝ This was once  abug: "Initial" was (rightly) not executed but "Cleanup" was.
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ #.TEMP.⎕FX'Initial' '∆GLOBAL←1' '∘∘∘ This function is not supposed to be executed'
+ #.TEMP.⎕FX'Cleanup' '∆GLOBAL×←2' '⎕EX''∆GLOBAL''' '∘∘∘ This function is not supposed to be executed'
+
+ #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
+
+ (rc log)←#.TEMP.T.Run 0
+ →T.PassesIf 0=#.TEMP.⎕NC'∆GLOBAL'
+
+ r←T._OK

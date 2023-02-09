@@ -6,6 +6,6 @@
  T2←⎕NEW ##.Tester2 TestCasesSimu
  (rc log)←T2.RunThese'Grouping' 999999
  →T.PassesIf 0=rc
- →T.PassesIf 0 0 0≡∆GetTotals log
+ →T.PassesIf 0 =≢∆GetTotals log
 
  r←T._OK
