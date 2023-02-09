@@ -831,58 +831,19 @@
       :EndIf
     ∇
 
-    ∇ (rc log)←ReportTestResults ps;noOf
+    ∇ (rc log)←ReportTestResults ps;noOf;constant;constants
       log←''
       log,←⊂'-----'
       log,←⊂'  ',(⍕ps.totalCounter),' test case',((1≠ps.totalCounter)/'s'),' of ',(⍕≢ps.list),' called'
       log,←⊂'  ',(⍕ps.failedCounter),' test case',((1≠+/ps.failedCounter)/'s'),' failed',(0<ps.failedCounter)/' (flagged with "*")'
       log,←⊂'  ',(⍕ps.errCounter),' test case',((1≠+/ps.errCounter)/'s'),' broken',(0<ps.errCounter)/' (flagged with "#")'
       :If 0≠≢ps.returnCodes
-          :If _NoBatchTest∊ps.returnCodes
-              log,←⊂'  ',(⍕_NoBatchTest+.=ps.returnCodes),' test cases not executed because they are not "batchable" (flagged with "⍝")'
-          :EndIf
-          :If _Inactive∊ps.returnCodes
-              log,←⊂'  ',(⍕_Inactive+.=ps.returnCodes),' test cases not executed because they were inactive (flagged with "⍝")'
-          :EndIf
-          :If _WindowsOnly∊ps.returnCodes
-              log,←⊂'  ',(⍕_WindowsOnly+.=ps.returnCodes),' test cases not executed because they can only run under Window (flagged with "⍝")'
-          :EndIf
-          :If _LinuxOnly∊ps.returnCodes
-              log,←⊂'  ',(⍕_LinuxOnly+.=ps.returnCodes),' test cases not executed because they can only run under Linux (flagged with "⍝")'
-          :EndIf
-          :If _MacOnly∊ps.returnCodes
-              log,←⊂'  ',(⍕_MacOnly+.=ps.returnCodes),' test cases not executed because they can only run under Mac OS (flagged with "⍝")'
-          :EndIf
-          :If _LinuxOrMacOnly∊ps.returnCodes
-              log,←⊂'  ',(⍕_LinuxOrMacOnly+.=ps.returnCodes),' test cases not executed because they can only run under Linux or Mac OS (flagged with "⍝")'
-          :EndIf
-          :If _LinuxOrWindowsOnly∊ps.returnCodes
-              log,←⊂'  ',(⍕_LinuxOrWindowsOnly+.=ps.returnCodes),' test cases not executed because they can only run under Linux or Windows (flagged with "⍝")'
-          :EndIf
-          :If _MacOrWindowsOnly∊ps.returnCodes
-              log,←⊂'  ',(⍕_MacOrWindowsOnly+.=ps.returnCodes),' test cases not executed because they can only run under Mac OS or Windows (flagged with "⍝")'
-          :EndIf
-          :If _NoAcreTests∊ps.returnCodes
-              log,←⊂'  ',(⍕_NoAcreTests+.=ps.returnCodes),' test cases not executed because they are acre-related (flagged with "⍝")'
-          :EndIf
-          :If _NoCiderTests∊ps.returnCodes
-              log,←⊂'  ',(⍕_NoCiderTests+.=ps.returnCodes),' test cases not executed because they are Cider-related (flagged with "⍝")'
-          :EndIf
-          :If _NotApplicable∊ps.returnCodes
-              log,←⊂'  ',(⍕_NotApplicable+.=ps.returnCodes),' test cases not executed because they were not applicable (flagged with "⍝")'
-          :EndIf
-          :If _NotImplemented∊ps.returnCodes
-              log,←⊂'  ',(⍕_NotImplemented+.=ps.returnCodes),' test cases not executed because they have not been fully implemented yet (flagged with "⍝")'
-          :EndIf
-          :If _IncompatibleVersion∊ps.returnCodes
-              log,←⊂'  ',(⍕_IncompatibleVersion+.=ps.returnCodes),' test cases not executed because they required a different version of Dyalog (flagged with "⍝")'
-          :EndIf
-          :If _SkippedByUser∊ps.returnCodes
-              log,←⊂'  ',(⍕_SkippedByUser+.=ps.returnCodes),' test cases not executed because they were skipped by the user (flagged with "⍝")'
-          :EndIf
-          :If 0<noOf←+/ps.returnCodes∊ListCustomNumbers
-              log,←⊂'  ',(⍕noOf),' test cases not executed because of custom checks (flagged with "⍝")'
-          :EndIf
+          constants←ListSymbolicNames[;1]
+          constants/⍨←'_custom'{⍺∘≢¨(≢⍺)↑¨⍵}constants
+          constants~←'_OK' '_Failed'
+          :For constant :In constants
+              log,←⊂'  ',(⍕(⍎constant)+.=ps.returnCodes),' test cases not executed because of "',(1↓constant),'" (flagged with "⍝")'
+          :EndFor
       :EndIf
       ShowLog log
       rc←0<ps.failedCounter+ps.errCounter
