@@ -22,11 +22,14 @@
 
     ∇ r←Version
       :Access Public shared
-      r←'Tester2' '3.2.7+5' '2022-08-03'
+      r←'Tester2' '3.3.0+5' '2023-02-09'
     ∇
 
     ∇ History
       :Access Public shared 
+      ⍝ * 3.3.0 ⋄ 2023-02-09
+      ⍝   * ReadMe polished
+      ⍝   * New constanc _SkippedByUser introduced
       ⍝ * 3.2.7 ⋄ 2022-08-03
       ⍝   * Bug fix in `ListTestFunctions`: must not cut lines short when view←1
       ⍝   * New `Make` added
@@ -78,6 +81,7 @@
     :Field Public Instance Readonly _NotApplicable←¯20
     :Field Public Instance Readonly _NotImplemented←¯21
     :Field Public Instance Readonly _IncompatibleVersion←¯22
+    :Field Public Instance Readonly _SkippedByUser←¯23
 
     :Field Public Instance ReadOnly QuitEvent←993
     :Field Public Instance ReadOnly PassEvent←994
