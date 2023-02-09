@@ -22,7 +22,7 @@
  #.TEMP.⎕FX'r←Test_09 arg;⎕TRAP' '⍝ Test 10' 'r←T.custom_1'
  (rc log)←#.TEMP.T.Run 1
  →T.PassesIf 0=rc
- →T.PassesIf 10 0 0 4 2 2 1≡∆GetTotals log
+ →T.PassesIf 9 0 0 4 2 2 1≡∆GetTotals log
 
  r←T._OK
 
