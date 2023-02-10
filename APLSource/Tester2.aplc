@@ -22,12 +22,14 @@
 
     ∇ r←Version
       :Access Public shared
-      r←'Tester2' '3.3.0+5' '2023-02-09'
+      r←'Tester2' '3.3.0+5' '2023-02-10'
     ∇
 
     ∇ History
       :Access Public shared
       ⍝ * 3.3.0 ⋄ 2023-02-09
+      ⍝   * Syntax of `RenameTestFnsTo` clarified and enhanced
+      ⍝   * `EditTestFunctions` now accepts a trailing wildcard (*)
       ⍝   * ReadMe polished
       ⍝   * New constant _SkippedByUser introduced
       ⍝   * Custom return codes are now fully reported
@@ -1233,7 +1235,7 @@
       r←flag/label
     ∇
 
-    ∇ {list}←EditTestFunctions list
+    ∇ {list}←EditTestFunctions list;name
 ⍝ Get all functions into the editor starting their names with `Test_` in case `list` is empty.\\
 ⍝ If `list` is not empty it may be one of:
 ⍝ * A matrix with test function names in the first column; typically the result of `ListTestFunctions`.
@@ -1252,7 +1254,12 @@
       :ElseIf 2=|≡list
           list←⊃list
       :Else
-          list←,[0.5]list
+          :If '*'=¯1↑list
+              name←'Test_'{(⍺/⍨⍺≢(≢⍺)↑⍵),⍵}¯1↓list
+              list←name{⍵⌿⍨((≢⍺)↑[2]⍵)∧.=⍺}'T'_ref.⎕NL 3
+          :Else
+              list←,[0.5]list
+          :EndIf
       :EndIf
       :If 0<≢list←' '~⍨¨↓'Test_'{⍵⌿⍨⍺∧.=⍨(≢⍺)↑[1+⎕IO]⍵}list
           _ref{(0=≢⍵): ⋄ ⍺.⎕ED ⍵}&list
@@ -1387,41 +1394,46 @@
     ∇ {r}←oldName RenameTestFnsTo newName;body;rc;header;comment;res;name;right;left;delFilanme;list;this;no;buff;val;f1;f2
      ⍝ Renames a test function or a group of test functions and tells acre and Link.\\
      ⍝ `oldName` and `newName` **must not** contain a dot.\\
+     ⍝ Note that names of test functions are supposed to start with "Test_", so if the arguments do not start
+     ⍝ with "Test_" the string is added.
      ⍝ Examples:
      ⍝ ```
-     ⍝ 'Test_999' ← 'Test_001' T.RenameTestFnsTo 'Test_999'
-     ⍝ 'Test_BBB_002' ← 'Test_001' T.RenameTestFnsTo 'Test_BBB_002'
-     ⍝ 'Test_CCC_003' ← 'Test_BBB_002' T.RenameTestFnsTo 'Test_CCC_003'
-     ⍝ 'Test_YYY*' ← 'AAA; T.RenameTestFnsTo 'YYY'
-     ⍝ 'Test_YYY*' ← 'Test_AAA; T.RenameTestFnsTo 'Test_YYY'
-     ⍝ 'Test_VVV*' ← '' T.RenameTestFnsTo 'Test_VVV'  ⍝ all NOT belonging to a group are renamed
+     ⍝ 'Test_999'   ← 'Test_001' T.RenameTestFnsTo 'Test_999'     ⍝ Rename a single test function without group
+     ⍝ 'Test_BBB_2' ← 'Test_1' T.RenameTestFnsTo 'Test_BBB_2'     ⍝ Rename a single test function with group
+     ⍝ 'Test_BBB_2' ← 'BBB_1' T.RenameTestFnsTo 'BBB_2'           ⍝ Rename a single test function with group without "Test_"
+     ⍝ 'Test_CCC_3' ← 'Test_BBB_2' T.RenameTestFnsTo 'Test_CCC_3' ⍝ Change group and number
+     ⍝ 'Test_YYY*'  ← 'Test_AAA; T.RenameTestFnsTo 'Test_YYY'     ⍝ Rename all members of a group with full name
+     ⍝ 'Test_YYY*'  ← 'AAA' T.RenameTestFnsTo 'YYY'               ⍝ Rename all members of a group without "Test_"
+     ⍝ 'Test_VVV*'  ← '' T.RenameTestFnsTo 'Test_VVV'             ⍝ all NOT belonging to a group are renamed
      ⍝ ```
      ⍝ `r ← ⍬`
       :Access Public Instance
       r←⍬
       (oldName newName)←oldName newName~¨' '
       'Names must not contain dots'⎕SIGNAL 11/⍨↑∨/'.'∊¨oldName newName
-      :If ~'.'∊oldName
-      :AndIf ~'.'∊newName
-          :If 0=≢buff←ListGroups
-              f1←0
-              f2←0=≢Remove∆Test_ oldName
-          :Else
-              f1←(⊂Remove∆Test_ oldName)∊(≢'Test_')↓¨{⍵[;1]}buff     ⍝ Group name?
-              f2←0=≢Remove∆Test_ oldName
-          :EndIf
-      :AndIf f1∨f2
+      (oldName newName)←'Test_'∘{⍺≡(≢⍺)↑⍵:⍵ ⋄ ⍺,⍵}¨oldName newName
+      :If 0=≢buff←ListGroups
+          f1←0
+          f2←0=≢Remove∆Test_ oldName
+      :Else
+          f1←(⊂Remove∆Test_ oldName)∊(≢'Test_')↓¨{⍵[;1]}buff     ⍝ Group name?
+          f2←0=≢Remove∆Test_ oldName
+      :EndIf
+      :If f1
+          'New name is invalid'⎕SIGNAL 11/⍨¯1=⎕NC Remove∆Test_ newName
+      :EndIf
+      :If f1∨f2
           list←{⍵[;1]}ListTestFunctions Remove∆Test_ oldName
           :If f2
               list←((⊃∘Remove∆Test_¨list)∊⎕D)/list
           :EndIf
           :For this :In list
               no←{⍵↑⍨-¯1+(⌽⍵)⍳'_'}this
-              :If 0<_ref.⎕NC'Test_',newName,'_',no  ⍝ Already occupied
+              :If 0<_ref.⎕NC'Test_',(Remove∆Test_ newName),'_',no  ⍝ Already occupied
                   val←⊃(//)⎕VFI no
-                  no←(-≢no)↑((≢no)⍴'0'),' '~⍨⍕1+⌈/{⊃(//)⎕VFI ⍵↑⍨-¯1+(⌽⍵)⍳'_'}¨↓_ref.{l←'T'⎕NL 3 ⋄ l⌿⍨((≢⍵)↑[2]l)∧.=⍵}'Test_',newName,'_'
+                  no←(-≢no)↑((≢no)⍴'0'),' '~⍨⍕1+⌈/{⊃(//)⎕VFI ⍵↑⍨-¯1+(⌽⍵)⍳'_'}¨↓_ref.{l←'T'⎕NL 3 ⋄ l⌿⍨((≢⍵)↑[2]l)∧.=⍵}newName,'_'
               :EndIf
-              this RenameTestFnsTo'Test_',newName,'_',no
+              this RenameTestFnsTo'Test_',(Remove∆Test_ newName),'_',no
           :EndFor
           →∆Go
       :Else

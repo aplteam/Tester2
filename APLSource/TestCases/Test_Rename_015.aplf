@@ -1,0 +1,22 @@
+ r←Test_Rename_015(stopFlag batchFlag);stopFlag;⎕TRAP;T2;tempDir;res;expected;qdmx
+⍝ Illegal attempt to rename a group (invalid name)
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.TEMP
+ #.TEMP.⎕FX↑'r←Test_Foo_001 dummy' 'r←''Hello, world'''
+ #.TEMP.⎕FX↑'r←Test_Foo_002 dummy' 'r←''Hello, galaxy'''
+
+ :Trap 11
+     {}'Foo'T2.RenameTestFnsTo'12Foo2'
+     →T.FailsIf 1
+ :Else
+     qdmx←⎕DMX
+     →T.PassesIf'New name is invalid'{⍺≡(⍴⍺)↑⍵}qdmx.EM
+ :EndTrap
+
+ r←T._OK
+⍝Done

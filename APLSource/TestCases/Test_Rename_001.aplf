@@ -1,0 +1,28 @@
+ r←Test_Rename_001(stopFlag batchFlag);stopFlag;⎕TRAP;T2;tempDir;res;expected;list
+⍝ Rename single test function without a group
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.TEMP
+ #.TEMP.⎕FX↑'r←{x}Test_001 dummy' 'r←''Hello, world'''
+ tempDir←FilesAndDirs.GetTempSubDir⊃⎕SI
+ res←⎕SE.Link.Create'#.TEMP'tempDir
+ Assert'Linked: '{⍺≡(≢⍺)↑⍵}res
+
+ {}'Test_001'T2.RenameTestFnsTo'Test_002'
+ →T.PassesIf 0=#.TEMP.⎕NC'Test_001'
+ →T.PassesIf 3=#.TEMP.⎕NC'Test_002'
+ →T.PassesIf'Hello, world'≡#.TEMP.Test_002 ⍬
+ list←⊃FilesAndDirs.Dir tempDir,'/'
+ Assert 1=≢list
+ →T.GoToTidyUp'Test_002.aplf'≢⊃,/1↓⎕NPARTS⊃list
+
+ r←T._OK
+
+∆TidyUp:
+ :Trap 0 ⋄ {}⎕SE.Link.Break'#.TEMP' ⋄ :EndTrap
+ :Trap 0 ⋄ {}FilesAndDirs.RmDirByForce tempDir ⋄ :EndTrap
+⍝Done

@@ -1,0 +1,18 @@
+ r←Test_Rename_005(stopFlag batchFlag);stopFlag;⎕TRAP;T2;tempDir;res;expected
+⍝ Rename single test function by specifying "Test_" only for the old name
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.TEMP
+ #.TEMP.⎕FX↑'r←Test_001' 'r←''Hello, world'''
+
+ {}'Test_001'T2.RenameTestFnsTo'002'
+ →T.PassesIf 0=#.TEMP.⎕NC'Test_001'
+ →T.PassesIf 3=#.TEMP.⎕NC'Test_002'
+ →T.PassesIf'Hello, world'≡#.TEMP.Test_002
+
+ r←T._OK
+⍝Done

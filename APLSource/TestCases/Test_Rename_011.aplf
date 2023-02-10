@@ -1,0 +1,24 @@
+ r←Test_Rename_011(stopFlag batchFlag);stopFlag;⎕TRAP;T2;tempDir;res;expected
+⍝ Force functions not belonging to a group into one, leaving everything else alone
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.TEMP
+ #.TEMP.Test_001←{⍵}
+ #.TEMP.Test_020←{⍵}
+ #.TEMP.Test_AAA_001←{⍵}
+ #.TEMP.Test_AAA_002←{⍵}
+
+ {}'Test_'T2.RenameTestFnsTo'XXX'
+ →T.PassesIf 0=#.TEMP.⎕NC'Test_001'
+ →T.PassesIf 0=#.TEMP.⎕NC'Test_020'
+ →T.PassesIf 3=#.TEMP.⎕NC'Test_AAA_001'
+ →T.PassesIf 3=#.TEMP.⎕NC'Test_AAA_002'
+ →T.PassesIf 3=#.TEMP.⎕NC'Test_XXX_001'
+ →T.PassesIf 3=#.TEMP.⎕NC'Test_XXX_020'
+
+ r←T._OK
+⍝Done

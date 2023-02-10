@@ -1,0 +1,22 @@
+ r←Test_Rename_014(stopFlag batchFlag);stopFlag;⎕TRAP;T2;tempDir;res;expected;qdmx
+⍝ Illegal attempt to rename a group (name already in use)
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.TEMP
+ #.TEMP.⎕FX↑'r←Test_Foo_001 dummy' 'r←''Hello, world'''
+ #.TEMP.Test_Foo_002←{⍵}
+
+ :Trap 11
+     {}'Foo_001'T2.RenameTestFnsTo'Foo_002'
+     →T.FailsIf 1
+ :Else
+     qdmx←⎕DMX
+     →T.PassesIf'New name is already used'{⍺≡(⍴⍺)↑⍵}qdmx.EM
+ :EndTrap
+
+ r←T._OK
+⍝Done

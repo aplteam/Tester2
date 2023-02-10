@@ -1,0 +1,21 @@
+ r←Test_Rename_013(stopFlag batchFlag);stopFlag;⎕TRAP;T2;tempDir;res;expected;qdmx
+⍝ Illegal attempt to rename a function (not found)
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.TEMP
+ #.TEMP.⎕FX↑'r←Test_Foo_001 dummy' 'r←''Hello, world'''
+
+ :Trap 11
+     {}'Foo_009'T2.RenameTestFnsTo'Foo_010'
+     →T.FailsIf 1
+ :Else
+     qdmx←⎕DMX
+     →T.PassesIf'Function to be renamed not found'{⍺≡(⍴⍺)↑⍵}qdmx.EM
+ :EndTrap
+
+ r←T._OK
+⍝Done

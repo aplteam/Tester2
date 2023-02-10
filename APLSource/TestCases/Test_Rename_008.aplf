@@ -1,0 +1,24 @@
+ r←Test_Rename_008(stopFlag batchFlag);stopFlag;⎕TRAP;T2;tempDir;res;expected;qdmx;PassesIf
+⍝ Try to rename to an already occupied name
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.TEMP
+ #.TEMP.Test_001←{⍵}
+ #.TEMP.Test_020←{⍵}
+ #.TEMP.Test_XXX_001←{⍵}
+ #.TEMP.Test_XXX_020←{⍵}
+
+ :Trap 0
+     {}''T2.RenameTestFnsTo'XXX'
+     →T.PassesIf 1
+ :Else
+     qdmx←⎕DMX
+     →T.PassesIf'New name is already used'≡qdmx.EM
+ :EndTrap
+
+ r←T._OK
+⍝Done

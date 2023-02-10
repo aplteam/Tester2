@@ -1,0 +1,18 @@
+ r←Test_Rename_016(stopFlag batchFlag);stopFlag;⎕TRAP;T2;tempDir;res;expected
+⍝ Rename a group into a new group without specifying "Test_"
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.TEMP
+ Assert' '=1↑0⍴#.TEMP.⎕FX↑'r←Test_Foo_001 dummy' 'r←0'
+ Assert' '=1↑0⍴#.TEMP.⎕FX↑'r←Test_Foo_002 dummy' 'r←0'
+
+ 'Foo'T2.RenameTestFnsTo'GooZoo'
+ →T.PassesIf 0 0≡#.TEMP.⎕NC↑'Test_Foo_001' 'Test_Foo_002'
+ →T.PassesIf 3 3≡#.TEMP.⎕NC↑'Test_GooZoo_001' 'Test_GooZoo_002'
+
+ r←T._OK
+⍝Done
