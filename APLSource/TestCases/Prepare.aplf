@@ -8,7 +8,7 @@
      flag←1
      options←'append' 'replace'
      answer←'Coverage file already exists'CommTools.Select options
-     1 ⎕NDELETE(2≡answer)/testFilename,'.dcf'
+     {}1 ⎕NDELETE⍣(2≡answer)⊣testFilename,'.dcf'
  :Else
      flag←CommTools.YesOrNo'Run CodeCoverage?'
  :EndIf

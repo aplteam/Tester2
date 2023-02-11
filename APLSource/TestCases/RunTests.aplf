@@ -7,7 +7,7 @@
  parms.trapFlag←0
  parms.guiFlag←1
  parms T.RunGUI''
- :If ''≢T.codeCoverage
+ :If 0<≢T.codeCoverage
  :AndIf ⎕NEXISTS T.codeCoverage.filename
      htmlFilename←CodeCoverage.ProcessDataAndCreateReport T.codeCoverage.filename
      :If 1 ∆YesOrNo'View CodeCoverage report?'
