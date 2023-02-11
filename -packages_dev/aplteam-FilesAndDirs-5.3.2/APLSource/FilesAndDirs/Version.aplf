@@ -1,3 +1,0 @@
- r←Version
-⍝ See also `History`
- r←'FilesAndDirs' '5.3.2+117' '2023-02-06'
