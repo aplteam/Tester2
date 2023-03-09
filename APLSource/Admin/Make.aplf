@@ -3,10 +3,9 @@
      M←⎕SE.MakeHelpers
      C←##.CiderConfig
      path←C.HOME,'/Dist/'
-     version←M.CompileVersionNumberPattern C.HOME
+     cfg←M.GetPackageCfg C.HOME
+     version←M.CompileVersionNumberPattern cfg
      M.RecreateFolder path
-⍝    cfg←M.GetPackageCfg C.HOME
-⍝     M.CreateAPI refTosourceNS ##.T cfg.api
      zipFilename←⎕SE.Tatin.BuildPackage C.HOME path version
      ⎕←'*** New version build successfully:',M.CR,'   ',zipFilename
  :EndIf

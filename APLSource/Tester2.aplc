@@ -22,11 +22,14 @@
 
     ∇ r←Version
       :Access Public shared
-      r←'Tester2' '3.3.0+5' '2023-02-10'
+      r←'Tester2' '3.3.1+5' '2023-03-08'
     ∇
 
     ∇ History
       :Access Public shared
+      ⍝ * 3.3.1 ⋄ 2023-03-08
+      ⍝   * Bug fix: The QuitTests would not work with "Options > Disable traps in session" being ticked and
+      ⍝     therefore this is now temporarily disabled with 600⌶
       ⍝ * 3.3.0 ⋄ 2023-02-09
       ⍝   * Syntax of `RenameTestFnsTo` clarified and enhanced
       ⍝   * `EditTestFunctions` now accepts a trailing wildcard (*)
@@ -493,6 +496,10 @@
       ps.stopFlag←2⊥⌽buff
       ProcessTestCases _ref ps
      ∆GetOutOfHere:
+      :If 0<⎕NC'∆TRAPS_IN_SESSION'
+          {}600⌶∆TRAPS_IN_SESSION ⍝ Restore former setting
+          ⎕EX'∆TRAPS_IN_SESSION'
+      :EndIf
       :If ps.guiFlag
       :AndIf {6::1 ⋄ 0⊣⍵.Type}ps.ref2Gui.∆n.Form
           ⎕←'*** Tests cancelled'
@@ -925,11 +932,11 @@
     ⍝Done
     ∇
 
-    ∇ {r}←QuitTests
-    ⍝ Use this method to end running test cases prematurely but make sure that everything is tidied up,
-    ⍝ meaning that a `Cleanup` function (if any) is executed etc.\\
+    ∇ QuitTests;was
+    ⍝ Use this method to quit a test run prematurely and make sure that everything is tidied up,
+    ⍝ meaning that a `Cleanup` function (if any) is executed.\\
       :Access Public Instance
-      r←⍬
+      ∆TRAPS_IN_SESSION←600⌶0  ⍝ Enable traps in the session and save original setting
       ⎕SIGNAL QuitEvent
     ∇
 
