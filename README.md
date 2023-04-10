@@ -188,7 +188,7 @@ An example would be (assuming that `T` is an instance of the `Tester2` class):
 T.custom_1←'Invalid version of Dyalog APL'
 ```
 
-### Checks before and after a test case is executed
+### Checks before & after a test case is run
 
 #### Application
 
@@ -381,6 +381,8 @@ The methods fall into four groups:
 
 `Run`, `RunBatchTests`, `RunGUI`, `RunThese` and `Run__` are running all or selected test cases with or without error trapping.
 
+Note that there are helpers available for the most common cases, see the "Helpers" for details.
+
 
 ### Flow control
 
@@ -481,9 +483,69 @@ These are functions that are not required in order to run test cases but can mak
 
 These functions are discussed in detail at [Managing test cases](#managing-test-cases).
 
+## Helpers
+
+Two scenarios are very common:
+
+* Run all test cases and create data on the fly that allow creating a code coverage report. 
+
+  Such tests may well interact with the user.
+
+* Run all tests that do not require a user (batch tests), typically as part of some automated process
+
+  Most importantly this returns a Boolean that either inicates 100% success by returning a 1, or that at least one test cases failed, indicated by returning a 0.
+
+`Tester2` can establish helpers in the namespace that host your test cases covering these two scenarios. 
+
+Assuming that you are currently in that namespace, and that it contains `Tester2` (and also `CodeCoverage` if you are after a code coverage report) then this is all that is required:
+
+```
+      Tester2.EstablishHelpers ⎕THIS
+"Prepare", "RunTests" & "RunBatchTests" successfully established in ...
+```
+
+Note that you should read and amend the helpers after having established them.
+
 ## Examples
 
-### `Tester2`'s `Run*` functions
+### With Helpers
+
+First make sure that the helpers are established in the namespace that hosts your tests. If your inside that namespace:
+
+```
+      Tester2.EstablishHelpers ⎕THIS
+"Prepare", "RunTests" & "RunBatchTests" successfully established in ...
+```
+
+#### RunTests
+
+This asks whether the user wants to get a code coverage report. 
+
+If there is already such a report the user might want to append data, for exmaple when you need to run your test suite under Windows, Linux and Mac-OS.
+
+Such tests might well rely on the user to ask questions. The debug flag is set, so when a test cases has a problem it stops on the spot and allows the user to investigate the problem.
+
+#### RunBatchTests
+
+This does not do code coverage. The debug flag is off, so in case a test cases fails it does not stop.
+
+This is typically run as part of an automated process.
+
+It returns a two-item vector as result:
+
+1. A Boolean indicating success with a 1 and failure with a 0. It's a failure when at least one test cases failed.
+
+2. A vector of text vectors with a detailed report
+
+#### Prepare
+
+`Prepare` is called by `RunTests`, but it can also be useful if you want to prepare for a run but have special needs that are not covered by `RunTests`, for example when you wan to run only a specific group of test cases.
+
+### Without Helpers
+
+You only need to read this if the helpers do not cover your needs.
+
+This is about `Tester2`'s `Run*` functions. These should be flexible enough to cover even exotic needs.
 
 #### `Run`
 
@@ -704,4 +766,4 @@ If there is already a group "Misc" then numbering would start with the highest p
 
 * It might be a good idea for _all_ test functions to tidy up first, just in case this test case has failed earlier and left some debris behind.
 
-* It's common practice to implement a test case for every bug, for bugs tend to make comebacks all the time, therefore such tests would prevent the comeback.
+* It's common practice to implement a test case for every bug, for bugs tend to make comebacks all the time; such tests prevent the comeback.

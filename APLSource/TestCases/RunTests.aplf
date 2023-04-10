@@ -1,5 +1,5 @@
  RunTests;htmlFilename;parms
-⍝ Not that TTester2's test cases MUST be run from the GUI for technical reasons.
+⍝ Note that Tester2's test cases MUST be run from the GUI for technical reasons.
 ⍝ It's also the only way to be able to follow the stream of tests since Tester2 tests itself.
  Prepare
  parms←T.CreateParms ⍬

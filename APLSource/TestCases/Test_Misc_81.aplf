@@ -1,0 +1,29 @@
+ r←Test_Misc_81(stopFlag batchFlag);log;⎕TRAP;res
+⍝ Establish helpers in a namespace
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP' ⋄ 'TEMP'#.⎕NS''
+
+ Assert 0=≢#.TEMP.⎕NL 3
+
+ ##.CommTools.YesOrNo_Answers←1 2⍴'Helpers@' 'N'
+ res←##.Tester2.EstablishHelpers #.TEMP
+ →T.GoToTidyUp~0=≢res
+ →T.GoToTidyUp 0≠≢#.TEMP.⎕NL 3
+
+ ##.CommTools.YesOrNo_Answers←1 2⍴'Helpers@' 'Y'
+ res←##.Tester2.EstablishHelpers #.TEMP
+ →T.GoToTidyUp 0=≢res
+ →T.GoToTidyUp 3≠≢#.TEMP.⎕NL 3
+
+ #.⎕SHADOW'TEMP' ⋄ 'TEMP'#.⎕NS''
+ ##.CommTools.Cleanup
+ res←1 ##.Tester2.EstablishHelpers #.TEMP
+ →T.GoToTidyUp 0=≢res
+ →T.GoToTidyUp 3≠≢#.TEMP.⎕NL 3
+
+ r←T._OK
+
+∆TidyUp:
+ ##.CommTools.Cleanup

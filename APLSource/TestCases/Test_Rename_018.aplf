@@ -4,7 +4,7 @@
 
  r←T._Failed
 
- #.⎕SHADOW'TEMP'
+⍝ #.⎕SHADOW'TEMP'  ⍝ Link gets confused by this
  'TEMP'#.⎕NS''
  T2←⎕NEW ##.Tester2 #.TEMP
  #.TEMP.⎕FX↑'r←Test_Foo_001 dummy' 'r←1'
@@ -26,5 +26,6 @@
 
 ∆TidyUp:
  :Trap 0 ⋄ {}⎕SE.Link.Break'#.TEMP' ⋄ :EndTrap
+ #.⎕EX'TEMP'
  :Trap 0 ⋄ {}FilesAndDirs.RmDirByForce tempDir ⋄ :EndTrap
 ⍝Done
