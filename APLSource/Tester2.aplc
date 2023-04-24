@@ -22,11 +22,14 @@
 
     ∇ r←Version
       :Access Public shared
-      r←'Tester2' '3.4.0+5' '2023-04-10'
+      r←'Tester2' '3.5.0+5' '2023-04-??'
     ∇
 
-    ∇ History
+    ∇ r←History
       :Access Public shared
+      ⍝ * 3.4.0 ⋄ 2023-04-10
+      ⍝   * Helper `RunTests` improved
+      ⍝   * `History now returns a useful result: its own comments
       ⍝ * 3.4.0 ⋄ 2023-04-10
       ⍝   * Shared method `EstablishHelpers` added which allows establishing the three helpers `RunTests`,
       ⍝     `RunBatchTests` and `Prepare`.
@@ -44,40 +47,9 @@
       ⍝   * Bug fixes
       ⍝     * `_NotImplemented` was not correctly reported
       ⍝     * In case `Initial` was not executed `Cleanup` should not be executed either
-      ⍝ * 3.2.7 ⋄ 2022-08-03
-      ⍝   * Bug fix in `ListTestFunctions`: must not cut lines short when view←1
-      ⍝   * New `Make` added
-      ⍝ * 3.2.6 ⋄ 2022-05-30
-      ⍝   * Bug fix: log in session was mutilated; introduced by 3.2.5
-      ⍝ * 3.2.5 ⋄ 2022-05-22
-      ⍝   * #17 fixed
-      ⍝   * In the GUI the log (not the grid) was distorted
-      ⍝   * Local variables in `ExecuteInitial` renamed so that they explain themselves
-      ⍝ * 3.2.4 ⋄ 2022-05-09
-      ⍝   * Log messages came with a LF in the middle of a message in case batchFlag was 1.
-      ⍝ * 3.2.3 ⋄ 2022-04-13
-      ⍝   * In case an INI file is part of a test suite then under non-Windows platform it would fail prior 3.2.3
-      ⍝ * 3.2.2 ⋄ 2022-04-06
-      ⍝   * Bug fix for `exec_before_each_test` and `exec_after_each_test`:\\
-      ⍝     When the check function did not a return a result an ERROR occured.
-      ⍝ * 3.2.1 ⋄ 2021-10-28
-      ⍝   * Minor bug fix in GetTestTemplate: explicit result was ill-named ("r" rather than "R").
-      ⍝ * 3.2.0 ⋄ 2021-10-01
-      ⍝   * `Tester2` now informs `Link` in case an APL object was changed (`RenameTestFnsTo`) under the condition
-      ⍝     that it is at least Link 3.0 that is managing the code.
-      ⍝   * New constant `NoCiderTests` introduced.
-      ⍝   * The test case that is executed next is now printed to the session BEFORE its execution. Same for the GUI.
-      ⍝     As a consequence the order of the items of a single test call needed to change, but the same information
-      ⍝     is provided as before anyway.
-      ⍝   * Bug fixes
-      ⍝     * The flagging of test cases that are inactive for one reason or another was inconsistant. Those are
-      ⍝       now always flagged with a lamp symbol (⍝).
-      ⍝     * `ListTestFunctions` does not show the lamp symbol anymore.
-      ⍝     * `RenameTestFnsTo` printed to the session rather than returning the messages as result.
-      ⍝     * `CodeCoverage.Finalyze` (which has been marked as deprecated for quite a while) got replaced by
-      ⍝       `CodeCoverage.Finalise`, finally fixing the typo.
       ⍝\\
       ⍝ For a full history (including older versions) see <https://github.com/aplteam/Tester2/releases>
+      r←↑{⍵↓⍨+/∧\∧⌿(↑⍵)=' '}{⍵↓⍨⍵⍳'⍝'}¨{⍵/⍨'⍝'=⊃¨⍵}{⍵↓⍨+/∧\(↑⍵)=' '}¨1↓⎕NR⊃⎕SI       
     ∇
 
     :Field Public Instance Readonly _OK←0
@@ -1811,7 +1783,7 @@
       :EndIf
     ∇
 
-    ∇ RunTests;htmlFilename;verbose
+    ∇ RunTests;htmlFilename;verbose;option
     ⍝ 1. Prepares the test framework
     ⍝ 2. Runs all test cases
     ⍝ 3. Processes the code coverage data (if collected)
@@ -1820,9 +1792,12 @@
       T.Run 1
       :If 0<≢T.codeCoverage
           {}CodeCoverage.ProcessData T.codeCoverage.filename
-          verbose←2='Type of code coverage report' 0 1 CommTools.Select'Overview' 'Verbose'
-          htmlFilename←verbose CodeCoverage.CreateReport T.codeCoverage.filename
-          ⎕←']Open ',htmlFilename
+          option←'Type of code coverage report' 0 1 CommTools.Select'Overview' 'Verbose' 'None'
+          :If 3>option
+              verbose←2=option
+              htmlFilename←verbose CodeCoverage.CreateReport T.codeCoverage.filename
+              ⎕←']Open file://',htmlFilename
+          :EndIf
       :EndIf
     ∇
 
