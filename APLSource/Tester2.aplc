@@ -22,11 +22,13 @@
 
     ∇ r←Version
       :Access Public shared
-      r←'Tester2' '3.5.0+5' '2023-04-??'
+      r←'Tester2' '3.5.0+5' '2023-04-28'
     ∇
 
     ∇ r←History
       :Access Public shared
+      ⍝ * 3.5.0 ⋄ 2023-04-28
+      ⍝   * Helpers updated
       ⍝ * 3.4.0 ⋄ 2023-04-10
       ⍝   * Helper `RunTests` improved
       ⍝   * `History now returns a useful result: its own comments
@@ -49,7 +51,7 @@
       ⍝     * In case `Initial` was not executed `Cleanup` should not be executed either
       ⍝\\
       ⍝ For a full history (including older versions) see <https://github.com/aplteam/Tester2/releases>
-      r←↑{⍵↓⍨+/∧\∧⌿(↑⍵)=' '}{⍵↓⍨⍵⍳'⍝'}¨{⍵/⍨'⍝'=⊃¨⍵}{⍵↓⍨+/∧\(↑⍵)=' '}¨1↓⎕NR⊃⎕SI       
+      r←↑{⍵↓⍨+/∧\∧⌿(↑⍵)=' '}{⍵↓⍨⍵⍳'⍝'}¨{⍵/⍨'⍝'=⊃¨⍵}{⍵↓⍨+/∧\(↑⍵)=' '}¨1↓⎕NR⊃⎕SI
     ∇
 
     :Field Public Instance Readonly _OK←0
@@ -1752,11 +1754,11 @@
 
     :Section Helpers
     ∇ Prepare;testPath;testFilename;ask;answer;options;flag;ind
-    ⍝ Creates an instance of the class `Tester2` named `T` and configures it for
-    ⍝ Assumes that the project is handled by the project manager "Cider", and that there is
-    ⍝ a namespace ##.CiderConfig available with the Cider config parameters.
-    ⍝ As a side effect is creates a folder "TestResults" in the project's root folder if the
-    ⍝ user wants to do code coverage with the `CodeCoverage` class.
+⍝ Creates an instance of the class `Tester2` named `T` and configures it for
+⍝ Assumes that the project is handled by the project manager "Cider", and that there is
+⍝ a namespace ##.CiderConfig available with the Cider config parameters.
+⍝ As a side effect is creates a folder "TestResults" in the project's root folder if the
+⍝ user wants to do code coverage with the `CodeCoverage` class.
       ⎕IO←1 ⋄ ⎕ML←1
       T←⎕NEW Tester2 ⎕THIS
       testPath←##.CiderConfig.HOME,'/TestResults'
@@ -1784,10 +1786,10 @@
     ∇
 
     ∇ RunTests;htmlFilename;verbose;option
-    ⍝ 1. Prepares the test framework
-    ⍝ 2. Runs all test cases
-    ⍝ 3. Processes the code coverage data (if collected)
-    ⍝ 4. Asks the user whether the code coverage report should be put on view
+⍝ 1. Prepares the test framework
+⍝ 2. Runs all test cases
+⍝ 3. Processes the code coverage data (if collected)
+⍝ 4. Asks the user whether the code coverage report should be put on view
       Prepare
       T.Run 1
       :If 0<≢T.codeCoverage
@@ -1802,10 +1804,10 @@
     ∇
 
     ∇ (success log)←RunTestsInBatchMode;rc
-    ⍝ Runs all test with the batch flag on and the debug flag off.
-    ⍝ Returns a two-item vector:\\
-    ⍝ [1] Boolean with 1 indicating success and 0 failure\\
-    ⍝ [2] A vector of character vectors with the messages
+⍝ Runs all test with the batch flag on and the debug flag off.
+⍝ Returns a two-item vector:\\
+⍝ [1] Boolean with 1 indicating success and 0 failure\\
+⍝ [2] A vector of character vectors with the messages
       Prepare
       (rc log)←T.RunBatchTests 0
       success←rc=0
