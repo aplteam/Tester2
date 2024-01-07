@@ -1,7 +1,9 @@
 [parm]:leanpubExtensions = 1
 [parm]:title             = 'Tester2 Reference'
 [parm]:toc               = 1
-[parm]:linkToCSS = 1
+[parm]:linkToCSS         = 1
+[parm]:width             = 1100
+
 
 
 # Tester2 User Manual
@@ -12,6 +14,8 @@ The framework comprises two classes:
 
 * `Tester2` is a class required to manage and execute test cases.
 * `CodeCoverage` is needed if you want to produce a code coverage report, which is recommended.
+
+Both can be loaded as Tatin packages.
 
 The purpose of `Tester2` is to provide a framework for testing all the projects of the APLTree library. Only with such a framework is it possible to make changes to any APLTree project with confidence.
 
@@ -815,6 +819,8 @@ If there is already a group "Misc" then numbering would start with the highest p
 * It might be a good idea for _all_ test functions to tidy up first, just in case this test case has failed earlier and left some debris behind.
 
 * It's common practice to implement a test case for every bug, for bugs tend to make comebacks; such tests prevent that from happening.
+
+
 
 
 

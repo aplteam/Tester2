@@ -1,15 +1,28 @@
-# Tester2: a Test Framework for Unit Tests in Dyalog APL
+# Tester2**: a Test Framework for Unit Tests in Dyalog APL
 
-`Tester2` gives you everything you need for building test cases in complex scenarios:
 
-* Automatic execution of tests by naming convention
+`Tester2` offers a comprehensive suite of features for building and managing test cases in complex scenarios. Here's a brief overview of its capabilities**:
 
-* You can organize your tests in groups if you wish
+* **Automatic Test Execution**: Tests can be executed automatically based on naming conventions.
 
-* You may execute all tests, or one or more groups, or one or more particular tests
+* **Test Organization**: Tests can be organized into groups for better management.
 
-* You can control the flow with helper function so that falinig tests either carry on and report the failing or stop on the spot, allowing investigation
+* **Flexible Execution Options**: You have the flexibility to execute all tests, specific groups of tests, all groups except certain ones, or individual tests.
 
-* You can make an INI file part of the tests, for exampel for machine-dependent parameters
+* **Flow Control with Helper Functions**: These functions allow for the continuation or immediate stop of test execution upon failure, facilitating in-depth investigation when needed.
 
-*
+* **INI File Integration**: You can include an INI file for, say, machine-dependent parameters, making your tests more adaptable to different environments.
+
+* **Initialisation and Clean-Up Functions**: You can define functions that run before any tests are executed and after all tests are completed. These can include group-specific initialisation and clean-up functions.
+
+* **Test Function Return Values**: Test functions return integers that are translated into symbolic names like “OK”, “Failure”, “MacOnly”, etc. You can also define additional symbolic names for custom purposes.
+
+* **Execution Control**: The framework can be set to pause before the execution of an init, test, or clean-up function.
+
+* **Batch mode**: The tests can be executed in batch mode, resulting in a Boolean indicating success or failure, and a report with details.
+
+* **Helper Functions for Management**: These include functions for listing groups and tests, and renaming test functions or groups.
+
+* **Code Coverage Analysis**: If the optional `CodeCoverage` package is available, it provides a report on the code coverage of your tests, helping to identify untested parts of your code.
+
+This feature set makes `Tester2` an effective tool for testing in various scenarios, especially in projects where test case management and execution flexibility are crucial.

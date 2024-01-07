@@ -30,8 +30,8 @@
       ⍝ * 3.6.0 ⋄ 2024-01-07
       ⍝   * Any a general `Initial` function as well as any group-specific one can now return a text vector
       ⍝     rather than a Boolean. Empty=success, otherwise it is treated as an error msg and reported.
-      ⍝   * So far in case a test suite was executed in btach mode there was no information provided which
-      ⍝     line did cause a test case to fail. Now this information is provided
+      ⍝   * So far in case a test suite was executed in batch mode there was no information provided which
+      ⍝     line did cause a test case to fail.
       ⍝ * 3.5.0 ⋄ 2023-04-28
       ⍝   * Helpers updated
       ⍝ * 3.4.0 ⋄ 2023-04-10

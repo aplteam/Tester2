@@ -1,12 +1,16 @@
-  Make flag;M;C;path;zipFilename;res;version;cfg;parms
+ Make flag;M;C;path;zipFilename;res;version;cfg;parms;F
 ⍝ "Make" a new version of this project
  :If flag
      M←⎕SE.MakeHelpers
-     C←##.CiderConfig
+     C←##.CiderConfig ⋄ F←M.##.FilesAndDirs
      path←C.HOME,'/',C.CIDER.distributionFolder
-     cfg←⎕JSON⍠('Dialect' 'JSON5')⊢⊃⎕NGET C.HOME,'/apl-package.json'
+     cfg←M.GetPackageCfg C.HOME
      version←M.CompileVersionNumberPattern cfg
      M.RecreateFolder path
+     M.RecreateFolder C.HOME,'/html'
+     M.ConvertMarkdownToHtml5 C.HOME∘,¨'/docs/' '/html/'
+     (C.HOME,'/html/')∘{⍺ ⎕NCOPY ⍵}¨F.ListFiles C.HOME,'/docs/*.png'
+     path ⎕NCOPY C.HOME,'/html'
      parms←⎕SE.Tatin.CreateBuildParms C.HOME
      parms.targetPath←path
      parms.version←version
