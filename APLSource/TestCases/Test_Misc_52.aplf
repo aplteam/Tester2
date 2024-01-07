@@ -6,6 +6,7 @@
  ref←⎕NS''
  T2←⎕NEW ##.Tester2 ref
  ref.stopFlag←0
+ ref.batchFlag←batchFlag
  →T.FailsIf~0∊⍴T2.PassesIf 1
  →T.FailsIf 0≢T2.PassesIf 0
  →T.FailsIf 0≢T2.FailsIf 1

@@ -6,6 +6,7 @@
  ref←⎕NS''
  T2←⎕NEW ##.Tester2 ref
  ref.debugFlag←0
+ ref.batchFlag←batchFlag
  ref.∆TidyUp←∆TidyUp
  →T.FailsIf ⍬≢T2.GoToTidyUp 0
  →T.PassesIf ¯999=¯999 T2.GoToTidyUp 1

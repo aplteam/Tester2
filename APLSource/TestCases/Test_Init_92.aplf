@@ -1,0 +1,16 @@
+ r←Test_Init_92(stopFlag batchFlag);Foo;ref;rc;log;⎕TRAP;expected
+⍝ Exercise `Run` with a `Initial_Foo` fn that returns an error msg & requires an argument
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ #.Temp.T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⎕FX'r←Initial_Foo arg' 'r←''*** My special error'''
+ #.Temp.⎕FX'r←Test_Foo_01 x;⎕TRAP' 'r←0'
+ (rc log)←#.Temp.T2.Run 1
+ →T.PassesIf 0=rc
+ expected←'Function "Initial_Foo" found and executed, but it returned an error message:',(⎕UCS 13),'*** My special error'
+ →T.PassesIf(⊂expected)∊log
+
+ r←T._OK

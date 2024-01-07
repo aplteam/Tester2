@@ -1,0 +1,23 @@
+ r←Test_Misc_31(stopFlag batchFlag);⎕TRAP;rc;log;body
+⍝ Check whether FailsIf reports the failing line number
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ #.Temp.T2←⎕NEW ##.Tester2 #.Temp
+ body←''
+ body,←⊂'r←Test_Foo_01 (stopFlag batchFlag);⎕TRAP'
+ body,←⊂'⍝ Checks whether the line number is reported'
+ body,←⊂'⎕TRAP←(999 ''C'' ''∘∘∘ ⍝ Deliberate error'')(0 ''N'')'
+ body,←⊂'r←1'
+ body,←⊂'⍝ '
+ body,←⊂'⍝ '
+ body,←⊂'→T2.PassesIf 0'
+ body,←⊂'⍝Done'
+ #.Temp.⎕FX body
+ (rc log)←#.Temp.T2.RunBatchTests 0
+ →T.PassesIf 1=rc
+ →T.PassesIf'[6]'≡'* Checks whether the line number is reported'{i←1⍳⍨∨/¨b←⍺∘⍷¨⍵ ⋄ ((≢⍺)+1⍳⍨i⊃b)↓i⊃⍵}log
+
+ r←T._OK

@@ -1,0 +1,14 @@
+ r←Test_Init_80(stopFlag batchFlag);Foo;ref;rc;log;⎕TRAP
+⍝ Exercise `Run` with an `Initial` function that returns '' and does not accept an argument
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ #.Temp.T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⎕FX'r←Initial' 'r←'''''
+ #.Temp.⎕FX'r←Test_01 x;⎕TRAP' 'r←0'
+ (rc log)←#.Temp.T2.Run 1
+ →T.PassesIf 0=rc
+
+ r←T._OK
