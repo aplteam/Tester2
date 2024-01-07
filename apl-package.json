@@ -1,6 +1,6 @@
 {
   api: "Tester2",
-  assets: "",
+  assets: "html/",
   description: "Dyalog APL test framework",
   documentation: "",
   files: "",
@@ -19,5 +19,5 @@
   source: "APLSource/Tester2.aplc",
   tags: "test,test-framework",
   userCommandScript: "",
-  version: "3.6.0+23",
+  version: "3.6.0+28",
 }

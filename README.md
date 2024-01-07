@@ -5,7 +5,7 @@
 
 * **Automatic Test Execution**: Tests can be executed automatically based on naming conventions.
 
-* **Test Organization**: Tests can be organized into groups for better management.
+* **Test Organisation**: Tests can be organised into groups for better management.
 
 * **Flexible Execution Options**: You have the flexibility to execute all tests, specific groups of tests, all groups except certain ones, or individual tests.
 
@@ -17,12 +17,12 @@
 
 * **Test Function Return Values**: Test functions return integers that are translated into symbolic names like “OK”, “Failure”, “MacOnly”, etc. You can also define additional symbolic names for custom purposes.
 
-* **Execution Control**: The framework can be set to pause before the execution of an init, test, or clean-up function.
+* **Execution Control**: The framework can be set to pause before executing an init, test, or clean-up function.
 
-* **Batch mode**: The tests can be executed in batch mode, resulting in a Boolean indicating success or failure, and a report with details.
+* **Batch mode**: The tests can be executed in batch mode, resulting in a Boolean indicating success or failure and a detailed report.
 
-* **Helper Functions for Management**: These include functions for listing groups and tests, and renaming test functions or groups.
+* **Helper Functions for Management**: These include functions for listing groups and tests and renaming test functions or groups.
 
 * **Code Coverage Analysis**: If the optional `CodeCoverage` package is available, it provides a report on the code coverage of your tests, helping to identify untested parts of your code.
 
-This feature set makes `Tester2` an effective tool for testing in various scenarios, especially in projects where test case management and execution flexibility are crucial.
+This feature set makes `Tester2` an effective tool for testing in various scenarios, especially in projects where test case management and execution flexibility are crucial. 

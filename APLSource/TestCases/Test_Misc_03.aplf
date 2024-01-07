@@ -1,0 +1,9 @@
+ r←Test_Misc_03(stopFlag batchFlag);log;stopFlag;⎕TRAP;res
+⍝ Exercise `Help`
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+ res←##.Tester2.Help
+ →T.PassesIf∨/']open'⍷⎕C res
+ →T.PassesIf∨/'Tester2-Reference.html'⍷res
+
+ r←T._OK

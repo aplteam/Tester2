@@ -32,6 +32,7 @@
       ⍝     rather than a Boolean. Empty=success, otherwise it is treated as an error msg and reported.
       ⍝   * So far in case a test suite was executed in batch mode there was no information provided which
       ⍝     line did cause a test case to fail.
+      ⍝   * Shared method `Help` added that provides a full documentation of Tester2
       ⍝ * 3.5.0 ⋄ 2023-04-28
       ⍝   * Helpers updated
       ⍝ * 3.4.0 ⋄ 2023-04-10
@@ -386,6 +387,11 @@
       _parms.trapFlag←0=debugFlag
       _parms.testCaseNos←⍬
       (rc log)←Run__ _parms
+    ∇
+
+    ∇ r←Help
+      :Access Public Shared
+      r←']open ',##.TatinVars.GetFullPath2AssetsFolder,'Tester2-Reference.html'
     ∇
 
     ⍝⍝⍝ Private stuff
