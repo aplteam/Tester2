@@ -20,7 +20,88 @@
 
 <div class="toc-container">
 <ul id="toc-list" class="hide print">
-<li class="toc-entry toc-h1"><a href="#tester2-user-manual">Tester2 User Manual</a>
+<li class="toc-entry toc-h2"><a href="#overview">Overview</a></li>
+<li class="toc-entry toc-h2"><a href="#details">Details</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#terminology">Terminology</a></li>
+<li class="toc-entry toc-h3"><a href="#assumptions-and-preconditions">Assumptions and preconditions</a></li>
+<li class="toc-entry toc-h3"><a href="#executing-test-cases">Executing test cases</a></li>
+<li class="toc-entry toc-h3"><a href="#definitions">Definitions</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#error-trapping">Error trapping (<code>trapFlag</code>)</a></li>
+<li class="toc-entry toc-h4"><a href="#debugging">Debugging (<code>debugFlag</code>)</a></li>
+<li class="toc-entry toc-h4"><a href="#suspend-execution">Suspend execution (<code>stopFlag</code>)</a></li>
+<li class="toc-entry toc-h4"><a href="#batchable-tests">Batchable tests</a></li>
+</ul></li>
+<li class="toc-entry toc-h3"><a href="#the-syntax-of-test-functions">The syntax of test functions</a></li>
+<li class="toc-entry toc-h3"><a href="#groups">Groups</a></li>
+<li class="toc-entry toc-h3"><a href="#custom-symbolic-names">Custom symbolic names</a></li>
+<li class="toc-entry toc-h3"><a href="#checks-before--after-a-test-case-is-run">Checks before &amp; after a test case is run</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#application">Application</a></li>
+<li class="toc-entry toc-h4"><a href="#overview-1">Overview</a></li>
+</ul></li>
+</ul></li>
+<li class="toc-entry toc-h2"><a href="#workflow">Workflow</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#create-an-instance">Create an instance</a></li>
+<li class="toc-entry toc-h3"><a href="#ini-files">INI files (optional)</a></li>
+<li class="toc-entry toc-h3"><a href="#initialisation">Initialisation</a></li>
+<li class="toc-entry toc-h3"><a href="#initialisation-for-groups">Initialisation for groups</a></li>
+<li class="toc-entry toc-h3"><a href="#finally-running-the-test-cases">Finally: running the test cases</a></li>
+<li class="toc-entry toc-h3"><a href="#cleaning-up">Cleaning up</a></li>
+<li class="toc-entry toc-h3"><a href="#cleaning-up-for-groups">Cleaning up for groups</a></li>
+<li class="toc-entry toc-h3"><a href="#ini-file-again">INI file again</a></li>
+<li class="toc-entry toc-h3"><a href="#premature-exit">Premature exit</a></li>
+<li class="toc-entry toc-h3"><a href="#make-the-test-framework-stop">Make the test framework stop</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#stopping-on-a-test-function">Stopping on a test function</a></li>
+<li class="toc-entry toc-h4"><a href="#stopping-on-initial-function">Stopping on <code>Initial</code> function(s)</a></li>
+<li class="toc-entry toc-h4"><a href="#stopping-on-cleanup-function">Stopping on <code>Cleanup</code> function(s)</a></li>
+<li class="toc-entry toc-h4"><a href="#mixing-stops">Mixing stops</a></li>
+<li class="toc-entry toc-h4"><a href="#stops-with-the-gui">Stops with the GUI</a></li>
+</ul></li>
+</ul></li>
+<li class="toc-entry toc-h2"><a href="#code-coverage">Code coverage</a></li>
+<li class="toc-entry toc-h2"><a href="#instance-stuff-offered-by-tester2">Instance stuff offered by <code>Tester2</code></a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#running-test-cases">Running test cases</a></li>
+<li class="toc-entry toc-h3"><a href="#flow-control">Flow control</a></li>
+<li class="toc-entry toc-h3"><a href="#test-function-template">Test function template</a></li>
+<li class="toc-entry toc-h3"><a href="#symbolic-names">Symbolic names</a></li>
+</ul></li>
+<li class="toc-entry toc-h2"><a href="#helpers">Helpers</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#examples">Examples</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#with-top-level-helpers">With top-level helpers</a>
+<ul>
+<li class="toc-entry toc-h5"><a href="#runtests">RunTests</a></li>
+<li class="toc-entry toc-h5"><a href="#runtestsinbatchmode">RunTestsInBatchMode</a></li>
+<li class="toc-entry toc-h5"><a href="#prepare">Prepare</a></li>
+</ul></li>
+<li class="toc-entry toc-h4"><a href="#with-second-level-helpers">With second-level helpers</a>
+<ul>
+<li class="toc-entry toc-h5"><a href="#run"><code>Run</code></a></li>
+<li class="toc-entry toc-h5"><a href="#rungui"><code>RunGUI</code></a></li>
+<li class="toc-entry toc-h5"><a href="#runthese"><code>RunThese</code></a></li>
+<li class="toc-entry toc-h5"><a href="#runbatchtests"><code>RunBatchTests</code></a></li>
+</ul></li>
+<li class="toc-entry toc-h4"><a href="#without-helpers">Without Helpers</a>
+<ul>
+<li class="toc-entry toc-h5"><a href="#run__"><code>Run__</code></a></li>
+</ul></li>
+</ul></li>
+<li class="toc-entry toc-h3"><a href="#managing-test-cases">Managing test cases</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#listing-groups">Listing groups</a></li>
+<li class="toc-entry toc-h4"><a href="#listing-symbolic-names">Listing symbolic names</a></li>
+<li class="toc-entry toc-h4"><a href="#listing-test-functions">Listing test functions</a></li>
+<li class="toc-entry toc-h4"><a href="#editing-test-cases">Editing test cases</a></li>
+<li class="toc-entry toc-h4"><a href="#rename-a-test-function">Rename a test function</a></li>
+</ul></li>
+</ul></li>
+<li class="toc-entry toc-h2"><a href="#best-practices">Best Practices</a>
 </ul>
 </div>
 </nav>

@@ -22,17 +22,17 @@
 
     ∇ r←Version
       :Access Public shared
-      r←'Tester2' '3.6.0+5' '2024-01-07'
+      r←'Tester2' '3.6.0+5' '2024-01-11'
     ∇
 
     ∇ r←History
       :Access Public shared
-      ⍝ * 3.6.0 ⋄ 2024-01-07
+      ⍝ * 3.6.0 ⋄ 2024-01-11
       ⍝   * Any a general `Initial` function as well as any group-specific one can now return a text vector
       ⍝     rather than a Boolean. Empty=success, otherwise it is treated as an error msg and reported.
-      ⍝   * So far in case a test suite was executed in batch mode there was no information provided which
+      ⍝   * So far, in case a test suite was executed in batch mode, there was no information provided which
       ⍝     line did cause a test case to fail.
-      ⍝   * Shared method `Help` added that provides a full documentation of Tester2
+      ⍝   * Shared method `Help` added that provides a full documentation of Tester2.
       ⍝ * 3.5.0 ⋄ 2023-04-28
       ⍝   * Helpers updated
       ⍝ * 3.4.0 ⋄ 2023-04-10

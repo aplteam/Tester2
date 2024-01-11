@@ -1,6 +1,6 @@
 [parm]:leanpubExtensions = 1
 [parm]:title             = 'Tester2 Reference'
-[parm]:toc               = 1
+[parm]:toc               = 2 3 4 5 6
 [parm]:linkToCSS         = 1
 [parm]:width             = 1100
 
@@ -800,6 +800,7 @@ If there is already a group "Misc" then numbering would start with the highest p
 * It might be a good idea for _all_ test functions to tidy up first, just in case this test case has failed earlier and left some debris behind.
 
 * It's common practice to implement a test case for every bug, for bugs tend to make comebacks; such tests prevent that from happening.
+
 
 
 
