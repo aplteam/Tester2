@@ -1,4 +1,4 @@
-# Tester2**: a Test Framework for Unit Tests in Dyalog APL
+# Tester2: Test Framework for Unit Tests in Dyalog APL
 
 
 `Tester2` offers a comprehensive suite of features for building and managing test cases in complex scenarios. Here's a brief overview of its capabilities**:
