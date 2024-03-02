@@ -188,9 +188,10 @@ You may also specify more than one group by...
 
 * providing a comma-separated list of them
 * use `*` as a wildcard character for matching one or more groups
-* Mix `,` and `*` (since version 3.7)
 
-You may also exclude one or more groups by starting the definition with a tilde (`~`) character ("without").
+  The wildcard character can only be used at the end of a name.
+* Exclude tests or groups with the `~` character ("without")
+* Mix `,` , `~` and `*` (since version 3.7)
 
 Note that you can have group-specific [initialisation](#initialisation-for-groups) and [cleaning up](#cleaning-up-for-groups).
 
@@ -204,11 +205,12 @@ RunThese 'Grp1'          ⍝ Specific group
 RunThese 'Grp*'          ⍝ All groups starting with "Grp"
 RunThese 'Grp1,Grp2'     ⍝ Two specific groups
 RunThese 'Grp*,Misc_1'   ⍝ All groups starting with "Grp" & one specific test case
+RunThese 'G*,~GP'        ⍝ Everything that starts with "G" except "GP"
 ```
 
 ### Custom symbolic names
 
-Although there are quite a number of symbolic names available to give feedback for many foreseeable problems (like a test that can run only on a certain platform,), there will always be circumstances that cannot be foreseen. Therefore `Tester2` allows you to define up to 9 custom symbolic names.
+Although there are quite a number of symbolic names available to give feedback for many foreseeable problems (see [Symbolic names](#) for details), there will always be circumstances that cannot be foreseen. Therefore `Tester2` allows you to define up to 9 custom symbolic names.
 
 They are named from `custom_1` to `custom_9`. They are initialised with `''`. In order to use one you must assign a simple character vector. This character vector is shown in the "Result" column of the GUI etc.
 
@@ -244,7 +246,7 @@ Regarding the result there are two options:
 
 * In case no result is returned you need to either print a message to the session or make sure the function stops in case you find something not to your liking; you might need to keep `⎕TRAP` local and set it accordingly in the function for this.
 
-* In case the function returns a result it must be a text vector. If that text vector is empty then `Tester2` does not take any action. If it is a simple string this string will be printed to the session. Then `Tester2` carries on.
+* In case the function returns a result it must be a text vector. If that text vector is empty then `Tester2` does not take any action. If it is a simple non-empty string this string will be printed to the session. Then `Tester2` carries on.
 
 
 ## Workflow
@@ -269,7 +271,7 @@ From then on, all `Run*` functions, all symbolic names and all other helpers are
       T.⎕nl -3    ⍝ Produces a list of all public instance methods
 ```
 
-When you call one of the `Run*` functions the same steps are executed:
+No matter which of the `Run*` functions you will call, they all carry out the same steps:
 
 
 ### INI files (optional)
@@ -319,7 +321,7 @@ Use `Initial` to create stuff that's needed by **all** test cases, or tell the u
 
 Notes:
 
-* You can have separate [`Initial` functions for specific or all groups](#initialisation-for-groups). Use this to initialise stuff that is only needed for a certain group, like a database connection etc.
+* You can have separate [`Initial` functions for specific groups](#initialisation-for-groups). Use this to initialise stuff that is only needed for a certain group, like a database connection etc.
 
 * After executing all test cases `Tester2` will look for a function `Cleanup` in the hosting namespace. If there is such a function it will be executed.
 
@@ -335,6 +337,8 @@ When `Initial_foo` returns a Boolean and that is a zero, then no test function b
 
 
 Accordingly, when `Initial_foo` returns a non-empty text vector, then no test function belonging to the group `foo` will be executed, but `Tester2` will carry on executing other test cases. The result will be added to the log.
+
+A group-specific initialisation function is executed right before the first test case of that group is executed.
 
 ### Finally: running the test cases
 
@@ -365,7 +369,7 @@ Finally, the namespace `INI` holding variables populated from your INI file(s) i
 
 ### Premature exit
 
-There might be situations when you've executed some but not all test cases, and now you want to exit the test framework, typically while you are in a test function. Now the obvious choice is )Reset, or execute just `→`.
+There might be situations when you've executed some but not all test cases, and now you want to exit the test framework, typically while you are in a test function. Now the obvious choice is `)Reset`, or execute just `→`.
 
 However, there are situations when you need things to be cleaned up, like closing files, deleting folder(s), shutting down a server, stuff like that.
 
@@ -392,7 +396,7 @@ You can force `Tester2` to stop just before any `Cleanup` function gets executed
 
 #### Mixing stops
 
-You may mix things up. For example, to make `Tester2` stop on every `Initial`, every test and every `Cleanup` function just specify the total : `1+2+4 = 7`
+You may mix things up. For example, to make `Tester2` stop on every `Initial`, every test and every `Cleanup` function just specify the total as left argument: `1+2+4 = 7`
 
 Any other combination (3, 5, 6) is valid as well.
 
@@ -491,7 +495,7 @@ These are the public read-only instance fields that act like constants:
 |`_NoBatchTest`        |Not executed because `batchFlag` was 1.                               |
 |`_NotApplicable`      |This test is not applicable here and now                              |
 |`_NotImplemented`     |Attempts to test a feature that has yet not been implemented          |
-|`_InActive`           |Not executed because the test case is inactive (not ready, buggy, ...)|
+|`_InActive`           |Not executed: the test case is inactive (not ready, buggy, ...)       |
 |`_IncompatibleVersion`|Regarding the version of Dyalog currently running                     |
 |`_LinuxOnly`          |Not executed because runs under Linux only                            |
 |`_LinuxOrMacOnly`     |Not executed because runs under Linux/Mac OS only                     |
@@ -561,7 +565,7 @@ A niladic function that does not return a result. It asks whether the user wants
 
 If there is already such a report the user might want to append data, for example when you need to run your test suite under Windows, Linux and Mac-OS.
 
-Such tests might well rely on the user to ask questions. The debug flag is set, so when a test case has a problem, it stops on the spot and allows the user to investigate the problem.
+Such tests might well rely on the user to answer questions. The debug flag is set, so when a test case has a problem, it stops on the spot and allows the user to investigate the problem.
 
 ##### RunTestsInBatchMode
 
@@ -569,13 +573,13 @@ Such tests might well rely on the user to ask questions. The debug flag is set, 
 (success log)←RunTestsInBatchMode
 ```
 
-This does not do code coverage. The debug flag is off, so in case a test cases fails it does not stop.
+This does not do code coverage. The debug flag is off, so in case a test case fails it does not stop.
 
 This is typically run as part of an automated process.
 
 It returns a two-item vector as result:
 
-1. A Boolean indicating success with a 1 and failure with a 0. It's a failure when at least one test cases failed.
+1. A Boolean indicating success with a 1 and failure with a 0. It's a failure when at least one test case failed.
 
 2. A vector of text vectors with a detailed report
 
@@ -595,7 +599,7 @@ This is about `Tester2`'s `Run*` functions. These should be flexible enough to c
 {(rc log)}←{stopFlag} Run debugFlag
 ```
 
-Run requires a Boolean right argument. A 1 makes the test framework stop on a line that fails to return the expected result (`PassesIf`, `FailsIf`, `GotoTidyUp`) while a 0 does not.
+`Run` requires a Boolean right argument. A 1 makes the test framework stop on a line that fails to return the expected result (`PassesIf`, `FailsIf`, `GotoTidyUp`) while a 0 does not.
 
 The optional left argument must also be Boolean and defines whether the test framework should stop right before any of the test cases is executed (1) or not (0, which is the default).
 
@@ -627,13 +631,13 @@ T.RunThese 'Group1'          ⍝ Execute all test cases belonging to Group1
 T.RunThese '~Group1'         ⍝ Execute all tests but those belonging to Group1 (without)
 T.RunThese 'Group1' (2 3)    ⍝ Execute test cases 2 & 3 of Group1
 T.RunThese 'Group1' 2 3      ⍝ Same as before
+T.RunThese 'Group1,Group2'   ⍝ Execute two groups
 T.RunThese 'Misc'            ⍝ Execute all test cases of the group "Misc"
 T.RunThese 'L*'              ⍝ Execute all test cases of all groups starting with "L"
 T.RunThese 'Group1_001'      ⍝ Executes just this test case
 T.RunThese 'Test_Group1_001' ⍝ Same as before
 ```
 
-Note that you can specify only one group.
 
 Sometimes you want to trace through test cases. This can be achieved by specifying a 1 as the (optional) left argument. `RunThese` would then stop just before any test case is executed, after processing any INI file(s) and executing any `Initial` function.
 
@@ -804,13 +808,14 @@ If there is already a group "Misc" then numbering would start with the highest p
 
 * Avoid a test case relying on changes made by an earlier test case. This can be a tempting thing to do, but you are likely to regret it later.
 
-  Having said, in rare cases it is required to build up on other test cases for technical reasons, or in order to avoid a significant performance penalty.
+  Having said this, in rare cases it is required to build up on other test cases for technical reasons, or in order to avoid a significant performance penalty.
 
 * Notice that the DRY principle (don't repeat yourself) can and should be ignored when it comes to test cases: any test case should read from top to bottom like an independent story that can be understood by itself.
 
 * It might be a good idea for _all_ test functions to tidy up first, just in case this test case has failed earlier and left some debris behind.
 
 * It's common practice to implement a test case for every bug, for bugs tend to make comebacks; such tests prevent that from happening.
+
 
 
 
