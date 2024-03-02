@@ -1,0 +1,5 @@
+ r←∆GetDetails vtv
+⍝ Takes what's returned by one of Tester2's "Run"-functions and remove everything but the reporting on test functions
+ r←{⍵↓⍨1⍳⍨∨/¨'--- Tests started'∘⍷¨⍵}vtv
+ r↑⍨←¯1+⍸'----- '{⍺∘≡¨(≢⍺)↑¨⍵}r
+⍝Done

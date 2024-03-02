@@ -2,7 +2,7 @@
 ⍝ Exercise the `EditTestFunctions` method.
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
- :If 1  ⍝TODO⍝ Bring back once bug <02142> is fixed
+ :If 0  ⍝TODO⍝ Bring back once bug <02142> is fixed
      r←T._Inactive  ⍝ Because of bug <02142>
      :return
  :EndIf

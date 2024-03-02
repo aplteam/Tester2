@@ -1,4 +1,4 @@
- r←Test_Misc_51(stopFlag batchFlag);log;⎕TRAP;rc;T2
+ r←Test_Group_004(stopFlag batchFlag);log;⎕TRAP;rc;T2
 ⍝ Exercise `RunThese`: grouping mechanism but without any hits
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
@@ -6,6 +6,6 @@
  T2←⎕NEW ##.Tester2 TestCasesSimu
  (rc log)←T2.RunThese'Grouping' 999999
  →T.PassesIf 0=rc
- →T.PassesIf 0 =≢∆GetTotals log
+ →T.PassesIf 0=≢∆GetTotals log
 
  r←T._OK

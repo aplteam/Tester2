@@ -1,0 +1,13 @@
+ r←Test_Group_014(stopFlag batchFlag);log;⎕TRAP;rc;T2;qdmx;names;noOf
+⍝ Group definition that specifies a wilcard expression and a specific test case
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+
+ (rc log)←T2.RunThese'Grp*,Grouping_002'
+ names←∆GetDetails log
+ noOf←+/1,≢¨T2.ListTestFunctions¨'Grp1' 'Grp2'
+ →T.PassesIf noOf=≢names
+
+ r←T._OK

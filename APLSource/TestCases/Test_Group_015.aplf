@@ -1,0 +1,13 @@
+ r←Test_Group_015(stopFlag batchFlag);log;⎕TRAP;rc;T2;qdmx;names;noOf
+⍝ Group definition that mixes "," (multiple groups) with "~" (without) and "*" (wildcard syntax)
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+
+ (rc log)←T2.RunThese'Test_009,Gr*,~Grouping_002'
+ names←∆GetDetails log
+ noOf←≢T2.ListTestFunctions'Gr*'                 ⍝ 1 test explicitly defined and 1 suppressed: they cancel each other out
+ →T.PassesIf noOf=≢names
+
+ r←T._OK

@@ -1,0 +1,12 @@
+ r←Test_Group_012(stopFlag batchFlag);log;⎕TRAP;rc;T2;qdmx;names
+⍝ Group definition that excludes all groups starting with "Gr" by a wildcard expression
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+
+ (rc log)←T2.RunThese'~Gr*'    ⍝ All
+ names←∆GetDetails log
+ →T.PassesIf 5=+/{≢'Test_[0-9]+ '⎕S 0⊣⍵}¨names,¨' '
+
+ r←T._OK

@@ -180,20 +180,31 @@ Note that you will find that test cases need to be kept simple, and should not d
 
 It is pretty easy to get lost in a large number of test cases, less so when writing the first set but more so when later you need to delete obsolete test cases, add new test cases for new features or fixed bugs, or make changes to test cases that need, well, changing.
 
-That's why groups are quite important: they allow you to order test cases hierarchically.
+That's why groups are quite important: they allow you to order test cases in a meaningful way.
 
-It is also possible to execute all test cases belonging to a particular group with a single command.
-
-Note that you can have group-specific [initialisation](#initialisation-for-groups) and [cleaning up](#cleaning-up-for-groups).
+It is also possible to execute all test cases belonging to a particular group (or some groups) with a single command.
 
 You may also specify more than one group by...
 
 * providing a comma-separated list of them
 * use `*` as a wildcard character for matching one or more groups
-
+* Mix `,` and `*` (since version 3.7)
 
 You may also exclude one or more groups by starting the definition with a tilde (`~`) character ("without").
 
+Note that you can have group-specific [initialisation](#initialisation-for-groups) and [cleaning up](#cleaning-up-for-groups).
+
+#### Examples
+
+Group selection requires to call [`RunThese`](#):
+
+```
+RunThese 'Grp1_01'       ⍝ Specific test case
+RunThese 'Grp1'          ⍝ Specific group
+RunThese 'Grp*'          ⍝ All groups starting with "Grp"
+RunThese 'Grp1,Grp2'     ⍝ Two specific groups
+RunThese 'Grp*,Misc_1'   ⍝ All groups starting with "Grp" & one specific test case
+```
 
 ### Custom symbolic names
 
@@ -800,6 +811,8 @@ If there is already a group "Misc" then numbering would start with the highest p
 * It might be a good idea for _all_ test functions to tidy up first, just in case this test case has failed earlier and left some debris behind.
 
 * It's common practice to implement a test case for every bug, for bugs tend to make comebacks; such tests prevent that from happening.
+
+
 
 
 
