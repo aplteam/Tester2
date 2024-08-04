@@ -17,7 +17,7 @@
 
 * **Test Function Return Values**: Test functions return integers that are translated into symbolic names like “OK”, “Failure”, “MacOnly”, etc. You can also define additional symbolic names for custom purposes.
 
-* **Execution Control**: The framework can be set to pause before executing an init, test, or clean-up function.
+* **Execution Control**: The framework can be set to pause before executing an init, test, or clean-up function, or any mixture of them.
 
 * **Batch mode**: The tests can be executed in batch mode, resulting in a Boolean indicating success or failure and a detailed report.
 
@@ -26,3 +26,4 @@
 * **Code Coverage Analysis**: If the optional `CodeCoverage` package is available, it provides a report on the code coverage of your tests, helping to identify untested parts of your code.
 
 This feature set makes `Tester2` an effective tool for testing in various scenarios, especially in projects where test case management and execution flexibility are crucial. 
+

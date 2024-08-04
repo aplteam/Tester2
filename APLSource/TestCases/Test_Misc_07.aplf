@@ -16,6 +16,7 @@
  tmp.⎕FX'r←Test_Grp2_001 (x y);⎕TRAP' 'r←1'
  tmp.⎕FX'r←Test_Grp2_002 (x y);⎕TRAP' 'r←0'
  tmp.⎕FX'r←Test_Run_001 (x y);⎕TRAP' 'r←0'
+ tmp.⎕FX'r←Test_Run_002 (x y);⎕TRAP' 'r←0'
  tmp.T←⎕NEW ##.Tester2 tmp
 
 ⍝ The tests
@@ -42,15 +43,18 @@
  →T.PassesIf 5 3 0≡∆GetTotals log
 
  (rc log)←tmp.T.RunThese'Run'
- →T.PassesIf 1 0 0≡∆GetTotals log
+ →T.PassesIf 2 0 0≡∆GetTotals log
 
  (rc log)←tmp.T.RunThese'Test_Run'
- →T.PassesIf 1 0 0≡∆GetTotals log
+ →T.PassesIf 2 0 0≡∆GetTotals log
 
  (rc log)←tmp.T.RunThese'Test_Run*'
- →T.PassesIf 1 0 0≡∆GetTotals log
+ →T.PassesIf 2 0 0≡∆GetTotals log
 
  (rc log)←tmp.T.RunThese'Test_Run_001'
  →T.PassesIf 1 0 0≡∆GetTotals log
+
+ (rc log)←tmp.T.RunThese'Test_Run_001' 'Test_Run_002'
+ →T.PassesIf 2 0 0≡∆GetTotals log
 
  r←T._OK

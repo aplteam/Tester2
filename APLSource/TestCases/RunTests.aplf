@@ -8,6 +8,7 @@
  parms.guiFlag←1
  parms T.RunGUI''
  :If 0<≢T.codeCoverage
+ :AndIf FilesAndDirs.IsFile T.codeCoverage.filename
      {}CodeCoverage.ProcessData T.codeCoverage.filename
      option←'Type of code coverage report' 0 1 CommTools.Select'Overview' 'Verbose' 'None'
      :If 3>option

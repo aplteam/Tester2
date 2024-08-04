@@ -22,11 +22,13 @@
 
     ∇ r←Version
       :Access Public shared
-      r←'Tester2' '3.7.0+5' '2024-03-02'
+      r←'Tester2' '3.8.0+5' '2024-08-03'
     ∇
 
     ∇ r←History
       :Access Public shared
+      ⍝ * 3.8.0 ⋄ 2024-08-03
+      ⍝   * `RunThese` accepts now a list of names identifying test functions (like `Foo_001` or `Test_Foo_001)
       ⍝ * 3.7.0 ⋄ 2024-03-02
       ⍝   * The restriction that "," and "*" cannot go together has been lifted.
       ⍝   * The restriction that `~` could only be used at the beginning has been lifted
@@ -326,10 +328,13 @@
     ⍝ * A scalar or vector of numbers identifying ungrouped test cases.
     ⍝ * A text string that uniquily identifies a group.
     ⍝ * A text string that ends with an asterisk (`*`) identifying one or more test groups.
+    ⍝ * A nested vector with names of test functions (like `Test_Foo_002` or just `Foo_002`).\\
+    ⍝   This is particularly useful if you want to execute, say, just the test cases that have recently been changed.
     ⍝ * A two-item vector with:
     ⍝   * A text string identifying one or more groups (with the wildcard syntax, **not** by specifying more than one).
     ⍝   * An integer vector identifying test cases within that group.\\
-    ⍝ In addition you may specify an optional left argument which will make `RunThese` stop in certain circumstances:
+    ⍝ Note that you cannot mix different syntaxes.\\
+    ⍝ You may specify an optional left argument which will make `RunThese` stop in certain circumstances:
     ⍝ * 1=stop just before any test case is about to be executed
     ⍝ * 2=stop in all `Initial*` functions
     ⍝ * 4=stop in all `Cleanup*` functions\\
@@ -468,7 +473,9 @@
       ps.processedGroups←''
       ShowLog(,'--- Tests started at ',A.FormatDateTime ⎕TS),' on ',(⍕_ref),' ---'
       buff←⌽(8⍴2)⊤ps.stopFlag
-      buff[1]∨←¯1∊×ps.testCaseNos
+      :If 0<≢ps.testCaseNos
+          buff[1]∨←¯1∊×ps.testCaseNos
+      :EndIf
       ps.stopFlag←2⊥⌽buff
       ProcessTestCases _ref ps
      ∆GetOutOfHere:
@@ -643,10 +650,18 @@
                   ps.group←ps.testCaseNos
                   ps.testCaseNos←⍬
               :Else
-                  ps.group←1⊃ps.testCaseNos
-                  'Group definition must not carry "," or "~" in case test case number were specified'Assert~∨/',~'∊ps.group
-                  ps.testCaseNos←∊1↓ps.testCaseNos
-                  'Test case number(s) must be numeric'Assert~∨/~{⊃0=1↑0⍴⍵}¨ps.testCaseNos
+                  :If ∧/{' '=⊃1↑0⍴⍵}¨ps.testCaseNos
+                  :AndIf ∧/{(⊃1⊃⎕VFI ⍵↑⍨-¯1+'_'⍳⍨⌽⍵)∧0<+/'_'=⍵}¨ps.testCaseNos
+                      ps.list←ps.testCaseNos
+                      ps.testCaseNos←⍬
+                      ps.list←{'Test_'≡(≢'Test_')↑⍵:⍵ ⋄ 'Test_',⍵}¨ps.list
+                      :Return
+                  :Else
+                      ps.group←1⊃ps.testCaseNos
+                      'Group definition must not carry "," or "~" in case test case number were specified'Assert~∨/',~'∊ps.group
+                      ps.testCaseNos←∊1↓ps.testCaseNos
+                      'Test case number(s) must be numeric'Assert~∨/~{⊃0=1↑0⍴⍵}¨ps.testCaseNos
+                  :EndIf
               :EndIf
           :EndIf
           :If 0≠≢ps.group
