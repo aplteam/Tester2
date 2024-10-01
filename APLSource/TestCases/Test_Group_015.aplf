@@ -1,4 +1,4 @@
- r←Test_Group_015(stopFlag batchFlag);log;⎕TRAP;rc;T2;qdmx;names;noOf
+ r←Test_Group_015(debugFlag batchFlag);log;⎕TRAP;rc;T2;qdmx;names;noOf
 ⍝ Group definition that mixes "," (multiple groups) with "~" (without) and "*" (wildcard syntax)
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

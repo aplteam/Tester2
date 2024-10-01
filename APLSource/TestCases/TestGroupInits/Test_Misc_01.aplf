@@ -1,4 +1,4 @@
- r←Test_Misc_01(stopFlag batchFlag);⎕TRAP
+ r←Test_Misc_01(debugFlag batchFlag);⎕TRAP
 ⍝ Pro-forma test for the group `Misc`. Used to test the execution of `Initial_Misc` and `Cleanup_Misc`.
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 

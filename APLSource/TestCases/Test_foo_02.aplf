@@ -1,4 +1,4 @@
- r←Test_foo_02(stopFlag batchFlag);log;stopFlag;⎕TRAP
+ r←Test_foo_02(debugFlag batchFlag);log;debugFlag;⎕TRAP
 
 
 ⍝ Pro-forma test used to test `RunThese` with `1 2` as right argument

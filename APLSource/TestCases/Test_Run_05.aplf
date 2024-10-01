@@ -1,4 +1,4 @@
- r←Test_Run_05(stopFlag batchFlag);T2;expected;log;parms;qdmx;rc;ref;stopFlag;⎕TRAP
+ r←Test_Run_05(debugFlag batchFlag);T2;expected;log;parms;qdmx;rc;ref;debugFlag;⎕TRAP
 ⍝ Exercise the `RunGUI` method.
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

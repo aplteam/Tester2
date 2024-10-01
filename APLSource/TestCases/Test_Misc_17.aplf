@@ -1,4 +1,4 @@
- r←Test_Misc_17(stopFlag batchFlag);⎕TRAP;T2;buff
+ r←Test_Misc_17(debugFlag batchFlag);⎕TRAP;T2;buff
 ⍝ Exercise the `FindSpecialString` method.
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

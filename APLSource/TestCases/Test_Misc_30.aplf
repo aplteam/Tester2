@@ -1,4 +1,4 @@
- r←Test_Misc_30(stopFlag batchFlag);⎕TRAP;rc;log;body
+ r←Test_Misc_30(debugFlag batchFlag);⎕TRAP;rc;log;body
 ⍝ Check whether PassesIf reports the failing line number
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
@@ -7,7 +7,7 @@
  'Temp'#.⎕NS''
  #.Temp.T2←⎕NEW ##.Tester2 #.Temp
  body←''
- body,←⊂'r←Test_Foo_01 (stopFlag batchFlag);⎕TRAP'
+ body,←⊂'r←Test_Foo_01 (debugFlag batchFlag);⎕TRAP'
  body,←⊂'⍝ Checks whether the line number is reported'
  body,←⊂'⎕TRAP←(999 ''C'' ''∘∘∘ ⍝ Deliberate error'')(0 ''N'')'
  body,←⊂'r←1'

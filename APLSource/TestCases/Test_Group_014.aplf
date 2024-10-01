@@ -1,4 +1,4 @@
- r←Test_Group_014(stopFlag batchFlag);log;⎕TRAP;rc;T2;qdmx;names;noOf
+ r←Test_Group_014(debugFlag batchFlag);log;⎕TRAP;rc;T2;qdmx;names;noOf
 ⍝ Group definition that specifies a wilcard expression and a specific test case
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

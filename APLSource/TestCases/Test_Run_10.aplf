@@ -1,4 +1,4 @@
- r←Test_Run_10(stopFlag batchFlag);stopFlag;⎕TRAP;T2;trap;rc;log
+ r←Test_Run_10(debugFlag batchFlag);debugFlag;⎕TRAP;T2;trap;rc;log
 ⍝ Exercise the `QuitEvent` mechanism
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
@@ -10,9 +10,9 @@
  #.TEMP.⎕FX'Initial_Misc' '∆Initalized_Misc←1'
  #.TEMP.⎕FX'Cleanup_Misc' '⎕ex''∆Initalized_Misc'''
  trap←'⎕TRAP←(999 ''C'' ''∘∘∘ ⍝ Deliberate error'')(0 ''N'')'
- #.TEMP.⎕FX'r←Test_Misc_001(stopFlag batchFlag);⎕TRAP'trap'∆GLOBAL←1' 'r←T._OK'
- #.TEMP.⎕FX'r←Test_Misc_002(stopFlag batchFlag);⎕TRAP'trap'r←T._OK' ':If 0=⎕NC''∆Initalized''' 'r←T._Failed' ':EndIf'
- #.TEMP.⎕FX'r←Test_Misc_003(stopFlag batchFlag);⎕TRAP'trap '⎕←''>>>>> To continue execute this statement:''' '⎕←''T.QuitTests ⍝ <<<<<'''  '.'
+ #.TEMP.⎕FX'r←Test_Misc_001(debugFlag batchFlag);⎕TRAP'trap'∆GLOBAL←1' 'r←T._OK'
+ #.TEMP.⎕FX'r←Test_Misc_002(debugFlag batchFlag);⎕TRAP'trap'r←T._OK' ':If 0=⎕NC''∆Initalized''' 'r←T._Failed' ':EndIf'
+ #.TEMP.⎕FX'r←Test_Misc_003(debugFlag batchFlag);⎕TRAP'trap'⎕←''>>>>> To continue execute this statement:''' '⎕←''T.QuitTests ⍝ <<<<<''' '.'
 
  #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
  (rc log)←#.TEMP.T.Run 1

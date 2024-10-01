@@ -1,4 +1,4 @@
- r←Test_Group_007(stopFlag batchFlag);ref;⎕TRAP;T2;names;rc;log;parms
+ r←Test_Group_007(debugFlag batchFlag);ref;⎕TRAP;T2;names;rc;log;parms
 ⍝ Exercise stop flags for test cases, Initial- and Cleanup functions  with `RunGUI`; with a group in the GUI
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
@@ -22,7 +22,7 @@
 
  :Trap 1001
      parms←T2.CreateParms ⍬
-     parms.stopFlag←1
+     parms.stop←1
      (rc log)←parms T2.RunGUI'Foo'
      →T.FailsIf 1
  :Else
@@ -35,7 +35,7 @@
 
  :Trap 1001
      parms←T2.CreateParms ⍬
-     parms.stopFlag←2
+     parms.stop←2
      (rc log)←parms T2.RunGUI'Foo'
      →T.FailsIf 1
  :Else
@@ -47,7 +47,7 @@
 
  :Trap 1001
      parms←T2.CreateParms ⍬
-     parms.stopFlag←4
+     parms.stop←4
      (rc log)←parms T2.RunGUI'Foo'
      →T.FailsIf 1
  :Else
@@ -59,7 +59,7 @@
 
  :Trap 1001
      parms←T2.CreateParms ⍬
-     parms.stopFlag←3
+     parms.stop←3
      (rc log)←parms T2.RunGUI'Foo'
      →T.FailsIf 1
  :Else
@@ -71,7 +71,7 @@
 
  :Trap 1001
      parms←T2.CreateParms ⍬
-     parms.stopFlag←5
+     parms.stop←5
      (rc log)←parms T2.RunGUI'Foo'
      →T.FailsIf 1
  :Else
@@ -83,7 +83,7 @@
 
  :Trap 1001
      parms←T2.CreateParms ⍬
-     parms.stopFlag←7
+     parms.stop←7
      (rc log)←parms T2.RunGUI'Foo'
      →T.FailsIf 1
  :Else
@@ -95,7 +95,7 @@
 
  :Trap 1001
      parms←T2.CreateParms ⍬
-     parms.stopFlag←6
+     parms.stop←6
      (rc log)←parms T2.RunGUI'Foo'
      →T.FailsIf 1
  :Else

@@ -1,4 +1,4 @@
- r←Test_Custom_02(stopFlag batchFlag);⎕TRAP;qdmx;i;T2;noOfConstants
+ r←Test_Custom_02(debugFlag batchFlag);⎕TRAP;qdmx;i;T2;noOfConstants
 ⍝ Set all custom messages and then call `ListSymbolicNames`
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

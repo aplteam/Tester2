@@ -1,10 +1,10 @@
- r←Test_Helpers_03(stopFlag batchFlag);stopFlag;⎕TRAP;list1
+ r←Test_Helpers_03(debugFlag batchFlag);debugFlag;⎕TRAP;list1
 ⍝ Exercise the `EditTestFunctions` method.
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
  :If 0  ⍝TODO⍝ Bring back once bug <02142> is fixed
      r←T._Inactive  ⍝ Because of bug <02142>
-     :return
+     :Return
  :EndIf
 
  :If batchFlag

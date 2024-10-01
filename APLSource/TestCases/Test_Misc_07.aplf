@@ -1,4 +1,4 @@
- r←Test_Misc_07(stopFlag batchFlag);rc;tmp;A;expected;stopFlag;⎕TRAP;log
+ r←Test_Misc_07(debugFlag batchFlag);rc;tmp;A;expected;debugFlag;⎕TRAP;log
 ⍝ Exercise the `RunThese` method
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

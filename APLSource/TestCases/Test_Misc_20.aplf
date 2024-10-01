@@ -1,4 +1,4 @@
- r←Test_Misc_20(stopFlag batchFlag);⎕TRAP;list
+ r←Test_Misc_20(debugFlag batchFlag);⎕TRAP;list
 ⍝ Test whether local vars spreading over more than one line are handled correctly
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

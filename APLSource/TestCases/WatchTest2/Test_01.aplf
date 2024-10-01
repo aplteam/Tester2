@@ -1,4 +1,4 @@
- r←Test_01(stopFlag batchFlag);⎕TRAP;T2
+ r←Test_01(debugFlag batchFlag);⎕TRAP;T2
 ⍝ Execute some stuff
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←##.T2._Failed

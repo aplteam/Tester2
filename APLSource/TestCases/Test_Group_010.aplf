@@ -1,4 +1,4 @@
- r←Test_Group_010(stopFlag batchFlag);log;⎕TRAP;rc;T2;qdmx
+ r←Test_Group_010(debugFlag batchFlag);log;⎕TRAP;rc;T2;qdmx
 ⍝ RunThese with nested groups (illegal)
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

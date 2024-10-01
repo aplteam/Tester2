@@ -1,4 +1,4 @@
- r←Test_Misc_12(stopFlag batchFlag);⎕TRAP;rc;log;res
+ r←Test_Misc_12(debugFlag batchFlag);⎕TRAP;rc;log;res
 ⍝ Invalid setting of `codeCoverage
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

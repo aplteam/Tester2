@@ -1,4 +1,4 @@
- r←Test_IniFiles_03(stopFlag batchFlag);log;stopFlag;⎕TRAP;rc;ini;body;report;iniFilename1;iniFilename2
+ r←Test_IniFiles_03(debugFlag batchFlag);log;debugFlag;⎕TRAP;rc;ini;body;report;iniFilename1;iniFilename2
 ⍝ Exercise two INI files: "testcases.ini" & "testcases_{computername}.ini"
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
@@ -16,7 +16,7 @@
  #.⎕SHADOW'TEMP'
  'TEMP'#.⎕NS''
  #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
- body←⊂'r←Test_03(stopFlag batchFlag);⎕TRAP'
+ body←⊂'r←Test_03(debugFlag batchFlag);⎕TRAP'
  body,←⊂'⎕TRAP←(999 ''C'' ''∘∘∘ ⍝ Deliberate error'')(0 ''N'')'
  body,←⊂'r←T._Failed'
  body,←⊂'→T.FailsIf 2≠T.INI.⎕NC''foo'''

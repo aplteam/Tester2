@@ -1,4 +1,4 @@
- r←Test_Misc_10(stopFlag batchFlag);log;shouldBe;⎕TRAP;rc;i;constant;constants
+ r←Test_Misc_10(debugFlag batchFlag);log;shouldBe;⎕TRAP;rc;i;constant;constants
 ⍝ Exercise the different types of results a test function might return.
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

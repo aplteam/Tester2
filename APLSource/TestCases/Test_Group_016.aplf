@@ -1,4 +1,4 @@
- r←Test_Group_016(stopFlag batchFlag);log;⎕TRAP;rc;T2;qdmx;names;noOf
+ r←Test_Group_016(debugFlag batchFlag);log;⎕TRAP;rc;T2;qdmx;names;noOf
 ⍝ Group definition that specifies three groups but in "wrong" order
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

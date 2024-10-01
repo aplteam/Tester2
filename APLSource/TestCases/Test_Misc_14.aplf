@@ -1,4 +1,4 @@
- r←Test_Misc_14(stopFlag batchFlag);ref;⎕TRAP;T2;names;res
+ r←Test_Misc_14(debugFlag batchFlag);ref;⎕TRAP;T2;names;res
 ⍝ Exercise stop flags for test cases, Initial- and Cleanup functions with `Run`; simple cases: no groups.
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

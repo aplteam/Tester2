@@ -1,4 +1,4 @@
- r←Test_Helpers_04(stopFlag batchFlag);stopFlag;⎕TRAP;list1;expected;result
+ r←Test_Helpers_04(debugFlag batchFlag);debugFlag;⎕TRAP;list1;expected;result
 ⍝ Exercise the `ListSymbolicNames` method.
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 

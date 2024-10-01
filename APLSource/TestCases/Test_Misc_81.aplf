@@ -1,4 +1,4 @@
- r←Test_Misc_81(stopFlag batchFlag);log;⎕TRAP;res
+ r←Test_Misc_81(debugFlag batchFlag);log;⎕TRAP;res
 ⍝ Establish helpers in a namespace
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

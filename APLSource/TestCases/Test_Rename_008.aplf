@@ -1,4 +1,4 @@
- r←Test_Rename_008(stopFlag batchFlag);stopFlag;⎕TRAP;T2;tempDir;res;expected;qdmx;PassesIf
+ r←Test_Rename_008(debugFlag batchFlag);debugFlag;⎕TRAP;T2;tempDir;res;expected;qdmx;PassesIf
 ⍝ Try to rename to an already occupied name
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 

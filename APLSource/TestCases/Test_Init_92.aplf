@@ -1,4 +1,4 @@
- r←Test_Init_92(stopFlag batchFlag);Foo;ref;rc;log;⎕TRAP;expected
+ r←Test_Init_92(debugFlag batchFlag);Foo;ref;rc;log;⎕TRAP;expected
 ⍝ Exercise `Run` with a `Initial_Foo` fn that returns an error msg & requires an argument
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

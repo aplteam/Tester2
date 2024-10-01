@@ -1,4 +1,4 @@
- r←Test_Misc_64(stopFlag batchFlag);ref;⎕TRAP;T2;names;res
+ r←Test_Misc_64(debugFlag batchFlag);ref;⎕TRAP;T2;names;res
 ⍝ Exercise stop flags for test cases, Initial- and Cleanup functions with `RunThese`
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

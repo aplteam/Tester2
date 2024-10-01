@@ -1,4 +1,4 @@
- R←Test_ZZZ_998(stopFlag batchFlag);⎕IO;⎕ML;⎕TRAP;report;buff;rf;candidate;lookFor1;lookFor2
+ R←Test_ZZZ_998(debugFlag batchFlag);⎕IO;⎕ML;⎕TRAP;report;buff;rf;candidate;lookFor1;lookFor2
 ⍝ Checks on two text vectors: "TODO" and "CHECK", embraced by "⍝"; never fails, just reports.
  ⎕IO←1 ⋄ ⎕ML←1
  ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')

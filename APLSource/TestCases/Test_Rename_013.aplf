@@ -1,4 +1,4 @@
- r←Test_Rename_013(stopFlag batchFlag);stopFlag;⎕TRAP;T2;tempDir;res;expected;qdmx
+ r←Test_Rename_013(debugFlag batchFlag);debugFlag;⎕TRAP;T2;tempDir;res;expected;qdmx
 ⍝ Illegal attempt to rename a function (not found)
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 

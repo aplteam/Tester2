@@ -1,4 +1,4 @@
- r←Test_Group_009(stopFlag batchFlag);log;⎕TRAP;rc;T2;names
+ r←Test_Group_009(debugFlag batchFlag);log;⎕TRAP;rc;T2;names
 ⍝ Without multiple groups
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
@@ -6,6 +6,6 @@
  T2←⎕NEW ##.Tester2 TestCasesSimu
  (rc log)←T2.RunThese'~Grouping,Grp1'
  names←∆GetDetails log
- →T.PassesIf (,⊂'Grp1')≡∪(≢'test_')↓¨ 'Test_Grp1'∘{(≢⍺)↑⍵}¨names
+ →T.PassesIf(,⊂'Grp1')≡∪(≢'test_')↓¨'Test_Grp1'∘{(≢⍺)↑⍵}¨names
 
  r←T._OK

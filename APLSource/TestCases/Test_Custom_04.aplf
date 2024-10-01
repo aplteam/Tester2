@@ -1,4 +1,4 @@
- r←Test_Custom_04(stopFlag batchFlag);⎕TRAP;qdmx;i;T2;log;rc
+ r←Test_Custom_04(debugFlag batchFlag);⎕TRAP;qdmx;i;T2;log;rc
 ⍝ Run a test suite that uses some custom messages
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

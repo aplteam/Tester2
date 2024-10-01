@@ -1,4 +1,4 @@
- r←Test_Rename_014(stopFlag batchFlag);stopFlag;⎕TRAP;T2;tempDir;res;expected;qdmx
+ r←Test_Rename_014(debugFlag batchFlag);debugFlag;⎕TRAP;T2;tempDir;res;expected;qdmx
 ⍝ Illegal attempt to rename a group (name already in use)
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 

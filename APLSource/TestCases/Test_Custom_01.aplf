@@ -1,4 +1,4 @@
- r←Test_Custom_01(stopFlag batchFlag);⎕TRAP;qdmx;i;T2
+ r←Test_Custom_01(debugFlag batchFlag);⎕TRAP;qdmx;i;T2
 ⍝ Exercise `custom_{n}` properties with invalid settings
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

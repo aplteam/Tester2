@@ -12,7 +12,7 @@
 
 The framework comprises the class `Tester2` which comes with functions designed to manage and execute test cases. 
 
-`Tester2` cooperates with the class `CodeCoverage` which is designed to produce a code coverage report, which is recommended.
+`Tester2` cooperates with the class `CodeCoverage`, which is designed to produce a code coverage report, which is recommended.
 
 Both `Tester2` and `CodeCoverage` can be loaded as Tatin packages.
 
@@ -22,11 +22,18 @@ You are likely to find the framework flexible enough to suit your own needs when
 
 Depending on how the Test framework is used it might or might not present a GUI. Note that the GUI is a Windows-only feature although in all other respects, `Tester2` works on all platforms; if you decide to avoid the GUI, messages are printed to the Dyalog session window.
 
-The GUI was mainly introduced for `Tester2`'s own sake: `Tester2` is used to test itself, and the messages printed to the session can be very confusing then, while the GUI gives you proper feedback even in that scenario.
+The GUI was mainly introduced for `Tester2`'s own sake: `Tester2` is used to test itself, and when used without the GUI the messages printed to the session are confusing then, while the GUI gives you proper feedback even in that scenario.
 
 Note that executing a large test suite with the GUI is significantly slower than doing the same without the GUI.
 
-If the GUI shows, then this is how it looks like:
+You are advised to not use the GUI except when you...
+
+* to develop `Tester2` itself
+* to familiarize yourself with Tester2`
+
+`Tester2` can easier be explained by using the GUI, so in this document it is used.
+
+This is how the GUI looks like:
 
 ![The messages](gui_1.png "The messages")
 
@@ -37,7 +44,7 @@ The "Log" tab shows all the messages the `Tester2` class provides:
 * Which test cases got examined and possibly executed
 * What the overall picture is:
   * Number of test cases executed
-  * Number of test cases that crashed
+  * Number of test cases that are broken 
   * Number of test cases that failed
   * Number of inactive test cases
   * Number of test cases that were not applicable
@@ -49,7 +56,7 @@ The "Details" tab shows a list of all test cases with...
 1. the status in the first column
 2. the name of the test function (but without `Test_`) in the second column 
 3. the first comment line of the test function in the third column
-4. the symbolic name of the return code, like `Failed`, `OK` or `WindowsOnly` etc., in the fourth column.
+4. the symbolic name of the return code, like `Failed`, `OK` or `WindowsOnly` etc., in the fourth column, or `{Broken}` if that test crashed.
 
 ![This list](gui_2.png "The list")
 
@@ -99,28 +106,26 @@ Note that test cases causing a crash are considered "broken". Test cases that do
 
 1. The number of digits you use for numbering is not restricted: `Test_foo_1` is fine, and so is `Test_foo_0000001`. However, they should be consistent, at least within a group.
 
-1. In each test function, the first line after the header (which includes any lines that start with a `;`) must carry a comment telling what is tested.
+1. In each test function, the first line after the header (which includes any follow-up lines that start with a `;`) must carry a comment telling what is tested.
 
    Keep in mind that later this is the only way to tell one test case from the others without reading the code, so be as clear as you can be, but also be as brief as possible. 
 
    You are restricted to a single line, and you should keep it short enough to be displayed with a reasonable setting of `⎕PW`.
 
-1. Each test function must accept two Booleans as right argument, `stopFlag` and `batchFlag`
+1. Each test function must accept two Booleans as right argument, `debugFlag` and `batchFlag`
 
 
-A> ### `stopFlag`  and `batchFlag`
+A> ### `debugFlag`  and `batchFlag`
 A>
-A> `stopFlag` 
+A> `debugFlag` 
 A>
-A> : A Boolean that tells a test function whether it should stop in case a test fails, or just carry on and report the test as a failure.
-A>
-A> : The first option allows you to investigate a failing test on the spot.
+A> : A Boolean that tells the control functions (`PassesIf`, `FailsIf`, `GoToTidyUp`, see [Flow control](#) for details) what to do in case a test does not meet expectations:  invoke a stop on the calling line for investigation or carry on and report the test as having failed.
 A>
 A> `batchFlag`
 A>
-A> : A Boolean that indicates whether the tests are executed as a batch job, meaning that no human can be asked any question or make any decisions, and reporting makes no sense.
+A> : A Boolean that indicates whether the tests are executed as part of a batch job, meaning that no human can be asked a question or make a decisions, and reporting makes no sense.
 A>
-A> : A test function can use that to not execute its test in case it needs to interact with a human, or is called as part of a fully automated process.
+A> : A test function can use that to not execute its own tests in case it needs to interact with a human, returning the constant `_NoBatchTest`
 A>
 A> : When this flag is true and a test fails, the line number of the test that failed is reported at the end of the message. 
 
@@ -128,12 +133,12 @@ A> : When this flag is true and a test fails, the line number of the test that f
 
 There are some typical scenarios:
 
-* Run _all_ test cases, with or without error trapping and with or without stop flag: see the function `Run`.
-* Run only a _subset_ of all test cases,  with or without error trapping and with or without stop flag: see the function `RunThese`.
-* Run _only "batchable"_ test cases, with or without error trapping and with or without stop flag: see the function `RunBatchTests`.
-* Run _all_ test cases _with a GUI_, with or without error trapping and with or without stop flag: see the function `RunGUI`.
+* Run _all_ test cases, In debug mode or not (toggles error trapping as well) and with or without stops: see the function `Run`.
+* Run only a _subset_ of all test cases,  with or without stops, aslways in debug mode: see the function `RunThese`.
+* Run nothing but "batchable" test cases, with or without debug flag and with or without stops: see the function `RunBatchTests`.
+* Run _all_ test cases _with a GUI_, see the function `RunGUI`. The GUI allows you pass a parameter namespace.
 
-All these functions call the function `Run__` under the hood, which means that this is a generalized all-singing all-dancing function. If none of the above functions fulfils your needs, consider calling `Run__` yourself.
+All these functions call the function `Run__` under the hood, which means that this is a generalized all-singing all-dancing function. If none of the above functions fulfils your needs, consider calling `Run__` yourself, and use one of the other `Run*` functions as a template.
 
 
 ### Definitions
@@ -144,13 +149,17 @@ Traps all errors except that it does not influence the workings of the `debugFla
 
 #### Debugging (`debugFlag`)
 
-If `debugFlag` flag is 0, any failing test within any test function just makes the test function quit, returning a return code that has the symbolic name `_Failure`. See [Symbolic names](#symbolic-names) for details.
+This flag controls the behaviour of the control functions:  `PassesIf`, `FailsIf` and `GoToTidyUp` --- see [Flow control](#) for details.
 
-If `debugFlag` is 1 (= `_OK`), then any failing check crashes right on the spot. This allows one to investigate what went wrong, and why.
+If `debugFlag` flag is 0, any failing test within any test function just makes the test function quit, by default returning a symbolic name `_Failure`. See [Symbolic names](#symbolic-names) for details.
 
-#### Suspend execution (`stopFlag`)
+If `debugFlag` is 1 (defaults to he symbolic name `_OK`), then any failing check crashes right on the spot. This allows one to investigate what went wrong, and why.
+
+#### Suspend execution (`stop`)
 
 This makes the test framework stop just before the next test function is about to be executed. This allows you to trace test cases from top to bottom.
+
+(You can achieve more than that, discussed soon)
 
 #### Batchable tests
 
@@ -165,7 +174,7 @@ Note that all test cases get the `batchFlag` provided as part of the right argum
 
    1. `debugFlag`; 1 means that the test function runs in debug mode.
 
-      Assuming that all tests use the [flow control functions](#flow-control) provided by `Tester2`, the difference is that with `debugFlag` being 0 the test function would quit and return the symbolic name `Failure`, while with `debugFlag` being 1 the test function would crash on the spot, allowing the user to investigate.
+      Assuming that all tests use the [flow control functions](#flow-control) provided by `Tester2`, the difference is that with `debugFlag` being 0 the test function would quit and (by default) return the symbolic name `Failure`, while with `debugFlag` being 1 the test function would crash on the spot, allowing the user to investigate.
 
    1. `batchFlag`: 1 means that there is no user available in front of the monitor.
 
@@ -323,9 +332,11 @@ Notes:
 
 * You can have separate [`Initial` functions for specific groups](#initialisation-for-groups). Use this to initialise stuff that is only needed for a certain group, like a database connection etc.
 
+  For a group "MyGroup", such a function must be named `Initial_MyGroup`.
+
 * After executing all test cases `Tester2` will look for a function `Cleanup` in the hosting namespace. If there is such a function it will be executed.
 
-  Of course you can also have [group-specific `Cleanup` functions](#cleaning-up-for-groups).
+  Of course you can also have [group-specific `Cleanup` functions](#cleaning-up-for-groups). For a group "MyGroup", such a function must be named `Cleanup_MyGroup`.
 
 ### Initialisation for groups
 
@@ -377,6 +388,7 @@ In such a case the framework should clean up (execute any `Cleanup` function) et
 
 This can be achieved by calling the instance method `QuitTests`. This function signals a `QuitEvent` which is trapped and processed in a specific way by the test framework.
 
+You are advised to make using this mechanism a habit when you want to exist a test suite early.
 
 ### Make the test framework stop 
 
@@ -392,13 +404,17 @@ You can force `Tester2` to stop just before any `Initial` function gets executed
 
 #### Stopping on `Cleanup` function(s)
 
-You can force `Tester2` to stop just before any `Cleanup` function gets executed. That can be achieved by passing a 4 as left argument to any of the `Run*` functions. 
+You can force `Tester2` to stop just before any `Cleanup` function gets executed. That can be achieved by passing a 4 as left argument to any of the `Run*` functions except `RunGUI` and `Run__`. 
 
-#### Mixing stops
+#### Combining stops
 
-You may mix things up. For example, to make `Tester2` stop on every `Initial`, every test and every `Cleanup` function just specify the total as left argument: `1+2+4 = 7`
+You may combine stops; for example, to make `Tester2` stop on every `Initial`, every test and every `Cleanup` function just specify the total as left argument: `1+2+4 = 7`
 
 Any other combination (3, 5, 6) is valid as well.
+
+#### I can't remember the numbers!
+
+In case the tests are called by a user (rather than a batch process), you can also specify a "?" as `stop`. That makes the test suite offer all options in a list. You can then simply select the options you are interested in.
 
 #### Stops with the GUI
 
@@ -409,11 +425,11 @@ Note that the GUI provides a combo box with all possible values:
 
 ## Code coverage
 
-Usually one would like to know how much of the code is covered by test cases. Ideally that should be 100%, but that is rarely achievable.
+Usually one would like to know how much of the code of an application is covered by test cases. Ideally that should be 100%, but that is rarely achievable.
 
-However, in order to improve on this, one needs to know how much code is covered, and also which parts of the code are _not_ covered.
+In order to improve on this, one needs to know how much code is covered, and also which parts of the code are _not_ covered.
 
-Since version 2.3 `Tester2` can cooperate with the class [CodeCoverage](https://github.com/aplteam/CodeCoverage) which is capable of collecting the necessary data and compiling a report. 
+Since version 2.3 `Tester2` can cooperate with the Tatin package [CodeCoverage](https://github.com/aplteam/CodeCoverage) which is capable of collecting the necessary data and compiling a report. 
 
 If you want `Tester2` to cooperate with `CodeCoverage`, assign a reference pointing to an instance of `CodeCoverage` to the `Tester2` property `codeCoverage`.
 
@@ -424,9 +440,7 @@ The methods fall into four groups:
 
 ### Running test cases
 
-`Run`, `RunBatchTests`, `RunGUI`, `RunThese` and `Run__` are running all or selected test cases with or without error trapping.
-
-Note that there are helpers available for the most common cases, see the "Helpers" for details.
+`Run`, `RunBatchTests`, `RunGUI`, `RunThese` and `Run__` are running all or selected test cases.
 
 
 ### Flow control
@@ -455,7 +469,7 @@ This is useful in case a test case needs to do some cleaning up like deleting a 
 ### Test function template
 
 
-You can get a test function template by calling the instance method `GetTestTemplate`. 
+You can establish a test function template by calling the instance method `GetTestTemplate`. 
 
 You must provide a number as right argument. The test function will be named `Test_{yourNumber}`. The number must be between 1 and 999 and will be formatted to a three-character vector.
 
@@ -510,7 +524,7 @@ These are the public read-only instance fields that act like constants:
 Use one of these to assign an explicit result within any test function. The advantages of this approach:
 
 1. Much more readable than an integer
-2. You can easily search for, say, `_InActive`, while searching for its number is pointless
+2. You can easily search for, say, `_InActive`, while searching for its number might well be pointless
 
 Notes:
 
@@ -527,7 +541,7 @@ Notes:
 
 These are functions that are not required in order to run test cases, but can make a programmer's life significantly easier.
 
-Two scenarios are very common:
+Two scenarios are common:
 
 * Run all test cases and create data on the fly that allow creating a code coverage report. 
 
@@ -535,7 +549,7 @@ Two scenarios are very common:
 
 * Run all tests that do not require a user (batch tests), typically as part of some automated process
 
-  Most importantly this returns a Boolean that either indicates 100% success with a 1, or that at least one test cases failed, indicated by a 0.
+  Most importantly this returns a Boolean that either indicates 100% success with a 1, or that at least one test case failed, indicated by a 0.
 
 `Tester2` can establish helpers in the namespace that host your test cases covering these two scenarios. 
 
@@ -601,11 +615,11 @@ This is about `Tester2`'s `Run*` functions. These should be flexible enough to c
 
 `Run` requires a Boolean right argument. A 1 makes the test framework stop on a line that fails to return the expected result (`PassesIf`, `FailsIf`, `GotoTidyUp`) while a 0 does not.
 
-The optional left argument must also be Boolean and defines whether the test framework should stop right before any of the test cases is executed (1) or not (0, which is the default).
+The optional left argument defines whether the test framework should stop right before any of the test cases is executed (1) or not (0, which is the default), or other functions, see "[Make the test framework stop](#)" for details
 
 ##### `RunGUI`
 
-With `RunGUI` you can achieve the same as with `Run` but it is a Windows-only feature. It might be easier to start with `RunGUI` but you might switch to `Run` later, if only because it is significantly faster.
+With `RunGUI` you can achieve the same as with `Run` but it is a Windows-only feature. It might be easier to start with `RunGUI`, but you might switch to `Run` later, if only because it is significantly faster.
 
 However, there are situations when `RunGUI` is indispensable: `Tester2`'s own test cases are almost impossible to follow without it, for example. It's also useful to demonstrate the features of the `Tester2` class.
 
@@ -613,7 +627,6 @@ However, there are situations when `RunGUI` is indispensable: `Tester2`'s own te
 
 Notes:
 
-* You can specify only _one_ group name.
 * The GUI can be closed programmatically by calling the niladic instance method `CloseGUI`.
 * You can create a parameter space by calling `CreateParms`, make amendments and pass the parameter space as the optional left argument to `RunGUI`. However, since you can make those amendments in the GUI itself this is useful only to specify defaults for the GUI.
 
@@ -623,19 +636,22 @@ This method is particularly helpful while developing/enhancing stuff: the functi
 
 If you now think, well, why not just call any function `Test_001` myself then imagine a situation when all your test cases depend on an INI file or the execution of `Initial` or both. That is exactly the advantage of `RunThese`: it carries out all these steps for you, and also executes the `Cleanup` function in case there is one.
 
+Also, the flow control function rely on the existence of certain variables which in turn require an instance of the `Tester2` class anyway.
+
 `RunThese` offers the following options:
 
 ```
-T.RunThese 1                 ⍝ Execute test cases 1 that do not belong to any group
-T.RunThese 'Group1'          ⍝ Execute all test cases belonging to Group1
-T.RunThese '~Group1'         ⍝ Execute all tests but those belonging to Group1 (without)
-T.RunThese 'Group1' (2 3)    ⍝ Execute test cases 2 & 3 of Group1
-T.RunThese 'Group1' 2 3      ⍝ Same as before
-T.RunThese 'Group1,Group2'   ⍝ Execute two groups
-T.RunThese 'Misc'            ⍝ Execute all test cases of the group "Misc"
-T.RunThese 'L*'              ⍝ Execute all test cases of all groups starting with "L"
-T.RunThese 'Group1_001'      ⍝ Executes just this test case
-T.RunThese 'Test_Group1_001' ⍝ Same as before
+T.RunThese 1                   ⍝ Execute test cases 1 that do not belong to any group
+T.RunThese 'Group1'            ⍝ Execute all test cases belonging to Group1
+T.RunThese '~Group1'           ⍝ Execute all tests but those belonging to Group1 (without)
+T.RunThese 'Group1' (2 3)      ⍝ Execute test cases 2 & 3 of Group1
+T.RunThese 'Group1' 2 3        ⍝ Same as before
+T.RunThese 'Group1,Group2'     ⍝ Execute two groups
+T.RunThese 'Misc'              ⍝ Execute all test cases of the group "Misc"
+T.RunThese 'L*'                ⍝ Execute all test cases of all groups starting with "L"
+T.RunThese 'Group*,~Group_Foo' ⍝ Execute all groups named "Group*" but "Group_Foo"
+T.RunThese 'Group1_001'        ⍝ Executes just this test case
+T.RunThese 'Test_Group1_001'   ⍝ Same as before
 ```
 
 
@@ -648,7 +664,7 @@ Sometimes you want to trace through test cases. This can be achieved by specifyi
 {(rc log)}←{stopFlag} RunBatchTests debugFlag
 ```
 
-This is the same as `Run` except that it passes a 1 as `batchFlag` to the test functions. This allows the test function itself to quit under some circumstances. This is usually because a test requires a human in front of the monitor, and if such a human is not available right now then there is no point running such tests.
+This is the same as `Run` except that it passes a 1 as `batchFlag` to the test functions. This allows the test function itself to quit because it's not batchable. This is usually because a test requires a human in front of the monitor, and if such a human is not available right now, then there is no point running such tests.
 
 #### Without Helpers
 
@@ -815,6 +831,8 @@ If there is already a group "Misc" then numbering would start with the highest p
 * It might be a good idea for _all_ test functions to tidy up first, just in case this test case has failed earlier and left some debris behind.
 
 * It's common practice to implement a test case for every bug, for bugs tend to make comebacks; such tests prevent that from happening.
+
+
 
 
 

@@ -1,4 +1,4 @@
- r←Test_Rename_016(stopFlag batchFlag);stopFlag;⎕TRAP;T2;tempDir;res;expected
+ r←Test_Rename_016(debugFlag batchFlag);debugFlag;⎕TRAP;T2;tempDir;res;expected
 ⍝ Rename a group into a new group without specifying "Test_"
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 

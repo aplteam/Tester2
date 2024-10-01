@@ -1,3 +1,3 @@
- r←Test_2(stopFlag batchFlag);⎕TRAP
+ r←Test_2(debugFlag batchFlag);⎕TRAP
 ⍝ Successful test case
  r←##.T._OK

@@ -1,4 +1,4 @@
- r←Test_Run_06(stopFlag batchFlag);log;rc;stopFlag;⎕TRAP;T2;parms
+ r←Test_Run_06(debugFlag batchFlag);log;rc;debugFlag;⎕TRAP;T2;parms
 ⍝ Exercise the `Run__` method.
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

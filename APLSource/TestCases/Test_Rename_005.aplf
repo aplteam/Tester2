@@ -1,4 +1,4 @@
- r←Test_Rename_005(stopFlag batchFlag);stopFlag;⎕TRAP;T2;tempDir;res;expected
+ r←Test_Rename_005(debugFlag batchFlag);debugFlag;⎕TRAP;T2;tempDir;res;expected
 ⍝ Rename single test function by specifying "Test_" only for the old name
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 

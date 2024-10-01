@@ -1,4 +1,4 @@
- r←Test_Exec_11(stopFlag batchFlag);⎕TRAP;rc;log;QDMX
+ r←Test_Exec_11(debugFlag batchFlag);⎕TRAP;rc;log;QDMX
 ⍝ Test `exec_before_each_test` returning a result
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

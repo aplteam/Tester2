@@ -1,4 +1,4 @@
- r←Test_Init_07(stopFlag batchFlag);Foo;ref;rc;log;⎕TRAP
+ r←Test_Init_07(debugFlag batchFlag);Foo;ref;rc;log;⎕TRAP
 ⍝ Exercise `Run` with a test function that crashes and asks the user to execute "T.QuitTests". Was `Cleanup_foo` executed?
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

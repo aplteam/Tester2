@@ -1,4 +1,4 @@
- r←Test_foo_03(stopFlag batchFlag);log;stopFlag;⎕TRAP
+ r←Test_foo_03(debugFlag batchFlag);log;debugFlag;⎕TRAP
 ⍝ This is used to check whether T._Inactive is processed as intended AND the comment appears in the report
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 

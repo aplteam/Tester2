@@ -1,4 +1,4 @@
- r←Test_01(stopFlag batchFlag);⎕TRAP;T2
+ r←Test_01(debugFlag batchFlag);⎕TRAP;T2
 ⍝ Pro-forma test. What we really focus on here is the coverage report
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←##.T2._Failed

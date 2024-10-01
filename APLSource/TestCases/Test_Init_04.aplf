@@ -1,4 +1,4 @@
- r←Test_Init_04(stopFlag batchFlag);Foo;ref;rc;log;⎕TRAP;T2
+ r←Test_Init_04(debugFlag batchFlag);Foo;ref;rc;log;⎕TRAP;T2
 ⍝ Exercise `Run` with an `Initial` function that returns 0 (failed) and check whether `Cleanup` was executed
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

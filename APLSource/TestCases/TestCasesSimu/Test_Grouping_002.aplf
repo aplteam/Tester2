@@ -1,3 +1,3 @@
- r←Test_Grouping_002(stopFlag batchFlag);⎕TRAP
+ r←Test_Grouping_002(debugFlag batchFlag);⎕TRAP
 ⍝ Exercise just grouping [2]
  r←##.T._OK

@@ -1,4 +1,4 @@
- r←Test_Run_04(stopFlag batchFlag);log;rc;expected;stopFlag;⎕TRAP;T2;total;noOf;noOf2
+ r←Test_Run_04(debugFlag batchFlag);log;rc;expected;debugFlag;⎕TRAP;T2;total;noOf;noOf2
 ⍝ Exercise the `RunThese` method
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

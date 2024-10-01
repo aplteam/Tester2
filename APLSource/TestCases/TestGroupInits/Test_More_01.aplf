@@ -1,4 +1,4 @@
- r←Test_More_01(stopFlag batchFlag);⎕TRAP
+ r←Test_More_01(debugFlag batchFlag);⎕TRAP
 ⍝ Pro-forma test for the group `Foo`. Used to test the execution of `Initial_More`
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 

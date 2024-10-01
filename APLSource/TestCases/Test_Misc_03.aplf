@@ -1,4 +1,4 @@
- r←Test_Misc_03(stopFlag batchFlag);log;stopFlag;⎕TRAP;res
+ r←Test_Misc_03(debugFlag batchFlag);log;debugFlag;⎕TRAP;res
 ⍝ Exercise `Help`
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 

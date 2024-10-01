@@ -1,4 +1,4 @@
- r←Test_Group_001(stopFlag batchFlag);log;stopFlag;⎕TRAP;rc
+ r←Test_Group_001(debugFlag batchFlag);log;debugFlag;⎕TRAP;rc
 ⍝ Exercise the grouping mechanism with specific numbers
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed

@@ -1,0 +1,22 @@
+ r←Test_Misc_90(flag batchFlag);log;⎕TRAP;res;ref;T2;stopFlag
+⍝ Uses the old name for "debugFlag": "stopFlag"
+⍝ The old name is still supported so that old test cases don't need to be changed.
+⍝ DO NOT rename "flag" in the header of this function!
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ ref←⎕NS''
+ T2←⎕NEW ##.Tester2 ref
+ stopFlag←0
+ batchFlag←batchFlag
+⍝ FailsIf calls PassesIf, so we test both:
+ →T.FailsIf~0∊⍴T2.PassesIf 1
+ →T.FailsIf 0≢T2.PassesIf 0
+ →T.FailsIf 0≢T2.FailsIf 1
+ →T.FailsIf~0∊⍴T2.FailsIf 0
+
+ →T.PassesIf ∆TidyUp=T2.GoToTidyUp 1
+
+ r←T._OK
+
+∆TidyUp:  ⍝ pro forma

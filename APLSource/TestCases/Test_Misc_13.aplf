@@ -1,4 +1,4 @@
- r←Test_Misc_13(stopFlag batchFlag);log;⎕TRAP;rc
+ r←Test_Misc_13(debugFlag batchFlag);log;⎕TRAP;rc
 ⍝ Run a test suite with "Cleanup" depending on "Initial" being executed but wihtout any test cases.
 ⍝ This was once  abug: "Initial" was (rightly) not executed but "Cleanup" was.
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
