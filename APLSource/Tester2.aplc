@@ -21,11 +21,14 @@
 
     ∇ r←Version
       :Access Public shared
-      r←'Tester2' '3.9.0+5' '2024-10-01'
+      r←'Tester2' '3.9.1+5' '2024-10-02'
     ∇
 
     ∇ r←History
-      :Access Public shared
+      :Access Public shared 
+      ⍝ * 3.9.1 ⋄ 2024-10-02
+      ⍝   * Bug fixes
+      ⍝     The new '?'-syntax did not work when 3 (for "Cleanup") was selected
       ⍝ * 3.9.0 ⋄ 2024-10-01
       ⍝   * The term `stopFlag` was used in two different ways: on the level of the test framework and inside
       ⍝     test functions. This required a change: inside test functions, what was initially called
@@ -430,9 +433,10 @@
       r.⎕FX'r←List' 'r←↑{⍵(⍎⍵)}¨'' ''~¨⍨↓⎕NL 2'
     ∇
 
-    ∇ stop←ProcessStop stop;list;ind
+    ∇ stop←ProcessStop stop;list;ind;vals
       :If '?'≡stop
           list←'Tests' 'Initial' 'Cleanup' 'Tests & Initial' 'Tests & Cleanup' 'Initial & Cleanup' 'Test, Initial & Cleanup' 'Nowhere' 'Cancel'
+          vals←1 2 4 3 5 6 7 8 9
           ind←'WhereToStop@Stop just before...'##.CommTools.Select list
           :If 0=≢ind
               stop←0
@@ -441,7 +445,7 @@
           :ElseIf ind≡8
               stop←0
           :Else
-              stop←ind
+              stop←vals[ind]
           :EndIf
       :EndIf
     ∇
