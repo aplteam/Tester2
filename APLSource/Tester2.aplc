@@ -1,4 +1,4 @@
-    :Class Tester2
+:Class Tester2
 ⍝ This class provides a test framework for APL applications.
 ⍝ ## Warning
 ⍝ This is **not** an introduction into how the test framework works, and how you should organize your test cases.
@@ -25,20 +25,20 @@
     ∇
 
     ∇ r←History
-      :Access Public shared 
+      :Access Public shared
       ⍝ * 3.9.1 ⋄ 2024-10-02
-      ⍝   * Bug fixes
-      ⍝     The new '?'-syntax did not work when 3 (for "Cleanup") was selected
+      ⍝   * Comment added according to issue #25
+      ⍝   * Bug fix: the new '?'-syntax did not work when 3 (for "Cleanup") was selected
       ⍝ * 3.9.0 ⋄ 2024-10-01
       ⍝   * The term `stopFlag` was used in two different ways: on the level of the test framework and inside
       ⍝     test functions. This required a change: inside test functions, what was initially called
       ⍝     `stopFlag` is now called `debugFlag`.\\
       ⍝     Note that the old name is still supported in order to support old test cases, so this is not a
-      ⍝     breaking change.         
-      ⍝   * `stopFlag` is not necessarily a Boolean anymore, making the name a misnomer. 
+      ⍝     breaking change.
+      ⍝   * `stopFlag` is not necessarily a Boolean anymore, making the name a misnomer.
       ⍝     Therefore, it was renamed to `stop`.
       ⍝   * All `Run*`-functions that accept `stop` as a left argument now allow it to be "?".
-      ⍝     This led to a list with all options the user may select from.    
+      ⍝     This led to a list with all options the user may select from.
       ⍝ * 3.8.0 ⋄ 2024-08-03
       ⍝   * `RunThese` accepts now a list of names identifying test functions (like `Foo_001` or `Test_Foo_001)
       ⍝ * 3.7.0 ⋄ 2024-03-02
@@ -959,7 +959,10 @@
               :EndIf
           :EndIf
       :EndIf
-     ∆StopHere:rc←ref.⍎fnsName,' ',(⍕ps.debugFlag),' ',(⍕ps.batchFlag)
+     
+     ∆StopHere:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stopFlag←0
+      rc←ref.⍎fnsName,' ',(⍕ps.debugFlag),' ',(⍕ps.batchFlag)
+     
       :If 0<≢_exec_after_each_test
           :If 0=1 1⊃⎕AT _exec_after_each_test
               ⍎_exec_after_each_test,' fnsName ps'
