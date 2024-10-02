@@ -21,12 +21,12 @@
 
     ∇ r←Version
       :Access Public shared
-      r←'Tester2' '3.9.1+5' '2024-10-02'
+      r←'Tester2' '3.9.1+5' '2024-10-04'
     ∇
 
     ∇ r←History
       :Access Public shared
-      ⍝ * 3.9.1 ⋄ 2024-10-02
+      ⍝ * 3.9.1 ⋄ 2024-10-04
       ⍝   * Comment added according to issue #25
       ⍝   * Bug fix: the new '?'-syntax did not work when 3 (for "Cleanup") was selected
       ⍝ * 3.9.0 ⋄ 2024-10-01
@@ -437,7 +437,7 @@
       :If '?'≡stop
           list←'Tests' 'Initial' 'Cleanup' 'Tests & Initial' 'Tests & Cleanup' 'Initial & Cleanup' 'Test, Initial & Cleanup' 'Nowhere' 'Cancel'
           vals←1 2 4 3 5 6 7 8 9
-          ind←'WhereToStop@Stop just before...'##.CommTools.Select list
+          ind←'WhereToStop@Stop just before...' 1 1 ##.CommTools.Select list
           :If 0=≢ind
               stop←0
           :ElseIf ind≡9
@@ -627,16 +627,18 @@
       initMsg←''
       :If 3=ref.⎕NC'Initial'
           :If 2⊃⌽(8⍴2)⊤ps.stop
-              (∪(⎕STOP 1⊃⎕SI),∆stop1,∆stop2,∆stop3,∆stop4)⎕STOP 1⊃⎕SI
+              (∪(⎕STOP 1⊃⎕SI),∆stop_before_initial_1,∆stop_before_initial_2,∆stop_before_initial_3,∆stop_before_initial_4)⎕STOP 1⊃⎕SI
           :Else
-              ((⎕STOP 1⊃⎕SI)~,∆stop1,∆stop2,∆stop3,∆stop4)⎕STOP 1⊃⎕SI
+              ((⎕STOP 1⊃⎕SI)~,∆stop_before_initial_1,∆stop_before_initial_2,∆stop_before_initial_3,∆stop_before_initial_4)⎕STOP 1⊃⎕SI
           :EndIf
           :Select ⊃(⎕IO+1)⊃1 ref.⎕AT'Initial'
           :Case 0
               :If 0=⊃⊃ref.⎕AT'Initial'
-     ∆stop1:      ref.Initial
+     ∆stop_before_initial_1:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
+                  ref.Initial
               :Else
-     ∆stop2:      buff←ref.Initial
+     ∆stop_before_initial_2:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
+                  buff←ref.Initial
                   :If ' '=1↑0⍴buff
                       success←0=≢buff
                       :If 0<≢buff
@@ -648,9 +650,11 @@
               :EndIf
           :Case 1
               :If 0=⊃⊃ref.⎕AT'Initial'
-     ∆stop3:      ref.Initial ps
+     ∆stop_before_initial_3:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
+                  ref.Initial ps
               :Else
-     ∆stop4:      buff←ref.Initial ps
+     ∆stop_before_initial_4:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
+                  buff←ref.Initial ps
                   :If ' '=1↑0⍴buff
                       success←0=≢buff
                       :If 0<≢buff
@@ -664,7 +668,7 @@
               11 ⎕SIGNAL⍨'The "Initial" function in ',(⍕ref),' has an invalid signature: it''s neither monadic nor niladic'
           :EndSelect
           :If success
-              report,←'found and successfully executed'
+              report,←'found and executed successfully'
           :Else
               report,←'found and executed but it signalled failure'
               :If 0<≢initMsg
@@ -922,16 +926,19 @@
       report←'Looking for a function "Cleanup": '
       :If 3=ref.⎕NC'Cleanup'
           :If 3⊃⌽(8⍴2)⊤ps.stop
-              (∆stop1 ∆stop2)⎕STOP 1⊃⎕SI
+              (∆stop_before_cleanup_1 ∆stop_before_cleanup_2)⎕STOP 1⊃⎕SI
           :Else
-              ((⎕STOP 1⊃⎕SI)~∆stop1 ∆stop2)⎕STOP 1⊃⎕SI
+              ((⎕STOP 1⊃⎕SI)~∆stop_before_cleanup_1 ∆stop_before_cleanup_2)⎕STOP 1⊃⎕SI
           :EndIf
           :If 0=1 2⊃ref.⎕AT'Cleanup'
-     ∆stop1:  ref.Cleanup
+     ∆stop_before_cleanup_1:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
+              ref.Cleanup
               report,←'found and executed'
           :Else
-     ∆stop2:  ref.Cleanup ps
+     ∆stop_before_cleanup_2:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
+              ref.Cleanup ps
           :EndIf
+          report,←' found and executed successfully'
       :Else
           report,←'not found'
       :EndIf
@@ -946,7 +953,7 @@
       :If 0<≢_codeCoverage
           _codeCoverage.Start ⍬
       :EndIf
-      HandleStops(1⊃⎕SI)ps ∆StopHere testNo fnsName
+      HandleStops(1⊃⎕SI)ps ∆stop_before_test testNo fnsName
       :If ps.guiFlag
           ps.ref2Gui.∆n.Info.Text←'Executing ',(⍕ref),'.',fnsName,'...'
       :EndIf
@@ -960,7 +967,7 @@
           :EndIf
       :EndIf
      
-     ∆StopHere:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stopFlag←0
+     ∆stop_before_test:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
       rc←ref.⍎fnsName,' ',(⍕ps.debugFlag),' ',(⍕ps.batchFlag)
      
       :If 0<≢_exec_after_each_test
@@ -1770,16 +1777,19 @@
           :If 3=ref.⎕NC'Initial_',currentGroup
               at←1⊃ref.⎕AT'Initial_',currentGroup
               :If 2⊃⌽(8⍴2)⊤ps.stop
-                  (∪(⎕STOP 1⊃⎕SI),∆stop1,∆stop2,∆stop3)⎕STOP 1⊃⎕SI
+                  (∪(⎕STOP 1⊃⎕SI),∆stop_before_initial_1,∆stop_before_initial_2,∆stop_before_initial_3)⎕STOP 1⊃⎕SI
               :Else
-                  ((⎕STOP 1⊃⎕SI)~,∆stop1,∆stop2,∆stop3)⎕STOP 1⊃⎕SI
+                  ((⎕STOP 1⊃⎕SI)~,∆stop_before_initial_1,∆stop_before_initial_2,∆stop_before_initial_3)⎕STOP 1⊃⎕SI
               :EndIf
               :If (2⊃at)∊1 ¯2           ⍝ Accepts a right argument (monadic=1, ambivalent=¯2)?
-     ∆stop1:      result←ps ref.{⍎⍵,' ⍺'}'Initial_',currentGroup
+     ∆stop_before_initial_1:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
+                  result←ps ref.{⍎⍵,' ⍺'}'Initial_',currentGroup
               :ElseIf |1⊃at
-     ∆stop2:      result←ps ref.{⍎⍵}'Initial_',currentGroup
+     ∆stop_before_initial_2:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
+                  result←ps ref.{⍎⍵}'Initial_',currentGroup
               :Else
-     ∆stop3:      ref⍎'Initial_',currentGroup
+     ∆stop_before_initial_3:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
+                  ref⍎'Initial_',currentGroup
                   result←1
               :EndIf
               :If ~(⊂result)∊⍬ 1
@@ -1802,7 +1812,7 @@
               :Else
                   buff←¯1↑ps.log
                   ps.log←¯1↓ps.log
-                  ShowLog'Function "Initial_',currentGroup,'" found and successfully executed'
+                  ShowLog'Function "Initial_',currentGroup,'" found and executed successfully'
                   ps.log,←buff
               :EndIf
           :EndIf
@@ -1816,15 +1826,17 @@
       :OrIf currentGroup{0=≢⍺:0 ⋄ ⍺≢Remove∆Test_ GetGroupName(i+1)⊃⍵}ps.list    ⍝ Group change?!
           :If 3=ref.⎕NC'Cleanup_',currentGroup
               :If 3⊃⌽(8⍴2)⊤ps.stop
-                  (∪(⎕STOP 1⊃⎕SI),∆stop10,∆stop11)⎕STOP 1⊃⎕SI
+                  (∪(⎕STOP 1⊃⎕SI),∆stop_before_cleanup_1,∆stop_before_cleanup_2)⎕STOP 1⊃⎕SI
               :Else
-                  ((⎕STOP 1⊃⎕SI)~,∆stop10,∆stop11)⎕STOP 1⊃⎕SI
+                  ((⎕STOP 1⊃⎕SI)~,∆stop_before_cleanup_1,∆stop_before_cleanup_2)⎕STOP 1⊃⎕SI
               :EndIf
               at←1⊃ref.⎕AT'Cleanup_',currentGroup
               :If (2⊃at)∊1 ¯2                                                   ⍝ Accepts a right argument (1=monadic, ¯2=ambivalent)?
-     ∆stop10:     ps ref.{6::1 ⋄ ⍎⍵,' ⍺'}'Cleanup_',currentGroup
+     ∆stop_before_cleanup_1:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
+                  ps ref.{6::1 ⋄ ⍎⍵,' ⍺'}'Cleanup_',currentGroup
               :Else
-     ∆stop11:     ref.⍎'Cleanup_',currentGroup
+     ∆stop_before_cleanup_2:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
+                  ref.⍎'Cleanup_',currentGroup
               :EndIf
           :EndIf
       :EndIf

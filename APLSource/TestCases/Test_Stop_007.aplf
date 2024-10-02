@@ -1,0 +1,22 @@
+ r←Test_Stop_007(debugFlag batchFlag);⎕TRAP;T2
+⍝ Exercise the `RunThese` method with stop←'?' = Test & Initial & Cleanup
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+ #.⎕SHADOW'TEMP' ⋄ 'TEMP'#.⎕NS''
+ #.TEMP.counter←0
+ #.TEMP.labels←'∆stop_before_test' '∆stop_before_initial_1' '∆stop_before_initial_2' '∆stop_before_initial_3' '∆stop_before_initial_4' '∆stop_before_cleanup_1' '∆stop_before_cleanup_2'
+ ##.CommTools.Select_Choices←1 2⍴'WhereToStop@' 7
+
+ ⎕TRAP←(⊂1001 'E' 'Assert (⊃⎕lc)∊{⍎¨(⎕nc ⍵)/⍵}#.TEMP.labels ⋄ #.TEMP.counter+←1 ⋄ →⎕lc'),⎕TRAP
+ {}'?'T2.RunThese'Grouping'
+ ⎕TRAP←1↓⎕TRAP
+
+ →T.PassesIf 7=#.TEMP.counter
+
+ r←T._OK
+
+∆TidyUp:
+ ##.CommTools.Cleanup
+⍝Done

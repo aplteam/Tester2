@@ -7,6 +7,6 @@
  TestCasesSimu.T.TestFlag←1
  (rc log)←TestCasesSimu.T.Run 1
  TestCasesSimu.⎕EX''
- →T.FailsIf 13 3 0≢∆GetTotals log
+ →T.FailsIf 14 3 0≢∆GetTotals log
  r←T._OK
 ⍝Done

@@ -8,6 +8,7 @@
  (rc log)←T2.RunThese'Grp*,Grouping_002'
  names←∆GetDetails log
  noOf←+/1,≢¨T2.ListTestFunctions¨'Grp1' 'Grp2'
+ noOf+←1   ⍝ Plus 1 for "Initial_Grouping"
  →T.PassesIf noOf=≢names
 
  r←T._OK

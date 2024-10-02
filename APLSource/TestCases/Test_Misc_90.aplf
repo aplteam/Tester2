@@ -3,6 +3,7 @@
 ⍝ The old name is still supported so that old test cases don't need to be changed.
 ⍝ DO NOT rename "flag" in the header of this function!
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ Assert(⎕UCS 102 108 97 103)≡{{⍵↑⍨¯1+⍵⍳' '}⍵↓⍨⍵⍳'('}⊃⎕NR⊃⎕XSI   ⍝ Check that first argument is named "f l a g" without the spaces
  r←T._Failed
 
  ref←⎕NS''

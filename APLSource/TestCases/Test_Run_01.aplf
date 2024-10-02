@@ -7,8 +7,10 @@
  T2.TestFlag←1
  (rc log)←T2.Run 1
  →T.FailsIf 0=rc
- →T.PassesIf 4=+/': not found'⍷∊log  ⍝ No function `Initial`, no INI files (two!) and no function `Cleanup`
- →T.PassesIf∨/'13 test cases of 13 called'⍷∊log
+ →T.PassesIf 1=+/'Looking for a function "Initial": found and executed successfully'⍷∊log  ⍝ One function `Initial`
+ →T.PassesIf 1=+/'Looking for a function "Cleanup":'⍷∊log  ⍝ One function `Cleanup`
+ →T.PassesIf 2=+/≢'Searching for INI file .* not found'⎕S 1⊣log ⍝ Two INI files
+ →T.PassesIf∨/'14 test cases of 14 called'⍷∊log
  →T.PassesIf∨/'3 test cases failed (flagged with "*")'⍷∊log
  →T.PassesIf∨/'0 test cases broken'⍷∊log
 

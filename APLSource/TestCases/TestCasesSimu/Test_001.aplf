@@ -1,0 +1,3 @@
+ r←Test_001(debugFlag batchFlag);⎕TRAP
+⍝ Pro-forma test case that alwasy succeeds
+ r←0

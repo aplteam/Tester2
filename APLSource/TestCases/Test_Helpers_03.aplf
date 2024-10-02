@@ -2,15 +2,13 @@
 ⍝ Exercise the `EditTestFunctions` method.
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
- :If 0  ⍝TODO⍝ Bring back once bug <02142> is fixed
-     r←T._Inactive  ⍝ Because of bug <02142>
+ :If ~19≤{⊃(//)⎕VFI ⍵↑⍨¯1+⍵⍳'.'}2⊃'#'⎕WG'APLVersion'
+     r←T._Inactive  ⍝ Because of bug <02142> which got fixed in 19.0
      :Return
  :EndIf
 
  :If batchFlag
-
      r←T._NoBatchTest
-
  :Else
 
      r←T._Failed

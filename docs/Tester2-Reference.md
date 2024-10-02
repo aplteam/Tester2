@@ -414,7 +414,22 @@ Any other combination (3, 5, 6) is valid as well.
 
 #### I can't remember the numbers!
 
-In case the tests are called by a user (rather than a batch process), you can also specify a "?" as `stop`. That makes the test suite offer all options in a list. You can then simply select the options you are interested in.
+In case the tests are called by a user (rather than a batch process), you can also specify a "?" as `stop`. That makes the test suite offer all options in a list. You can then simply select the options you are interested in:
+
+```
+--- Stop just before... -----------------------
+   1. Tests                   
+   2. Initial                 
+   3. Cleanup                 
+   4. Tests & Initial         
+   5. Tests & Cleanup         
+   6. Initial & Cleanup       
+   7. Test, Initial & Cleanup 
+   8. Nowhere                 
+   9. Cancel                  
+
+Select one item (q=quit) :
+```
 
 #### Stops with the GUI
 
@@ -610,7 +625,7 @@ This is about `Tester2`'s `Run*` functions. These should be flexible enough to c
 ##### `Run`
 
 ```
-{(rc log)}←{stopFlag} Run debugFlag
+{(rc log)}←{stop} Run debugFlag
 ```
 
 `Run` requires a Boolean right argument. A 1 makes the test framework stop on a line that fails to return the expected result (`PassesIf`, `FailsIf`, `GotoTidyUp`) while a 0 does not.
@@ -661,7 +676,7 @@ Sometimes you want to trace through test cases. This can be achieved by specifyi
 ##### `RunBatchTests`
 
 ```
-{(rc log)}←{stopFlag} RunBatchTests debugFlag
+{(rc log)}←{stop} RunBatchTests debugFlag
 ```
 
 This is the same as `Run` except that it passes a 1 as `batchFlag` to the test functions. This allows the test function itself to quit because it's not batchable. This is usually because a test requires a human in front of the monitor, and if such a human is not available right now, then there is no point running such tests.
@@ -683,11 +698,11 @@ This is a generalized function that is effectively called by all the other `Run*
  batchFlag    0 
  debugFlag    0 
  guiFlag      0 
- stopFlag     0 
+ stop         0 
  testCaseNos    
  trapFlag     1 
       ⍝ Make amendments:
-      ps.stopFlag←1
+      ps.stop←1
       ps.testCaseNos←'Misc' (1 2 3)
       ⍝ Call the Run__ function:
       (rc log)←T.Run__ ps
@@ -831,6 +846,7 @@ If there is already a group "Misc" then numbering would start with the highest p
 * It might be a good idea for _all_ test functions to tidy up first, just in case this test case has failed earlier and left some debris behind.
 
 * It's common practice to implement a test case for every bug, for bugs tend to make comebacks; such tests prevent that from happening.
+
 
 
 

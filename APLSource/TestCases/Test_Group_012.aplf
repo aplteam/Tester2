@@ -7,6 +7,6 @@
 
  (rc log)←T2.RunThese'~Gr*'    ⍝ All
  names←∆GetDetails log
- →T.PassesIf 5=+/{≢'Test_[0-9]+ '⎕S 0⊣⍵}¨names,¨' '
+ →T.PassesIf 6=+/{≢'Test_[0-9]+ '⎕S 0⊣⍵}¨names,¨' '
 
  r←T._OK

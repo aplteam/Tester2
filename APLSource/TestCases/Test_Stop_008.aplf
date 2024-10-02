@@ -1,0 +1,13 @@
+ r←Test_Stop_008(debugFlag batchFlag);⎕TRAP;T2;log;rc
+⍝ Exercise the `RunThese` method with stop←'?' = Nonwhere
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+ ##.CommTools.Select_Choices←1 2⍴'WhereToStop@' 8
+
+ (rc log)←'?'T2.RunThese'Grouping'
+ →T.PassesIf 0=rc
+
+ r←T._OK
+⍝Done
