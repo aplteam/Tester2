@@ -21,12 +21,12 @@
 
     ∇ r←Version
       :Access Public shared
-      r←'Tester2' '3.9.1+5' '2024-10-04'
+      r←'Tester2' '3.9.1' '2024-10-03'
     ∇
 
     ∇ r←History
       :Access Public shared
-      ⍝ * 3.9.1 ⋄ 2024-10-04
+      ⍝ * 3.9.1 ⋄ 2024-10-03
       ⍝   * Comment added according to issue #25
       ⍝   * Bug fix: the new '?'-syntax did not work when 3 (for "Cleanup") was selected
       ⍝ * 3.9.0 ⋄ 2024-10-01
