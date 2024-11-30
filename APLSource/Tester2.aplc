@@ -21,11 +21,13 @@
 
     ∇ r←Version
       :Access Public shared
-      r←'Tester2' '3.9.1' '2024-10-03'
+      r←'Tester2' '3.10.0' '2024-11-30'
     ∇
 
     ∇ r←History
       :Access Public shared
+      ⍝ * 3.10.0 ⋄ 2024-11-30
+      ⍝   * Dependencies updated in order to make Tester2 ready for 20.0 (IniFiles)
       ⍝ * 3.9.1 ⋄ 2024-10-03
       ⍝   * Comment added according to issue #25
       ⍝   * Bug fix: the new '?'-syntax did not work when 3 (for "Cleanup") was selected

@@ -1,6 +1,9 @@
  Make flag;M;C;path;zipFilename;res;version;cfg;parms;F
 ⍝ "Make" a new version of this project
  :If flag
+     :If 0=⎕SE.⎕NC'MakeHelpers'
+         {}⎕SE.Tatin.LoadPackages'[tatin]MakeHelpers'⎕SE
+     :EndIf
      M←⎕SE.MakeHelpers
      C←##.CiderConfig ⋄ F←M.##.FilesAndDirs
      path←C.HOME,'/',C.CIDER.distributionFolder
