@@ -7,12 +7,12 @@
 
  Assert 0=≢#.TEMP.⎕NL 3
 
- ##.CommTools.YesOrNo_Answers←1 2⍴'Helpers@' 'N'
+ ##.CommTools.AddAutomation'YesOrNo' 'Helpers@' 'N'
  res←##.Tester2.EstablishHelpers #.TEMP
  →T.GoToTidyUp~0=≢res
  →T.GoToTidyUp 0≠≢#.TEMP.⎕NL 3
 
- ##.CommTools.YesOrNo_Answers←1 2⍴'Helpers@' 'Y'
+ 1 ##.CommTools.AddAutomation'YesOrNo' 'Helpers@' 'Y'
  res←##.Tester2.EstablishHelpers #.TEMP
  →T.GoToTidyUp 0=≢res
  →T.GoToTidyUp 3≠≢#.TEMP.⎕NL 3

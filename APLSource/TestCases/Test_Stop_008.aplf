@@ -4,7 +4,7 @@
  r←T._Failed
 
  T2←⎕NEW ##.Tester2 TestCasesSimu
- ##.CommTools.Select_Choices←1 2⍴'WhereToStop@' 8
+ ##.CommTools.AddAutomation'Select' 'WhereToStop@' 8
 
  (rc log)←'?'T2.RunThese'Grouping'
  →T.PassesIf 0=rc

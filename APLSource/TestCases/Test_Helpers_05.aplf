@@ -1,5 +1,5 @@
- r←Test_Misc_18(debugFlag batchFlag);rc;list;tmp;expected;⎕TRAP;T2
-⍝ Exercise the `ListGroups` and the `ListTestFunctions` methods.
+ r←Test_Helpers_05(debugFlag batchFlag);rc;list;tmp;expected;⎕TRAP;T2
+⍝ Exercise the `ListTestFunctions` methods with wildcard argument
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
 
@@ -22,6 +22,5 @@
 ⍝ The tests
  →T.PassesIf(⊃⍴T2.ListTestFunctions'')=≢'T'tmp.⎕NL 3
  →T.PassesIf(+/'Test_Grp'{((≢⍺)↑[2]⍵)∧.=⍺}'T'tmp.⎕NL 3)=≢T2.ListTestFunctions'Grp*'
- →T.PassesIf 5=1↑⍴T2.ListGroups
 
  r←T._OK

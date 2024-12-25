@@ -5,7 +5,7 @@
 
  T2←⎕NEW ##.Tester2 TestCasesSimu
  #.⎕SHADOW'TEMP' ⋄ 'TEMP'#.⎕NS'' ⋄ #.TEMP.success←0
- ##.CommTools.Select_Choices←1 2⍴'WhereToStop@' 3
+ ##.CommTools.AddAutomation'Select' 'WhereToStop@' 3
 
  ⎕TRAP←(⊂1001 'E' '→PassesIf ∆stop_before_cleanup_2=⊃⎕lc ⋄ →⎕lc,#.TEMP.success←1'),⎕TRAP
  {}'?'T2.RunThese 1

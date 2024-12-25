@@ -1,0 +1,28 @@
+ r←Test_Helpers_07(debugFlag batchFlag);rc;list;tmp;⎕TRAP;T2;res
+⍝ Exercise the `ListTestFunctions` methods with multiple arguments and a left argument
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+⍝ Pre-conditions
+ tmp←⎕NS''
+ tmp.⎕FX'r←Test_001 (x y)' '   ⍝ Comment: Test_001' 'r←0'
+ tmp.⎕FX'r←Test_002 (x y)' '   ⍝ Comment: Test_002' 'r←0'
+ tmp.⎕FX'r←Test_003 (x y)' '   ⍝ Comment: Test_003' 'r←0'
+ tmp.⎕FX'r←Test_Grp1_001 (x y)' '   ⍝ Comment: Grp1_001' 'r←0'
+ tmp.⎕FX'r←Test_Grp1_002 (x y)' '   ⍝ Comment: Grp1_002' 'r←0'
+ tmp.⎕FX'r←Test_Grp1_003 (x y)' '   ⍝ Comment: Grp1_003' 'r←0'
+ tmp.⎕FX'r←Test_Grp2_001 (x y)' '   ⍝ Comment: Grp2_001' 'r←0'
+ tmp.⎕FX'r←Test_Grp2_002 (x y)' '   ⍝ Comment: Grp2_002' 'r←0'
+ tmp.⎕FX'r←Test_Grp3_AAA_001 (x y)' '   ⍝ Comment: Grp3_AAA_001' 'r←0'
+ tmp.⎕FX'r←Test_Grp3_AAA_002 (x y)' '   ⍝ Comment: Grp3_AAA_002' 'r←0'
+ tmp.⎕FX'r←Test_Grp3_BBB_001 (x y)' '   ⍝ Comment: Grp3_BBB_001' 'r←0'
+ tmp.⎕FX'r←Test_Grp4_CCC_001 (x y)' '   ⍝ Comment: Grp4_CCC_001' 'r←0'
+ tmp.⎕FX'r←Test_Foo_001 (x y)' '   ⍝ Comment: Foo_001' 'r←0'
+ tmp.⎕FX'r←Test_Foo_002 (x y)' '   ⍝ Comment: Foo_002' 'r←0'
+ T2←⎕NEW ##.Tester2 tmp
+
+ res←2 T2.ListTestFunctions'Foo*,Grp*'
+ →T.PassesIf∧/'Comment:'∘{⍺≡(≢⍺)↑⍵}¨res[;2]
+ →T.PassesIf 2∧.=⊃∘APLTreeUtils2.ToNum¨{⍵↑⍨-¯1+'_'⍳⍨⌽⍵}¨res[;1]
+
+ r←T._OK

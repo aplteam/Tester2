@@ -7,7 +7,7 @@
  #.⎕SHADOW'TEMP' ⋄ 'TEMP'#.⎕NS''
  #.TEMP.counter←0
  #.TEMP.labels←'∆stop_before_test' '∆stop_before_cleanup_1' '∆stop_before_cleanup_2'
- ##.CommTools.Select_Choices←1 2⍴'WhereToStop@' 5
+ ##.CommTools.AddAutomation'Select' 'WhereToStop@' 5
 
  ⎕TRAP←(⊂1001 'E' 'Assert (⊃⎕lc)∊{⍎¨(⎕nc ⍵)/⍵}#.TEMP.labels ⋄ #.TEMP.counter+←1 ⋄ →⎕lc'),⎕TRAP
  {}'?'T2.RunThese'Grouping'
