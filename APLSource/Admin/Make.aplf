@@ -1,4 +1,4 @@
- Make flag;M;C;path;zipFilename;res;version;cfg;parms;F
+ Make flag;M;C;path;zipFilename;res;cfg;parms;F
 ⍝ "Make" a new version of this project
  :If flag
      :If 0=⎕SE.⎕NC'MakeHelpers'
@@ -8,7 +8,7 @@
      C←##.CiderConfig ⋄ F←M.##.FilesAndDirs
      path←C.HOME,'/',C.CIDER.distributionFolder
      cfg←M.GetPackageCfg C.HOME
-     version←M.CompileVersionNumberPattern cfg
+     cfg←M.EditVersion cfg
      M.RecreateFolder path
      M.RecreateFolder C.HOME,'/html'
      M.ConvertMarkdownToHtml5 C.HOME∘,¨'/docs/' '/html/'
@@ -16,7 +16,7 @@
      path ⎕NCOPY C.HOME,'/html'
      parms←⎕SE.Tatin.CreateBuildParms C.HOME
      parms.targetPath←path
-     parms.version←version
+     parms.version←cfg.version
      zipFilename←⎕SE.Tatin.BuildPackage parms
      ⎕←'*** New version build successfully:',M.CR,'   ',zipFilename
  :EndIf
