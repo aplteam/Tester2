@@ -29,16 +29,18 @@
           r←(⎕JSON⍠('Dialect' 'JSON5')⊢##.TatinVars.CONFIG).version
       :Else
     ⍝ When a script is not loaded with Tatin, there will be no namespace `TatinVars`
-    ⍝ In such cases we cannot provide a version number, so we return an empty char vector
+    ⍝ In such cases we cannot provide a version number, so we return three empty char vectors
+    ⍝ for <name>, <version-number> and <version-date>
           r←'Tester2' '' ''
       :EndIf
-    ⍝Done
     ∇
 
     ∇ r←History
       :Access Public shared  
-      ⍝ * 3.11.1 ⋄ 2024-12-29
-      ⍝   Bug fix in `Version`: if for some strange reason it cannot find `TatinVars` it 
+      ⍝ * 3.11.1 ⋄ 2024-12-30
+      ⍝   Bug fixes
+      ⍝   * In `Version`: if for some strange reason it cannot find `TatinVars` it
+      ⍝   * Reports were intended to honour ⎕PW but got one char too long   
       ⍝   should return an empty vector rather than crashing. 
       ⍝ * 3.11.0 ⋄ 2024-12-25
       ⍝   * `ListTestFunctions` enhanced
@@ -801,7 +803,7 @@
     ∇ ProcessTestCases(ref ps);cw;max;noOf;length2;length;i;testFns;currentGroup;testNo;continueFlag;rc;comment;desc;marker
       cw←≢max←⍕noOf←≢ps.list
       length←2+⌈/≢¨ps.list
-      length2←length+≢'(',max,'/',max,')  '
+      length2←¯1+length+≢'(',max,'/',max,')  '
       :If ps.guiFlag
           :If 0<≢ps.list
               ps.ref2Gui.∆n.Grid.Values←(noOf,1↓⍴ps.ref2Gui.∆n.Grid.Values)⍴ps.ref2Gui.∆n.Grid.Values
