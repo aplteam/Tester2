@@ -20,6 +20,7 @@
     ⎕IO←1 ⋄ ⎕ML←1
 
     ∇ r←Version
+      :Access Public shared
     ⍝ Returns the version number from TatinVars (if we can)
     ⍝ See also `History`
       r←''
@@ -36,12 +37,12 @@
     ∇
 
     ∇ r←History
-      :Access Public shared  
+      :Access Public shared
       ⍝ * 3.11.1 ⋄ 2024-12-30
       ⍝   Bug fixes
       ⍝   * In `Version`: if for some strange reason it cannot find `TatinVars` it
-      ⍝   * Reports were intended to honour ⎕PW but got one char too long   
-      ⍝   should return an empty vector rather than crashing. 
+      ⍝   * Reports were intended to honour ⎕PW but got one char too long
+      ⍝   should return an empty vector rather than crashing.
       ⍝ * 3.11.0 ⋄ 2024-12-25
       ⍝   * `ListTestFunctions` enhanced
       ⍝   * `Version` extracts the version number now from the package config file
