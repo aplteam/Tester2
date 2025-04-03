@@ -19,29 +19,29 @@
 
     ⎕IO←1 ⋄ ⎕ML←1
 
-    ∇ r←Version;buff
+
+    ∇ r←Version
       :Access Public shared
-    ⍝ Returns the version number from TatinVars (if we can)
+    ⍝ Returns the version number from `TatinVars` if possible.
     ⍝ See also `History`
       :If 0<⎕NC'TatinVars.CONFIG'
-          buff←(⎕JSON⍠('Dialect' 'JSON5')⊢TatinVars.CONFIG).version
+          r←(⎕JSON⍠('Dialect' 'JSON5')⊢TatinVars.CONFIG).version
       :ElseIf 0<##.⎕NC'TatinVars.CONFIG'
-          buff←(⎕JSON⍠('Dialect' 'JSON5')⊢##.TatinVars.CONFIG).version
+          r←(⎕JSON⍠('Dialect' 'JSON5')⊢##.TatinVars.CONFIG).version
       :Else
-    ⍝ When a script is not loaded with Tatin, there will be no namespace `TatinVars`
-    ⍝ In such cases we cannot provide a version number.
-          buff←''
+    ⍝ When a script was not loaded with Tatin, there will be no namespace `TatinVars`.
+    ⍝ In such cases we cannot provide a version number, so we return just ''.
+          r←''
       :EndIf
-    ⍝ Originally this was <name>, <vVersion-numer>, <version-date>
-    ⍝ We cannot provide the version date anymore        
-      r←'Tester2' buff ''
     ∇
 
     ∇ r←History
       :Access Public shared
+      ⍝ * 4.0.0 ⋄ 2025-04-03
+      ⍝   * Potenially breaking change: `Version` now returns the package config version number as a char vector
       ⍝ * 3.11.1 ⋄ 2024-12-30
       ⍝   Bug fixes
-      ⍝   * In `Version`: if for some reason it cannot find `TatinVars` it should return 
+      ⍝   * In `Version`: if for some reason it cannot find `TatinVars` it should return
       ⍝     an empty vector for the version number rather than crashing.
       ⍝   * Reports were intended to honour ⎕PW but got one char too long
       ⍝ * 3.11.0 ⋄ 2024-12-25
