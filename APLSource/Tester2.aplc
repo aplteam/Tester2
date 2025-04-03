@@ -20,7 +20,7 @@
     ⎕IO←1 ⋄ ⎕ML←1
 
 
-    ∇ r←Version
+    ∇ r←Version;ref
       :Access Public shared
     ⍝ Returns the version number from `TatinVars` if possible.
     ⍝ See also `History`
@@ -31,7 +31,13 @@
       :Else
     ⍝ When a script was not loaded with Tatin, there will be no namespace `TatinVars`.
     ⍝ In such cases we cannot provide a version number, so we return just ''.
-          r←''
+          :If '#.Tester2.TestCases.'{⍺≡(≢⍺)↑⍵}⍕⎕THIS
+              ⍝ Runs in its own testcases, and therefore won't find the correct function without help
+              ref←⊃⊃⎕CLASS ⎕THIS
+              r←ref.Version
+          :Else
+              r←''
+          :EndIf
       :EndIf
     ∇
 
@@ -39,6 +45,8 @@
       :Access Public shared
       ⍝ * 4.0.0 ⋄ 2025-04-03
       ⍝   * Potenially breaking change: `Version` now returns the package config version number as a char vector
+      ⍝   * Packages updated
+      ⍝   * `Make` improved
       ⍝ * 3.11.1 ⋄ 2024-12-30
       ⍝   Bug fixes
       ⍝   * In `Version`: if for some reason it cannot find `TatinVars` it should return
@@ -489,7 +497,7 @@
       :If ps.guiFlag
           _parms.ref2Gui←ps.ref2Gui←ps CreateGui ⍬
       :EndIf
-      ShowLog{'--- Test framework "Tester2" version ',(2⊃⍵),' ----'}Version
+      ShowLog{'--- Test framework "Tester2" version ',⍵,' ----'}Version
       _ref←ProcessIniFiles _ref ps
       ps.returnCodes←⍬
       initialFlag←0 ⍝ Tells whether `Initial was executed or not
@@ -1308,6 +1316,9 @@
           :If 0<ref.⎕NC'stopFlag'
           :AndIf 0=ref.⎕NC'debugFlag'
               flag2←ref.stopFlag
+          :ElseIf 0<ref.⎕NC'stop'
+          :AndIf 0=ref.⎕NC'debugFlag'
+              flag2←ref.stop
           :Else
               flag2←ref.debugFlag
           :EndIf
@@ -1331,6 +1342,9 @@
       :If 0<ref.⎕NC'stopFlag'
       :AndIf 0=ref.⎕NC'debugFlag'
           flag2←ref.stopFlag
+      :ElseIf 0<ref.⎕NC'stop'
+      :AndIf 0=ref.⎕NC'debugFlag'
+          flag2←ref.stop
       :Else
           flag2←ref.debugFlag
       :EndIf

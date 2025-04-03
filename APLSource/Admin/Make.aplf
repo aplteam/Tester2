@@ -1,23 +1,23 @@
- Make flag;M;C;path;zipFilename;res;cfg;parms;F
-⍝ "Make" a new version of this project
+ Make flag;M;C;path;zipFilename;res;parms;cfg
+⍝ "Make" a new version of this projects
  :If flag
      :If 0=⎕SE.⎕NC'MakeHelpers'
          {}⎕SE.Tatin.LoadPackages'[tatin]MakeHelpers'⎕SE
      :EndIf
      M←⎕SE.MakeHelpers
-     C←##.CiderConfig ⋄ F←M.##.FilesAndDirs
+     C←##.CiderConfig
+     ⎕←'' ⋄ 0 0⍴⍞,0/⍞←'Pause sync services like Dropbox, Google Drive etc. in order to avoid FILE ACCESS errors. Press <enter> to continue '
+     :If ⎕NULL≡cfg←M.EditPackageConfigFile C.HOME
+         ⎕←'Cancelled by user' ⋄ →0
+     :EndIf
      path←C.HOME,'/',C.CIDER.distributionFolder
-     cfg←M.GetPackageCfg C.HOME
-     cfg←M.EditVersion cfg
      M.RecreateFolder path
-     M.RecreateFolder C.HOME,'/html'
      M.ConvertMarkdownToHtml5 C.HOME∘,¨'/docs/' '/html/'
-     (C.HOME,'/html/')∘{⍺ ⎕NCOPY ⍵}¨F.ListFiles C.HOME,'/docs/*.png'
+     (C.HOME,'/html/')∘{⍺ ⎕NCOPY⍠('IfExists' 'Replace')⊢⍵}¨M.##.F.ListFiles C.HOME,'/docs/*.png'
      path ⎕NCOPY C.HOME,'/html'
      parms←⎕SE.Tatin.CreateBuildParms C.HOME
-     parms.targetPath←path
+     parms.targetPath←C.CIDER.distributionFolder
      parms.version←cfg.version
      zipFilename←⎕SE.Tatin.BuildPackage parms
      ⎕←'*** New version build successfully:',M.CR,'   ',zipFilename
  :EndIf
- ⍝Done

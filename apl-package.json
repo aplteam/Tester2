@@ -19,5 +19,5 @@
   source: "APLSource/Tester2.aplc",
   tags: "test,test-framework",
   userCommandScript: "",
-  version: "3.11.1+52",
+  version: "4.0.0+54",
 }
