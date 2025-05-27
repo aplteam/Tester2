@@ -42,7 +42,9 @@
     ∇
 
     ∇ r←History
-      :Access Public shared
+      :Access Public shared 
+      ⍝ * 4.1.0 ⋄ 2025-05-27
+      ⍝   * Dependencies updated (FilesAndDirs) 
       ⍝ * 4.0.0 ⋄ 2025-04-03
       ⍝   * Potenially breaking change: `Version` now returns the package config version number as a char vector
       ⍝   * Packages updated
