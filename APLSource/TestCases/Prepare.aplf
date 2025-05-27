@@ -6,7 +6,12 @@
 ⍝ user wants to do code coverage with the `CodeCoverage` class.
  ⎕IO←1 ⋄ ⎕ML←1
  T←⎕NEW ##.Tester2 ⎕THIS
- testPath←##.CiderConfig.HOME,'/TestResults'
+ :If 0<##.⎕NC'CiderConfig.HOME'
+     testPath←##.CiderConfig.HOME,'/TestResults'
+ :Else
+     testPath←FilesAndDirs.PWD,'/TestResults'
+ :EndIf
+ ('Required folder not found: ',testPath)Assert FilesAndDirs.IsDir testPath
  testFilename←testPath,'/CodeCoverage'
  flag←0
  :If ⎕NEXISTS testPath
