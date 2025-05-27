@@ -1338,7 +1338,7 @@
     ∇
 
     ∇ r←{label}GoToTidyUp flag;ref;flag2
-⍝ Returns either an empty vector or `label, which defaults to `∆TidyUp`.\\
+⍝ Returns either an empty vector or `label`, which defaults to `∆TidyUp`.\\
 ⍝ Signals 999 when `flag` is 1 and `debugFlag` is 1.
       :Access Public Instance
       ⎕EX'∆FAILING_LINE'
@@ -1461,9 +1461,9 @@
     ∇
 
     ∇ r←ListGroups
-  ⍝ Returns all groups as a two-column matrix.
-  ⍝ The first column carries the group name.
-  ⍝ The second column carries the number of test cases within that group.
+  ⍝ Returns all groups as a two-column matrix:\\
+  ⍝ * `[;1]` carries the group name.
+  ⍝ * `[;2]` carries the number of test cases within that group.
       :Access Public Instance
       r←' '~¨⍨↓'Test_'{⍵⌿⍨((≢⍺)↑[2]⍵)∧.=⍺}'T'_ref.⎕NL 3
       :If 0≠≢r←(2≤'_'+.=⍉↑r)⌿r
@@ -1508,7 +1508,9 @@
     ∇ r←{currentVersion}AtLeastVersion min;currentVersion
       ⍝ Returns 1 if the currently running version is at least `min`.
       ⍝ If the current version is 17.1 then:
+      ⍝ ```
       ⍝ 0 0 1 1 ←→ AtLeastVersion¨16 17 17.1 18
+      ⍝ ```
       :Access Public Instance
       currentVersion←{0<⎕NC ⍵:⍎⍵ ⋄ {⊃⊃(//)⎕VFI ⍵/⍨2>+\⍵='.'}2⊃'#'⎕WG'APLVersion'}'currentVersion'
       'Right argument must be length 1'Assert 1=≢min
@@ -1517,7 +1519,7 @@
     ∇
 
     ∇ r←{target}FindSpecialString what
-    ⍝ Use this to search for stuff like "CHECK" or "TODO" enclosed between lamps `⍝`.
+    ⍝ Use this to search for stuff like "CHECK" or "TODO" enclosed between lamps (`⍝`).
     ⍝ Without left argument the search starts in `_ref`.
       :Access Public Instance
       target←{0<⎕NC ⍵:⍎⍵ ⋄ ⍕_ref}'target'
