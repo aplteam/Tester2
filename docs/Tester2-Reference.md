@@ -21,7 +21,7 @@ You are likely to find the framework flexible enough to suit your own needs when
 
 Depending on how the Test framework is used it might or might not present a GUI. Note that the GUI is a Windows-only feature although in all other respects, `Tester2` works on all platforms; if you decide to avoid the GUI, messages are printed to the Dyalog session window.
 
-The GUI was mainly introduced for `Tester2`'s own sake: `Tester2` is used to test itself, and when used without the GUI the messages printed to the session are confusing then, while the GUI gives you proper feedback even in that scenario.
+The GUI was mainly introduced for `Tester2`'s own sake: `Tester2` is used to test itself, and when used without the GUI the messages printed to the session are pretty confusing, while the GUI gives you proper feedback even in that scenario.
 
 Note that executing a large test suite with the GUI is significantly slower than doing the same without the GUI.
 
@@ -80,9 +80,7 @@ Note that all `Run*` functions return a two-element vector:
 
 A reference pointing to the GUI is assigned internally. That's why the GUI does not disappear straight away after all test cases have been executed. To get rid of it either click the "Close" box or call the `T.CloseGUI` method which does not require an argument.
 
-
 ## Details 
-
 
 ### Terminology
 
@@ -91,7 +89,7 @@ Note that test cases causing a crash are considered "broken". Test cases that do
 
 ### Assumptions and preconditions
 
-1. The `#.Tester2` class assumes that all your tests are hosted in a namespace. It may be an ordinary (recommended) or a scripted namespace, but it **_must not_** be an unnamed namespace. 
+1. The `Tester2` class assumes that all your tests are hosted in a namespace. It may be an ordinary (recommended) or a scripted namespace, but it **_must not_** be an unnamed namespace. 
 
 1. You must create an instance of the `Tester2` class to do anything useful. 
 
@@ -411,7 +409,7 @@ You may combine stops; for example, to make `Tester2` stop on every `Initial`, e
 
 Any other combination (3, 5, 6) is valid as well.
 
-#### I can't remember the numbers!
+#### I can't recall the numbers!
 
 In case the tests are called by a user (rather than a batch process), you can also specify a "?" as `stop`. That makes the test suite offer all options in a list. You can then simply select the options you are interested in:
 
@@ -845,6 +843,7 @@ If there is already a group "Misc" then numbering would start with the highest p
 * It might be a good idea for _all_ test functions to tidy up first, just in case this test case has failed earlier and left some debris behind.
 
 * It's common practice to implement a test case for every bug, for bugs tend to make comebacks; such tests prevent that from happening.
+
 
 
 

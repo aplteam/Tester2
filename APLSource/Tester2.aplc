@@ -19,7 +19,6 @@
 
     ⎕IO←1 ⋄ ⎕ML←1
 
-
     ∇ r←Version;ref
       :Access Public shared
     ⍝ Returns the version number from `TatinVars` if possible.
@@ -1635,7 +1634,7 @@
       :EndIf
     ∇
 
-    ∇ {r}←{groupName}GetTestTemplate no;newName;body;cl
+    ∇ {r}←{groupName}GetTestTemplate no;newName;body;cl;buff;bool
       :Access Public Instance
       ⍝ Injects the code (body) of the test template function into the namespace hosting the test cases if that is an
       ⍝ ordinary namespace. If it is a scripted one the user will be prompted for copying the body to the clipboard.
@@ -1665,11 +1664,18 @@
           :If 1 YesOrNo'Cannot fix function in  a script; shall the body be copied to the clipboard?'
               'cl'⎕WC'Clipboard'
               cl.Text←2↓⊃,/(⊂CRLF),¨body
+              :Return
           :Else
-              ⎕←'No action taken'
+              ⎕←'No action taken' ⋄ →0
           :EndIf
       :Else
           _ref.⎕FX body
+      :EndIf
+      buff←⎕SE.Link.Status¨1↓{{⍺,'.',⍵}/¨(⍳≢⍵)↑¨⊂⍵}{'.'(≠⊆⊢)⍕⍵}⍕_ref
+      bool←~∨/¨'No active links in '∘⍷∘∊¨buff
+      :If ∨/bool
+          ⎕←'You might want to tell Link:'
+          ⎕←']Link.Add ',(⍕_ref),'.',newName
       :EndIf
     ∇
 
