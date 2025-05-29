@@ -1691,17 +1691,21 @@
           ref←⊃⎕RSI
       :EndIf
       'Cannot establish helpers in class instances/unnamed namespaces'Assert~'['∊⍕ref
-      :If force
-      :OrIf YesOrNo'Helpers@Sure you wanna establish three helpers "Prepare", "RunTests" & "RunTestsInBatchMode" in ',(⍕ref),' ?'
-          res←ref.⎕FX ⎕CR'Prepare'
-          ('Fixing helper "Prepare" in ',(⍕ref),' failed on line(s) ',⍕res)Assert' '=1↑0⍴res
-          res←ref.⎕FX ⎕CR'RunTests'
-          ('Fixing helper "RunTests" in ',(⍕ref),' failed on line(s) ',⍕res)Assert' '=1↑0⍴res
-          res←ref.⎕FX ⎕CR'RunTestsInBatchMode'
-          ('Fixing helper "RunBatchTests" in ',(⍕ref),' failed on line(s) ',⍕res)Assert' '=1↑0⍴res
-          r←(~force)/'"Prepare", "RunTests" & "RunTestsInBatchMode" successfully established in ',⍕ref
-          r,←CR,'⍝ You might want to inform Link:'
-          r,←CR,'⍝ ⎕SE.Link.Add ',⊃,/('''','.',⍨⍕ref)∘,¨'Prepare'' ' 'RunTests'' ' 'RunTestsInBatchMode'' '
+      :If 3=+/ref.⎕NC↑'Prepare' 'RunTests' 'RunTestsInBatchMode'
+          ⎕←'Prepare, RunTests and RunTestsInBatchMode are all already established in ',⍕ref
+      :Else
+          :If force
+          :OrIf YesOrNo'Helpers@Sure you wanna establish three helpers "Prepare", "RunTests" & "RunTestsInBatchMode" in ',(⍕ref),' ?'
+              res←ref.⎕FX ⎕CR'Prepare'
+              ('Fixing helper "Prepare" in ',(⍕ref),' failed on line(s) ',⍕res)Assert' '=1↑0⍴res
+              res←ref.⎕FX ⎕CR'RunTests'
+              ('Fixing helper "RunTests" in ',(⍕ref),' failed on line(s) ',⍕res)Assert' '=1↑0⍴res
+              res←ref.⎕FX ⎕CR'RunTestsInBatchMode'
+              ('Fixing helper "RunBatchTests" in ',(⍕ref),' failed on line(s) ',⍕res)Assert' '=1↑0⍴res
+              r←(~force)/'"Prepare", "RunTests" & "RunTestsInBatchMode" successfully established in ',⍕ref
+              r,←CR,'⍝ You might want to inform Link:'
+              r,←CR,'⍝ ⎕SE.Link.Add ',⊃,/('''','.',⍨⍕ref)∘,¨'Prepare'' ' 'RunTests'' ' 'RunTestsInBatchMode'' '
+          :EndIf
       :EndIf
     ∇
 
