@@ -42,10 +42,16 @@
 
     ∇ r←History
       :Access Public shared
-      ⍝ * 4.1.0 ⋄ 2025-05-27
-      ⍝   * Dependencies updated (FilesAndDirs)
+      ⍝ * 4.1.0 ⋄ 2025-05-30  
+      ⍝   * `EstablishHelpers` now prints a `]Link.Add` statement to the session when appropriate
+      ⍝   * `EstablishHelpers` does not do anything anymore in case the helpers are already established
+      ⍝   * `GetTestTemplate` now prints a `]Link.Add` statement to the session when appropriate
+      ⍝   * Dependencies updated (FilesAndDirs)       
       ⍝   * Bug fixes
-      ⍝     * `TestCases.Prepare` did not work without `Tester2` being opened as a Cider project
+      ⍝     * `Prepare` did not work without `Tester2` being opened as a Cider project
+      ⍝     * `Prepare` does not ask for code coverage reports when the CodeCoverage class is not around
+      ⍝     * The documentation did not embedd the CSS
+      ⍝     * Some minor issues fixed in the documentation
       ⍝ * 4.0.0 ⋄ 2025-04-03
       ⍝   * Potenially breaking change: `Version` now returns the package config version number as a char vector
       ⍝   * Packages updated
@@ -1634,7 +1640,7 @@
       :EndIf
     ∇
 
-    ∇ {r}←{groupName}GetTestTemplate no;newName;body;cl;buff;bool
+    ∇ {r}←{groupName}GetTestTemplate no;newName;body;cl
       :Access Public Instance
       ⍝ Injects the code (body) of the test template function into the namespace hosting the test cases if that is an
       ⍝ ordinary namespace. If it is a scripted one the user will be prompted for copying the body to the clipboard.
@@ -1671,9 +1677,7 @@
       :Else
           _ref.⎕FX body
       :EndIf
-      buff←⎕SE.Link.Status¨1↓{{⍺,'.',⍵}/¨(⍳≢⍵)↑¨⊂⍵}{'.'(≠⊆⊢)⍕⍵}⍕_ref
-      bool←~∨/¨'No active links in '∘⍷∘∊¨buff
-      :If ∨/bool
+      :If ∨/IsLinked _ref
           ⎕←'You might want to tell Link:'
           ⎕←']Link.Add ',(⍕_ref),'.',newName
       :EndIf
@@ -1705,6 +1709,10 @@
               r←(~force)/'"Prepare", "RunTests" & "RunTestsInBatchMode" successfully established in ',⍕ref
               r,←CR,'⍝ You might want to inform Link:'
               r,←CR,'⍝ ⎕SE.Link.Add ',⊃,/('''','.',⍨⍕ref)∘,¨'Prepare'' ' 'RunTests'' ' 'RunTestsInBatchMode'' '
+          :EndIf
+          :If IsLinked ref
+              ⎕←'You might want to tell Link:'
+              ⎕←']Link.Add ',⊃,/(⊂⍕ref),¨'.Prepare ' '.RunTests ' '.RunTestsInBatchMode'
           :EndIf
       :EndIf
     ∇
@@ -1931,6 +1939,11 @@
       r←⎕UCS 13 10
     ∇
 
+    ∇ r←IsLinked ref;buff
+      buff←⎕SE.Link.Status¨1↓{{⍺,'.',⍵}/¨(⍳≢⍵)↑¨⊂⍵}{'.'(≠⊆⊢)⍕⍵}⍕ref
+      r←∨/~∨/¨'No active links in '∘⍷∘∊¨buff
+    ∇
+
     :Section Helpers
     ∇ Prepare;testPath;testFilename;ask;answer;options;flag;ind
 ⍝ Creates an instance of the class `Tester2` named `T` and configures it for
@@ -1943,7 +1956,8 @@
       testPath←##.CiderConfig.HOME,'/TestResults'
       testFilename←testPath,'/CodeCoverage'
       flag←0
-      :If ⎕NEXISTS testPath
+      :If 9=⎕NC'CodeCoverage'
+      :AndIf ⎕NEXISTS testPath
           :If ⎕NEXISTS testFilename,'.profile'
               ind←('Code Coverage' 0 1)CommTools.Select'Append' 'Replace' 'Neither'
               →(3=ind)/0

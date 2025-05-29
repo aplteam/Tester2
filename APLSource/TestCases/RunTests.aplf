@@ -1,14 +1,11 @@
- RunTests;htmlFilename;parms;option
-⍝ Note that Tester2's test cases MUST be run from the GUI for technical reasons.
-⍝ It's also the only way to be able to follow the stream of tests since Tester2 tests itself.
+ RunTests;htmlFilename;verbose;option
+⍝ 1. Prepares the test framework
+⍝ 2. Runs all test cases
+⍝ 3. Processes the code coverage data (if collected)
+⍝ 4. Asks the user whether the code coverage report should be put on view
  Prepare
- parms←T.CreateParms ⍬
- parms.debugFlag←1
- parms.trapFlag←0
- parms.guiFlag←1
- parms T.RunGUI''
+ T.Run 1
  :If 0<≢T.codeCoverage
- :AndIf FilesAndDirs.IsFile T.codeCoverage.filename
      {}CodeCoverage.ProcessData T.codeCoverage.filename
      option←'Type of code coverage report' 0 1 CommTools.Select'Overview' 'Verbose' 'None'
      :If 3>option
