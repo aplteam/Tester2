@@ -27,3 +27,4 @@
 
 This feature set makes `Tester2` an effective tool for testing in various scenarios, especially in projects where test case management and execution flexibility are crucial. 
 
+An [exhaustive documentation](html/Tester2-Reference.html) is available.
