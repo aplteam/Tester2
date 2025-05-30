@@ -11,6 +11,7 @@
  was←⎕NS #.Tester2.TatinVars    ⍝ Take a copy
  #.Tester2.⎕EX'TatinVars'       ⍝ Delete it
  res←##.Tester2.Version         ⍝ Run "Version"
-  →T.PassesIf ''≡res
+ →T.PassesIf res≡''
+ #.Tester2.TatinVars←was        ⍝ Restore
 
  r←T._OK

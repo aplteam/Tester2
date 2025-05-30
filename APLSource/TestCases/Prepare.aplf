@@ -5,7 +5,7 @@
 ⍝ As a side effect is creates a folder "TestResults" in the project's root folder if the
 ⍝ user wants to do code coverage with the `CodeCoverage` class.
  ⎕IO←1 ⋄ ⎕ML←1
- T←⎕NEW Tester2 ⎕THIS
+ T←⎕NEW ##.Tester2 ⎕THIS
  testPath←##.CiderConfig.HOME,'/TestResults'
  testFilename←testPath,'/CodeCoverage'
  flag←0

@@ -875,7 +875,6 @@
               :EndIf
               ps AddReturnCodeToGrid rc i
               comment←2↓ref GetFirstCommentLine testFns
-               ⍝TODO⍝ desc←(⎕PW-length2){⍺<≢⍵:'...',⍨⍵↑⍨⍺-4 ⋄ ⍵}⍣(~ps.guiFlag)⊢comment
               desc←⊢comment
               :If rc∊0 1
                   marker←('*✓'[1+rc=0])
@@ -902,7 +901,6 @@
               ps.errCounter+←1
               ps.totalCounter+←1
               comment←2↓ref GetFirstCommentLine testFns
-               ⍝TODO⍝ desc←(⎕PW-length2){⍺<≢⍵:'...',⍨⍵↑⍨⍺-4 ⋄ ⍵}⍣(~ps.guiFlag)⊢comment
               desc←⊢comment
               marker←'#'
               ¯2 ShowLog marker' ',desc
