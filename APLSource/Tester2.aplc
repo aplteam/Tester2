@@ -52,6 +52,7 @@
       ⍝     * `Prepare` does not ask for code coverage reports when the CodeCoverage class is not around
       ⍝     * The documentation did not embedd the CSS
       ⍝     * Some minor issues fixed in the documentation
+      ⍝     * Assigning a custom return code could crash `Tester2.ReportTestResults`
       ⍝ * 4.0.0 ⋄ 2025-04-03
       ⍝   * Potenially breaking change: `Version` now returns the package config version number as a char vector
       ⍝   * Packages updated
@@ -950,7 +951,7 @@
               :AndIf 0<≢comment
               :AndIf 0<noOf←ps.returnCodes+.=-⊃(//)⎕VFI(≢'_custom_')↓constant
                   log,←⊂'  ',(⍕noOf),' test cases not executed because of "',comment,'" (flagged with "⍝")'
-              :ElseIf 0<noOf←ps.returnCodes+.=⍎constant
+              :ElseIf 0<noOf←+/ps.returnCodes∊⍎constant
                   log,←⊂'  ',(⍕noOf),' test cases not executed because of "',(1↓constant),'" (flagged with "⍝")'
               :EndIf
           :EndFor

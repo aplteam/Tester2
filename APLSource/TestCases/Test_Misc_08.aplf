@@ -1,0 +1,18 @@
+ r←Test_Misc_08(debugFlag batchFlag);⎕TRAP;A;tmp;rc;log
+⍝ Exercise the `RunThese` method with a custom return code
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ A←APLTreeUtils2
+
+⍝ Pre-conditions
+ tmp←⎕NS''
+ tmp.⎕FX'r←Test_001 (x y);⎕TRAP' '   ⍝ This and that' 'r←0'
+ tmp.T←⎕NEW ##.Tester2 tmp
+ tmp.T.custom_1←'Nested scripts are not supported'
+
+⍝ The test
+ (rc log)←tmp.T.RunThese 1
+ →T.FailsIf rc≠0
+
+ r←T._OK
