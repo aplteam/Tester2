@@ -9,6 +9,6 @@
  names←∆GetDetails log
  noOf←≢T2.ListTestFunctions'Gr*'                 ⍝ 1 test explicitly defined and 1 suppressed: they cancel each other out
  noOf+←1   ⍝ Plus 1 for "Initial_Grouping"
- →T.PassesIf noOf=≢names
+ →T.PassesIf noOf=≢(~∨/¨'Looking for a group'∘⍷¨names)/names
 
  r←T._OK

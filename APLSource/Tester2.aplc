@@ -42,11 +42,18 @@
 
     ∇ r←History
       :Access Public shared
-      ⍝ * 4.1.0 ⋄ 2025-05-30  
+      ⍝ * 4.2.0 ⋄ 2025-06-05
+      ⍝   * `Cleanup` (as well as group-specific `Cleanup` functions) may now return a (optional) boolean indicating success (1) or failure (0).\\
+      ⍝      (Up to version 4.2 a result, if any, was ignored.
+      ⍝   * The reports on `Cleanup` and `Cleanup_<group>` is now more precise
+      ⍝   * `Cleanup` and `Cleanup_<group>` are now executed under :Trap. Problems are reported in the log rather than crashing the test suite.  
+      ⍝   * Bug fixes
+      ⍝     * The message concerning the "Cleanup" function repeated "found and executed" twice
+      ⍝ * 4.1.0 ⋄ 2025-05-30
       ⍝   * `EstablishHelpers` now prints a `]Link.Add` statement to the session when appropriate
       ⍝   * `EstablishHelpers` does not do anything anymore in case the helpers are already established
       ⍝   * `GetTestTemplate` now prints a `]Link.Add` statement to the session when appropriate
-      ⍝   * Dependencies updated (FilesAndDirs)       
+      ⍝   * Dependencies updated (FilesAndDirs)
       ⍝   * Bug fixes
       ⍝     * `Prepare` did not work without `Tester2` being opened as a Cider project
       ⍝     * `Prepare` does not ask for code coverage reports when the CodeCoverage class is not around
@@ -962,7 +969,7 @@
       rc←0<ps.failedCounter+ps.errCounter
     ∇
 
-    ∇ {r}←ExecuteCleanup(ref ps);report
+    ∇ {r}←ExecuteCleanup(ref ps);report;resultFlag;rc
       r←⍬
       report←'Looking for a function "Cleanup": '
       :If 3=ref.⎕NC'Cleanup'
@@ -971,15 +978,31 @@
           :Else
               ((⎕STOP 1⊃⎕SI)~∆stop_before_cleanup_1 ∆stop_before_cleanup_2)⎕STOP 1⊃⎕SI
           :EndIf
-          :If 0=1 2⊃ref.⎕AT'Cleanup'
+          resultFlag←1 1⊃ref.⎕AT'Cleanup'
+          rc←¯1 ⍝ Undefined
+          :Trap 0
+              :If 0=1 2⊃ref.⎕AT'Cleanup'
      ∆stop_before_cleanup_1:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
-              ref.Cleanup
-              report,←'found and executed'
-          :Else
+                  ⍎(resultFlag/'rc←'),'ref.Cleanup'
+              :Else
      ∆stop_before_cleanup_2:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
-              ref.Cleanup ps
-          :EndIf
-          report,←' found and executed successfully'
+                  ⍎(resultFlag/'rc←'),'ref.Cleanup ps'
+              :EndIf
+          :Else
+              report,←' found but crashed (',⎕DMX.EM,')'
+              ShowLog report
+              :Return
+          :EndTrap
+          :Select ⊃rc
+          :Case ¯1
+              report,←' found and executed'
+          :Case 1
+              report,←' found and executed successfully'
+          :Case 0
+              report,←' found and executed but indicated failure by its result'
+          :Else
+              report,←' found and executed but returned an invalid result'
+          :EndSelect
       :Else
           report,←'not found'
       :EndIf
@@ -1890,9 +1913,10 @@
       :EndIf
     ∇
 
-    ∇ {r}←HandleCleanup(ref ps currentGroup i);at
+    ∇ {r}←HandleCleanup(ref ps currentGroup i);at;rc;resultFlag;report
       r←0
       currentGroup←Remove∆Test_ currentGroup
+      report←'Looking for a group function "Cleanup_',currentGroup,'": '
       :If i=≢ps.list                                                            ⍝ Last one?
       :OrIf currentGroup{0=≢⍺:0 ⋄ ⍺≢Remove∆Test_ GetGroupName(i+1)⊃⍵}ps.list    ⍝ Group change?!
           :If 3=ref.⎕NC'Cleanup_',currentGroup
@@ -1901,15 +1925,30 @@
               :Else
                   ((⎕STOP 1⊃⎕SI)~,∆stop_before_cleanup_1,∆stop_before_cleanup_2)⎕STOP 1⊃⎕SI
               :EndIf
+              rc←¯1  ⍝ Undefined
               at←1⊃ref.⎕AT'Cleanup_',currentGroup
+              resultFlag←1=|1⊃at
               :If (2⊃at)∊1 ¯2                                                   ⍝ Accepts a right argument (1=monadic, ¯2=ambivalent)?
      ∆stop_before_cleanup_1:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
-                  ps ref.{6::1 ⋄ ⍎⍵,' ⍺'}'Cleanup_',currentGroup
+                  ⍎(resultFlag/'rc←'),'ref.Cleanup_',currentGroup,' ps'
               :Else
      ∆stop_before_cleanup_2:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
-                  ref.⍎'Cleanup_',currentGroup
+                  ⍎(resultFlag/'rc←'),'ref.Cleanup_',currentGroup
               :EndIf
+              :Select rc
+              :Case ¯1
+                  report,←' found and executed'
+              :Case 0
+                  report,←' found and executed successfully'
+              :Case 1
+                  report,←' found and executed but indicated failure by its result'
+              :Else
+                  report,←' found and executed but returned an invalid result'
+              :EndSelect
+          :Else
+              report,←'not found'
           :EndIf
+          ShowLog report
       :EndIf
     ∇
 

@@ -358,9 +358,14 @@ Now the test cases are executed one by one, or, if groups are defined, one group
 
 After the last test case was executed, the `Run*` function checks whether there is a function `Cleanup` in the namespace hosting your test cases. If that's the case, then this function is executed. 
 
-Any `Cleanup` function should either return a shy result (which will be ignored) or no result at all. It might accept a right argument, but this is optional: it might as well be niladic. If it _does_ accept a right argument it will get the parameter namespace passed.
+~~Any `Cleanup` function should either return a shy result (which will be ignored) or no result at all.~~ Starting with version 4.2, a `Cleanup` function may or may not return a Boolean result with 1 indicating success. This has an effect only on the log.
 
-Note that a function `Cleanup` would be executed no matter whether there was or was not a function `Initial`, and if there was, no matter whether it returned a 0 or a 1 or nothing at all.
+It might accept a right argument, but this is optional: it might as well be niladic. If it _does_ accept a right argument it will get the parameter namespace passed.
+
+Notes
+
+* A function `Cleanup` is be executed no matter whether there was or was not a function `Initial`, and if there was, no matter whether it returned a 0 or a 1 or nothing at all.
+* Cleanup functions are executed under error trapping, and any crashes are noted in the log, but the test suite carries on (from version 4.2 onwards)
 
 ### Cleaning up for groups
 
@@ -844,6 +849,8 @@ If there is already a group "Misc" then numbering would start with the highest p
 * It might be a good idea for _all_ test functions to tidy up first, just in case this test case has failed earlier and left some debris behind.
 
 * It's common practice to implement a test case for every bug, for bugs tend to make comebacks; such tests prevent that from happening.
+
+
 
 
 

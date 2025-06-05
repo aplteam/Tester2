@@ -431,8 +431,13 @@ RunThese 'G*,~GP'        ⍝ Everything that starts with "G" except "GP"</code><
 </a>
 </div>
 <p>After the last test case was executed, the <code>Run*</code> function checks whether there is a function <code>Cleanup</code> in the namespace hosting your test cases. If that's the case, then this function is executed.</p>
-<p>Any <code>Cleanup</code> function should either return a shy result (which will be ignored) or no result at all. It might accept a right argument, but this is optional: it might as well be niladic. If it <em>does</em> accept a right argument it will get the parameter namespace passed.</p>
-<p>Note that a function <code>Cleanup</code> would be executed no matter whether there was or was not a function <code>Initial</code>, and if there was, no matter whether it returned a 0 or a 1 or nothing at all.</p>
+<p><del>Any <code>Cleanup</code> function should either return a shy result (which will be ignored) or no result at all.</del> Starting with version 4.2, a <code>Cleanup</code> function may or may not return a Boolean result with 1 indicating success. This has an effect only on the log.</p>
+<p>It might accept a right argument, but this is optional: it might as well be niladic. If it <em>does</em> accept a right argument it will get the parameter namespace passed.</p>
+<p>Notes</p>
+<ul>
+<li>A function <code>Cleanup</code> is be executed no matter whether there was or was not a function <code>Initial</code>, and if there was, no matter whether it returned a 0 or a 1 or nothing at all.</li>
+<li>Cleanup functions are executed under error trapping, and any crashes are noted in the log, but the test suite carries on (from version 4.2 onwards)</li>
+</ul>
 <div class="h_tag">
 <a href="#cleaning-up-for-groups" id="cleaning-up-for-groups" class="autoheader_anchor">
 <h3 data-id="Cleaning-up-for-groups">Cleaning up for groups</h3>

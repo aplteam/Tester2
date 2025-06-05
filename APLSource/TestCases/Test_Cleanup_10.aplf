@@ -1,0 +1,16 @@
+ r←Test_Cleanup_10(debugFlag batchFlag);⎕TRAP;T2;rc;log;expected
+⍝ Exercise `Run` with a `Cleanup` function for a specific group that returns a result indicating success
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⎕FX'r←Test_Foo_01 x;⎕TRAP' 'r←0'
+ #.Temp.⎕FX'r←Cleanup_Foo' 'r←0'
+ (rc log)←T2.Run 1
+ →T.PassesIf 0=rc
+ expected←'Looking for a group function "Cleanup_Foo":  found and executed successfully'
+ →T.PassesIf∨/expected⍷∊log
+
+ r←T._OK

@@ -6,6 +6,6 @@
  T2←⎕NEW ##.Tester2 TestCasesSimu
  (rc log)←T2.RunThese'~Grouping,Grp1'
  names←∆GetDetails log
- →T.PassesIf(,⊂'Grp1')≡∪(≢'test_')↓¨'Test_Grp1'∘{(≢⍺)↑⍵}¨names
+ →T.PassesIf(,⊂'Grp1')≡∪(≢'test_')↓¨'Test_Grp1'∘{(≢⍺)↑⍵}¨(~∨/¨'Looking for a group'∘⍷¨names)/names
 
  r←T._OK
