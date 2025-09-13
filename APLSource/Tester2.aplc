@@ -41,7 +41,9 @@
     ∇
 
     ∇ r←History
-      :Access Public shared
+      :Access Public shared 
+      ⍝ * 4.3.0 ⋄ 2025-09-13
+      ⍝   * Packages updated
       ⍝ * 4.2.0 ⋄ 2025-06-05
       ⍝   * `Cleanup` (as well as group-specific `Cleanup` functions) may now return a (optional) boolean indicating success (1) or failure (0).\\
       ⍝      (Up to version 4.2 a result, if any, was ignored.
