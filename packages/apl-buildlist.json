@@ -1,7 +1,7 @@
 {
   packageID: [
     "aplteam-IniFiles-6.1.0",
-    "aplteam-CommTools-2.0.1",
+    "aplteam-CommTools-2.0.2",
     "aplteam-APLTreeUtils2-1.4.1",
   ],
   principal: [
