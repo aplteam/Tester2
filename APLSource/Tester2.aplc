@@ -494,7 +494,7 @@
       :If '?'≡stop
           list←'Tests' 'Initial' 'Cleanup' 'Tests & Initial' 'Tests & Cleanup' 'Initial & Cleanup' 'Test, Initial & Cleanup' 'Nowhere' 'Cancel'
           vals←1 2 4 3 5 6 7 8 9
-          ind←'WhereToStop@Stop just before...' 1 1 ##.CommTools.Select list
+          ind←'WhereToStop@Stop just before...' 1 1  (⊃⊃⎕CLASS ⎕THIS).##.CommTools.Select list
           :If 0=≢ind
               stop←0
           :ElseIf ind≡9
@@ -1972,9 +1972,9 @@
 
     ∇ r←{x}YesOrNo y
       :If 0=⎕NC'x'
-          r←##.CommTools.YesOrNo y
+          r← (⊃⊃⎕CLASS ⎕THIS).##.CommTools.YesOrNo y
       :Else
-          r←x ##.CommTools.YesOrNo y
+          r←x  (⊃⊃⎕CLASS ⎕THIS).##.CommTools.YesOrNo y
       :EndIf
     ∇
 
