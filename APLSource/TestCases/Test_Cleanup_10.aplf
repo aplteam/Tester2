@@ -7,7 +7,7 @@
  'Temp'#.⎕NS''
  T2←⎕NEW ##.Tester2 #.Temp
  #.Temp.⎕FX'r←Test_Foo_01 x;⎕TRAP' 'r←0'
- #.Temp.⎕FX'r←Cleanup_Foo' 'r←0'
+ #.Temp.⎕FX'r←Cleanup_Foo' 'r←1'
  (rc log)←T2.Run 1
  →T.PassesIf 0=rc
  expected←'Looking for a group function "Cleanup_Foo":  found and executed successfully'

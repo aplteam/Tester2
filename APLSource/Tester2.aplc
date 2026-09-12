@@ -986,7 +986,7 @@
           :Else
               ((⎕STOP 1⊃⎕SI)~∆stop_before_cleanup_1 ∆stop_before_cleanup_2)⎕STOP 1⊃⎕SI
           :EndIf
-          resultFlag←1 1⊃ref.⎕AT'Cleanup'
+          resultFlag←0≠1 1⊃ref.⎕AT'Cleanup'                            ⍝ Whether the result is shy or not does not matter
           rc←¯1 ⍝ Undefined
           :Trap 0
               :If 0=1 2⊃ref.⎕AT'Cleanup'
@@ -1001,7 +1001,7 @@
               ShowLog report
               :Return
           :EndTrap
-          :Select ⊃rc
+          :Select ⊃rc,⊂⍬                                                ⍝ `,⊂⍬` stops an empty result from passing for 0 (`⊃⍬`)
           :Case ¯1
               report,←' found and executed'
           :Case 1
@@ -1938,20 +1938,26 @@
               :EndIf
               rc←¯1  ⍝ Undefined
               at←1⊃ref.⎕AT'Cleanup_',currentGroup
-              resultFlag←1=|1⊃at
-              :If (2⊃at)∊1 ¯2                                                   ⍝ Accepts a right argument (1=monadic, ¯2=ambivalent)?
+              resultFlag←0≠1⊃at                                                 ⍝ Whether the result is shy or not does not matter
+              :Trap 0
+                  :If (2⊃at)∊1 ¯2                                               ⍝ Accepts a right argument (1=monadic, ¯2=ambivalent)?
      ∆stop_before_cleanup_1:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
-                  ⍎(resultFlag/'rc←'),'ref.Cleanup_',currentGroup,' ps'
-              :Else
+                      ⍎(resultFlag/'rc←'),'ref.Cleanup_',currentGroup,' ps'
+                  :Else
      ∆stop_before_cleanup_2:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
-                  ⍎(resultFlag/'rc←'),'ref.Cleanup_',currentGroup
-              :EndIf
-              :Select ⊃rc
+                      ⍎(resultFlag/'rc←'),'ref.Cleanup_',currentGroup
+                  :EndIf
+              :Else
+                  report,←' found but crashed (',⎕DMX.EM,')'
+                  ShowLog report
+                  :Return
+              :EndTrap
+              :Select ⊃rc,⊂⍬                                            ⍝ `,⊂⍬` stops an empty result from passing for 0 (`⊃⍬`)
               :Case ¯1
                   report,←' found and executed'
-              :Case 0
-                  report,←' found and executed successfully'
               :Case 1
+                  report,←' found and executed successfully'
+              :Case 0
                   report,←' found and executed but indicated failure by its result'
               :Else
                   report,←' found and executed but returned an invalid result'

@@ -10,7 +10,7 @@
  #.Temp.⎕FX'r←Cleanup_Foo' 'r←0'
  (rc log)←T2.Run 1
  →T.PassesIf 0=rc
- expected←'Looking for a group function "Cleanup_Foo":  found and executed successfully'
+ expected←'Looking for a group function "Cleanup_Foo":  found and executed but indicated failure by its result'
  →T.PassesIf∨/expected⍷∊log
 
  r←T._OK
