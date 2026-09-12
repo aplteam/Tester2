@@ -42,7 +42,8 @@
 
     ∇ r←History
       :Access Public shared
-      ⍝ * 4.5.0 ⋄ 2026-09-08
+      ⍝ * 4.5.0 ⋄ 2026-09-12
+      ⍝   * GoToTidyUp did not return a result and relied on a bug to work. 
       ⍝   * Packages updated (CommTools!)
       ⍝   * Bug fixes
       ⍝     * Final report came with empty lines
@@ -1393,7 +1394,7 @@
       :If flag∧flag2
           ⎕SIGNAL 999
       :EndIf
-      label←{(0<⎕NC ⍵):⍎⍵ ⋄ r←ref.⍎'∆TidyUp'}'label'
+      label←{(0<⎕NC ⍵):⍎⍵ ⋄ ref.⍎'∆TidyUp'}'label'
       r←flag/label
       :If ref.batchFlag
           ∆FAILING_LINE←2⊃⎕LC
