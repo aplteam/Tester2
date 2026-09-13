@@ -10,7 +10,7 @@
   license: "MIT",
   lx: "",
   maintainer: "kai@aplteam.com",
-  minimumAplVersion: "18.0",
+  minimumAplVersion: "18.2",
   ml: 1,
   name: "Tester2",
   os_lin: 1,
