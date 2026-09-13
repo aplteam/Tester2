@@ -1,0 +1,14 @@
+ r←Test_Misc_22(debugFlag batchFlag);⎕TRAP;T2;rc;log
+⍝ A test function that crashes is reported in a single log line that carries its name
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⎕FX'r←Test_01 x;⎕TRAP' '⍝ Crashes on purpose' 'r←undefinedName'
+ (rc log)←T2.Run 0
+ →T.PassesIf 1=rc
+ →T.PassesIf 1=+/(∨/¨'Test_01'∘⍷¨log)∧∨/¨'# Crashes on purpose'∘⍷¨log
+
+ r←T._OK

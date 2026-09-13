@@ -1,0 +1,16 @@
+ r←Test_Init_93(debugFlag batchFlag);⎕TRAP;T2;rc;log
+⍝ Exercise `Run` with a monadic `Initial_Foo` that returns no result: the members of "Foo" must be executed
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⎕FX'Initial_Foo ps' '⍝ No result'
+ #.Temp.⎕FX'r←Test_Foo_01 x;⎕TRAP' 'r←0'
+ (rc log)←T2.Run 1
+ →T.PassesIf 0=rc
+ →T.PassesIf∨/'Function "Initial_Foo" found and executed successfully'⍷∊log
+ →T.PassesIf∨/'1 test case of 1 called'⍷∊log
+
+ r←T._OK

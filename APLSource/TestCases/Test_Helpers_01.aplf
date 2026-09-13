@@ -9,18 +9,18 @@
  →T.PassesIf 2=≡list1
  →T.PassesIf 2=⍴⍴list1
  →T.PassesIf 1<≢list1
- Assert∨/∨⌿'foo'⍷↑list1[;1]
+ Assert∨/∨⌿'Foo'⍷↑list1[;1]
 
- list2←T.ListTestFunctions'foo'
+ list2←T.ListTestFunctions'Foo'
  →T.PassesIf 2=≡list2
  →T.PassesIf 2=⍴⍴list2
  →T.PassesIf 3=≢list2
 
- list3←2 T.ListTestFunctions'foo'
+ list3←2 T.ListTestFunctions'Foo'
  →T.PassesIf 2=≡list3
  →T.PassesIf 2=⍴⍴list3
  →T.PassesIf 1=≢list3
- →T.PassesIf∨/'Test_foo_02'⍷∊list3
+ →T.PassesIf∨/'Test_Foo_02'⍷∊list3
 
  r←T._OK
 ⍝Done

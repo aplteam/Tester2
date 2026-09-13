@@ -1,0 +1,25 @@
+ r←Test_Custom_07(debugFlag batchFlag);⎕TRAP;qdmx;i;T2;log;rc
+⍝ Run a test suite that returns an undefined positive return code
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+ :If batchFlag
+     r←T._NoBatchTest
+     :Return
+ :EndIf
+
+ r←T._Failed
+
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ #.TEMP.(⎕IO ⎕ML)←1
+ #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
+ #.TEMP.T.TestFlag←1
+ #.TEMP.⎕FX'r←Test_01 arg;⎕TRAP' '⍝ Test 1' 'r←998'
+ (rc log)←#.TEMP.T.RunGUI ⍬
+ #.TEMP.T.CloseGUI
+ →T.PassesIf 1=rc
+ →T.PassesIf 1 0 1≡∆GetTotals log
+
+ r←T._OK
+
+ ⍝Done

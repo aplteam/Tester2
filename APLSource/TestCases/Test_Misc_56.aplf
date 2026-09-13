@@ -1,0 +1,20 @@
+ r←Test_Misc_56(debugFlag batchFlag);⎕TRAP;T2
+⍝ `GetSymbolicName` rejects arguments that are not integers
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ :Trap 11
+     {}T2.GetSymbolicName'abc'
+     →T.GoToTidyUp 1
+ :EndTrap
+ :Trap 11
+     {}T2.GetSymbolicName 1.5
+     →T.GoToTidyUp 1
+ :EndTrap
+
+ r←T._OK
+
+∆TidyUp:

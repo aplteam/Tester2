@@ -1,0 +1,16 @@
+ r←Test_Misc_21(debugFlag batchFlag);⎕TRAP;T2
+⍝ `codeCoverage`, `exec_before_each_test`, `exec_after_each_test` and custom messages can all be reset to ''
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ T2.codeCoverage←''
+ T2.exec_before_each_test←''
+ T2.exec_after_each_test←''
+ T2.custom_1←''
+ T2.custom_2←''
+ →T.PassesIf(5⍴⊂'')≡T2.(codeCoverage exec_before_each_test exec_after_each_test custom_1 custom_2)
+
+ r←T._OK

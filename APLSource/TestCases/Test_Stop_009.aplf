@@ -1,0 +1,14 @@
+ r←Test_Stop_009(debugFlag batchFlag);⎕TRAP;T2;rc;log
+⍝ Exercise the `RunThese` method with stop←'?' = Cancel: a result must be returned nevertheless
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ T2←⎕NEW ##.Tester2 TestCasesSimu
+ ##.CommTools.Cleanup                                     ⍝ Get rid of any automation left behind by earlier tests
+ ##.CommTools.AddAutomation'Select' 'WhereToStop@' 9
+ (rc log)←'?'T2.RunThese'Grouping'
+ ##.CommTools.Cleanup
+ →T.PassesIf 0=rc
+ →T.PassesIf 0=≢log
+
+ r←T._OK

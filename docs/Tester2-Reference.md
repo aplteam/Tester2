@@ -76,7 +76,7 @@ After all test cases got processed, the user might interact with the GUI. These 
 Note that all `Run*` functions return a two-element vector:
 
   1. [1] is a return code (`rc`) with 0 for "okay".
-  2. [2] is an empty vector in case `rc` is 0 and might contain additional information in case `rc` is not 0.
+  2. [2] is the log: a vector of text vectors with everything that was reported while the test cases were executed.
 
 
 A reference pointing to the GUI is assigned internally. That's why the GUI does not disappear straight away after all test cases have been executed. To get rid of it either click the "Close" box or call the `T.CloseGUI` method which does not require an argument.
@@ -98,7 +98,7 @@ Note that test cases causing a crash are considered "broken". Test cases that do
 
    Example: given that all your test cases live in `Foo`, then you could create an instance `T` with: `T←⎕NEW Tester2 Foo`
 
-1. All test functions inside their namespace are expected to start their names with `Test_` followed either by some digits or a group name followed by an underscore followed by some digits, for example, `Test_Foo_003`.
+1. All test functions inside their namespace are expected to start their names with `Test_` followed either by some digits or a group name followed by an underscore followed by some digits, for example, `Test_Foo_003`. A group name may itself contain underscores: everything between `Test_` and the last underscore is the group name, so `Test_Foo_Bar_003` belongs to the group "Foo_Bar".
 
    It is recommended that in case you use groups you assign _all_ your test cases to groups.
 
@@ -149,9 +149,9 @@ Traps all errors except that it does not influence the workings of the `debugFla
 
 This flag controls the behaviour of the control functions:  `PassesIf`, `FailsIf` and `GoToTidyUp` --- see [Flow control](#) for details.
 
-If `debugFlag` flag is 0, any failing test within any test function just makes the test function quit, by default returning a symbolic name `_Failure`. See [Symbolic names](#symbolic-names) for details.
+If `debugFlag` flag is 0, any failing test within any test function just makes the test function quit, by default returning the symbolic name `_Failed`. See [Symbolic names](#symbolic-names) for details.
 
-If `debugFlag` is 1 (defaults to he symbolic name `_OK`), then any failing check crashes right on the spot. This allows one to investigate what went wrong, and why.
+If `debugFlag` is 1, then any failing check crashes right on the spot. This allows one to investigate what went wrong, and why.
 
 #### Suspend execution (`stop`)
 
@@ -172,13 +172,13 @@ Note that all test cases get the `batchFlag` provided as part of the right argum
 
    1. `debugFlag`; 1 means that the test function runs in debug mode.
 
-      Assuming that all tests use the [flow control functions](#flow-control) provided by `Tester2`, the difference is that with `debugFlag` being 0 the test function would quit and (by default) return the symbolic name `Failure`, while with `debugFlag` being 1 the test function would crash on the spot, allowing the user to investigate.
+      Assuming that all tests use the [flow control functions](#flow-control) provided by `Tester2`, the difference is that with `debugFlag` being 0 the test function would quit and (by default) return the symbolic name `_Failed`, while with `debugFlag` being 1 the test function would crash on the spot, allowing the user to investigate.
 
    1. `batchFlag`: 1 means that there is no user available in front of the monitor.
 
       That allows a test function that requires a human for, say, some confirmation or some action to _not_ carry out the test but return the symbolic name `_NoBatchTest`.
 
-1. Every test function must return a result. You are advised to assign one of the symbolic names defined as read-only fields every instance of `Tester2` comes with. This is much more readable than a simple integer, and it is easier to find as well. Also, you can add custom names. See [Symbolic names](#symbolic-names) for details.
+1. Every test function must return a result. You are advised to assign one of the symbolic names defined as read-only fields every instance of `Tester2` comes with. This is much more readable than a simple integer, and it is easier to find as well. Also, you can add custom names. See [Symbolic names](#symbolic-names) for details. Any other result is reported as invalid, and the test case is flagged as broken.
 
 
 ### Groups
@@ -197,7 +197,7 @@ You may also specify more than one group by...
 * use `*` as a wildcard character for matching one or more groups
 
   The wildcard character can only be used at the end of a name.
-* Exclude tests or groups with the `~` character ("without")
+* Exclude tests or groups with the `~` character ("without"): `~Foo` excludes exactly the group "Foo", `~Foo*` all groups starting with "Foo", and `~Foo_002` just that test case
 * Mix `,` , `~` and `*` (since version 3.7)
 
 Note that you can have group-specific [initialisation](#initialisation-for-groups) and [cleaning up](#cleaning-up-for-groups).
@@ -289,9 +289,9 @@ If there is no such namespace the default falls back to the current directory.
 
 If your INI file(s) do not live in either place then you must set the `IniFolder` property in order to allow `Tester2` to find the INI file(s).
 
-First the `Run*` methods check whether there is a file `testcases.ini`. If this is the case the INI file is processed. Use this INI file to specify general stuff that does not depend on a certain computer/environment.
+First the `Run*` methods check whether there is a file `Testcases.ini`. If this is the case the INI file is processed. Use this INI file to specify general stuff that does not depend on a certain computer/environment.
 
-Then the `Run*` methods checks for a file `testcases-{computername}.ini`. If this file exists it is processed. Use this to specify stuff that does depend on a certain computer or environment.
+Then the `Run*` methods checks for a file `Testcases-{computername}.ini`. If this file exists it is processed. (On Linux and macOS these file names are case-sensitive.) Use this to specify stuff that does depend on a certain computer or environment.
 
 Note that if one or both of the two INI files exist there will be a _flat_ namespace `T.INI`, meaning that any sections defined in the INI file(s) will be ignored. 
 
@@ -307,7 +307,7 @@ An example: if your test functions are hosted by a namespace `Foo.TestCases` and
 
 In the next step, the `Run*` method checks whether there is a function `Initial` in the hosting namespace. If that is the case, this function is executed.
 
-Note that the function must be either niladic or monadic, and it may return no result at all or a Boolean result or a text vector. 
+Note that the function must be either niladic or monadic (a dfn, being ambivalent, counts as monadic), and it may return no result at all or a Boolean result or a text vector. 
 
 * Boolean result (success flag)
   * A 1 means that the function did what it is supposed to do (=same as no result)
@@ -358,7 +358,7 @@ Now the test cases are executed one by one, or, if groups are defined, one group
 
 After the last test case was executed, the `Run*` function checks whether there is a function `Cleanup` in the namespace hosting your test cases. If that's the case, then this function is executed. 
 
-~~Any `Cleanup` function should either return a shy result (which will be ignored) or no result at all.~~ Starting with version 4.2, a `Cleanup` function may or may not return a Boolean result with 1 indicating success. This has an effect only on the log.
+~~Any `Cleanup` function should either return a shy result (which will be ignored) or no result at all.~~ Starting with version 4.2, a `Cleanup` function may or may not return a Boolean result with 1 indicating success. It may also return a text vector: an empty one counts as success, a non-empty one as failure, and its content is added to the log. This has an effect only on the log.
 
 It might accept a right argument, but this is optional: it might as well be niladic. If it _does_ accept a right argument it will get the parameter namespace passed.
 
@@ -499,11 +499,9 @@ Check the examples which assume that an instance of `Tester2` is available as `T
      ≢'T'⎕NL 3
 0
       T.GetTestTemplate 3
-Test_003
      ≢'T'⎕NL 3
 1
       'Misc' T.GetTestTemplate 1
-Test_Misc_001
      ≢'T'⎕NL 3
 2
 ```
@@ -527,14 +525,14 @@ These are the public read-only instance fields that act like constants:
 |`_NoBatchTest`        |Not executed because `batchFlag` was 1.                               |
 |`_NotApplicable`      |This test is not applicable here and now                              |
 |`_NotImplemented`     |Attempts to test a feature that has yet not been implemented          |
-|`_InActive`           |Not executed: the test case is inactive (not ready, buggy, ...)       |
+|`_Inactive`           |Not executed: the test case is inactive (not ready, buggy, ...)       |
 |`_IncompatibleVersion`|Regarding the version of Dyalog currently running                     |
 |`_LinuxOnly`          |Not executed because runs under Linux only                            |
 |`_LinuxOrMacOnly`     |Not executed because runs under Linux/Mac OS only                     |
 |`_LinuxOrWindowsOnly` |Not executed because runs under Linux/Windows only                    |
 |`_MacOrWindowsOnly`   |Not executed because runs under Mac OS/Windows only                   |
 |`_MacOnly`            |Not executed because runs under Mac OS only                           |
-|`_NoAcreTests`        |Not executed because it's acre-related but acre is not around         |
+|`_NoAcreTest`         |Not executed because it's acre-related but acre is not around         |
 |`_NoCiderTest`        |Not executed because it's Cider-related but Cider is not around       |
 |`_SkippedByUser`      |Returned in case the user refused to execute a test case              |
 |`_WindowsOnly`        |Not executed because runs under Windows only                          |
@@ -542,7 +540,7 @@ These are the public read-only instance fields that act like constants:
 Use one of these to assign an explicit result within any test function. The advantages of this approach:
 
 1. Much more readable than an integer
-2. You can easily search for, say, `_InActive`, while searching for its number might well be pointless
+2. You can easily search for, say, `_Inactive`, while searching for its number might well be pointless
 
 Notes:
 
@@ -578,7 +576,7 @@ Assuming that you are currently in that namespace, and that it contains `Tester2
 "Prepare", "RunTests" & "RunBatchTests" successfully established in ...
 ```
 
-Note that you should read and amend the helpers after having established them, in particular `Prepare`.
+Note that you should read and amend the helpers after having established them, in particular `Prepare`. For example, when `Tester2` and `CodeCoverage` live somewhere else, typically in `##`, then this needs adjustment.
 
 ### Examples
 
@@ -675,6 +673,8 @@ T.RunThese 'Test_Group1_001'   ⍝ Same as before
 
 Sometimes you want to trace through test cases. This can be achieved by specifying a 1 as the (optional) left argument. `RunThese` would then stop just before any test case is executed, after processing any INI file(s) and executing any `Initial` function.
 
+You can achieve the same by passing a negative test case number: `T.RunThese ¯2` executes test case 2 and stops just before it is executed. Note that as soon as one of the numbers is negative, `RunThese` stops before every selected test case. `T.RunThese 0` executes all test cases and stops before each of them.
+
 
 ##### `RunBatchTests`
 
@@ -697,7 +697,7 @@ This is a generalized function that is effectively called by all the other `Run*
 
 ```
       ps←T.CreateParms ⍬
-      ps._∆List  ⍝ List the defaults
+      ps.List    ⍝ List the defaults
  batchFlag    0 
  debugFlag    0 
  guiFlag      0 
@@ -721,18 +721,23 @@ We assume that you have instantiated `Tester2` as `T`.
 
 #### Listing groups
 
-`ListGroups` lists all groups:
+`ListGroups` returns a matrix with the names of all groups (including the `Test_` prefix) and the number of test cases in each group. For `Tester2`'s own test cases:
 
 ```
       T.ListGroups
-acre
-Cider
-InternalMethods
-List           
-Misc           
-Replace        
-ReportGhosts   
-Search 
+ Test_Cleanup   26
+ Test_Custom     6
+ Test_Exec       5
+ Test_foo        3
+ Test_Group     16
+ Test_Helpers    8
+ Test_IniFiles   4
+ Test_Init      19
+ Test_Misc      31
+ Test_Rename    16
+ Test_Run        7
+ Test_Stop       9
+ Test_ZZZ        1
 ```
 
 
@@ -849,6 +854,7 @@ If there is already a group "Misc" then numbering would start with the highest p
 * It might be a good idea for _all_ test functions to tidy up first, just in case this test case has failed earlier and left some debris behind.
 
 * It's common practice to implement a test case for every bug, for bugs tend to make comebacks; such tests prevent that from happening.
+
 
 
 

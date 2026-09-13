@@ -1,0 +1,16 @@
+ r←Test_Misc_20(debugFlag batchFlag);⎕TRAP;T2;rc;log
+⍝ In batch mode a `GoToTidyUp` check that passes must not add a line number to the report
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.T←T2
+ #.Temp.⎕FX'r←Test_01(debugFlag batchFlag);⎕TRAP' '⍝ Last check passes' 'r←T._Failed' '→T.GoToTidyUp 0' 'r←T._OK' '∆TidyUp:'
+ (rc log)←T2.RunBatchTests 0
+ →T.PassesIf 0=rc
+ →T.PassesIf∨/'Last check passes'⍷∊log
+ →T.PassesIf~∨/'Last check passes ['⍷∊log
+
+ r←T._OK

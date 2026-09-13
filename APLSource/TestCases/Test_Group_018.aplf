@@ -1,0 +1,22 @@
+ r←Test_Group_018(debugFlag batchFlag);⎕TRAP;T2;rc;log
+⍝ Group names may contain an underscore: everything before the last one is the group name
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⎕FX'r←Test_Foo_Bar_01 x;⎕TRAP' 'r←0'
+ #.Temp.⎕FX'r←Test_Foo_Bar_02 x;⎕TRAP' 'r←0'
+ #.Temp.⎕FX'r←Test_Foo_01 x;⎕TRAP' 'r←0'
+ (rc log)←T2.RunThese'Foo_Bar'
+ →T.PassesIf 0=rc
+ →T.PassesIf∨/'2 test cases of 2 called'⍷∊log
+ (rc log)←T2.RunThese'Foo_Bar_02'
+ →T.PassesIf∨/'1 test case of 1 called'⍷∊log
+ →T.PassesIf∨/'Test_Foo_Bar_02'⍷∊log
+ (rc log)←T2.RunThese'Foo'
+ →T.PassesIf∨/'1 test case of 1 called'⍷∊log
+ →T.PassesIf∨/'Test_Foo_01'⍷∊log
+
+ r←T._OK

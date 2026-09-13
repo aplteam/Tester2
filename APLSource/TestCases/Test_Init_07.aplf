@@ -8,7 +8,7 @@
  #.Temp.I_was_here←0
  #.Temp.T2←⎕NEW ##.Tester2 #.Temp
  #.Temp.⎕FX'r←Initial_foo' '∆Testing←0' 'r←1'
- #.Temp.⎕FX'r←Test_foo_01 x;⎕TRAP' '∘∘∘ ⍝ Now execute T2.QuitTests in the session!'
+ #.Temp.⎕FX'r←Test_foo_01 x;⎕TRAP' '⎕←''>>>>> To continue execute this statement:''' '⎕←''T2.QuitTests ⍝ <<<<<''' '∘∘∘'
  #.Temp.⎕FX'Cleanup_foo' '⎕EX ''∆Testing'''
  (rc log)←#.Temp.T2.Run 1
  →T.PassesIf 0=rc

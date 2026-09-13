@@ -1,0 +1,20 @@
+ r←Test_Group_017(debugFlag batchFlag);⎕TRAP;T2;rc;log
+⍝ `RunThese` with names that are not sorted: `Initial_Foo` and `Cleanup_Foo` must run once only
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.(∆InitialCount ∆CleanupCount)←0
+ #.Temp.⎕FX'Initial_Foo' '∆InitialCount+←1'
+ #.Temp.⎕FX'Cleanup_Foo' '∆CleanupCount+←1'
+ #.Temp.⎕FX'r←Test_Foo_01 x;⎕TRAP' 'r←0'
+ #.Temp.⎕FX'r←Test_Foo_02 x;⎕TRAP' 'r←0'
+ #.Temp.⎕FX'r←Test_Bar_01 x;⎕TRAP' 'r←0'
+ (rc log)←T2.RunThese'Foo_01' 'Bar_01' 'Foo_02'
+ →T.PassesIf 0=rc
+ →T.PassesIf 1=#.Temp.∆InitialCount
+ →T.PassesIf 1=#.Temp.∆CleanupCount
+
+ r←T._OK

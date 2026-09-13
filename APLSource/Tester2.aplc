@@ -8,10 +8,10 @@
 ⍝ Note that in case after running `RunGUI` the GUI stays around your have two choices of getting rid of the GUI
 ⍝ programmatically: either call the `CloseGUI` method from your instance or erase the instance altogether.
 ⍝ ## INI files
-⍝ `Tester2` tries to find two INI files: "Testcases.INI" and "Testcases_{computername}.INI". If it finds one or
+⍝ `Tester2` tries to find two INI files: "Testcases.ini" and "Testcases-{computername}.ini" (the names are case-sensitive on Linux and macOS). If it finds one or
 ⍝ both of them it will merge and flatten them and assign them to the `INI` property of `Tester2` instance.
 ⍝ ## Dependencies
-⍝ `Tester2` requires the classes `APLTreeUtils2` and `CodeCoverage`, but the latter only in case you want code
+⍝ `Tester2` requires `APLTreeUtils2`, `IniFiles` and `CommTools`, and also `CodeCoverage`, but the latter only in case you want code
 ⍝ coverage to be checked; for that you need to set the `codeCoverage` property.
 ⍝ ## Misc
 ⍝ Home page: <https://github.com/aplteam/Tester2>\\
@@ -43,19 +43,50 @@
     ∇ r←History
       :Access Public shared
       ⍝ * 4.5.0 ⋄ 2026-09-12
-      ⍝   * GoToTidyUp did not return a result and relied on a bug to work. 
+      ⍝   * GoToTidyUp did not return a result and relied on a bug to work.
       ⍝   * Packages updated (CommTools!)
+      ⍝   * A dfn can now be used as `Initial` (it was rejected because a dfn is ambivalent)
+      ⍝   * A monadic `Initial_<group>` may now return no result at all
+      ⍝   * A test function returning neither a symbolic name nor a custom code is now reported as broken
+      ⍝     (so far it passed silently)
+      ⍝   * `codeCoverage`, `exec_before_each_test`, `exec_after_each_test` and custom messages can now be reset to ''
+      ⍝   * Documentation corrected in several places (names of symbolic constants, `ps.List`, the result of the
+      ⍝     `Run*` functions, INI file names, `~` in group definitions, examples) as well as the class header comment
+      ⍝   * Internal: niladic `LF` introduced, dead code removed
       ⍝   * Bug fixes
       ⍝     * Final report came with empty lines
+      ⍝     * Tester2 could look for CommTools in the wrong place
+      ⍝     * GoToTidyUp did not return a result (and relied on a bug to work)
+      ⍝     * `Cleanup_<group>` reported success as failure and vice versa
+      ⍝     * `Cleanup_<group>` was not executed under :Trap, although 4.2.0 said so
+      ⍝     * A shy result of `Cleanup` was ignored, and a returned `⍬` was reported as failure
+      ⍝     * An empty text vector returned by `Cleanup` or `Cleanup_<group>` was reported as an invalid result
+      ⍝       rather than as success
+      ⍝     * A non-empty text vector returned by `Cleanup` or `Cleanup_<group>` was reported as an invalid result;
+      ⍝       now it indicates failure and the text is added to the log, as with `Initial`
+      ⍝     * For test cases without a group, Tester2 looked for a function `Cleanup_`
+      ⍝     * `RunThese` did not sort a list of test function names, so group-specific `Initial` and `Cleanup`
+      ⍝       functions could be executed more than once
+      ⍝     * Group names containing an underscore were not handled consistently
+      ⍝     * `~` excluded all groups starting with the given name rather than exactly that group
+      ⍝     * A test function that crashed was not reported in the session (without GUI), and its log line lacked its name
+      ⍝     * In batch mode `GoToTidyUp` added a line number to test cases that passed
+      ⍝     * "?" followed by "Cancel" left the result of `Run`, `RunThese` and `RunBatchTests` undefined
+      ⍝     * `GetTestTemplate` crashed with a SYNTAX ERROR when the name was used by something other than a function
+      ⍝     * `EditTestFunctions` crashed when given a vector of names
+      ⍝     * `GetSymbolicName` did not check its argument
+      ⍝     * Coverage data of test cases that crashed got lost
+      ⍝     * GUI: `CloseGUI` could fail to close the GUI; more than 2000 test cases could not be handled; closing
+      ⍝       the GUI during a run skipped `Cleanup`
       ⍝ * 4.4.0 ⋄ 2026-02-06
-      ⍝   * Packages updated (CommTools!)       
+      ⍝   * Packages updated (CommTools!)
       ⍝ * 4.3.0 ⋄ 2025-09-13
       ⍝   * Packages updated
       ⍝ * 4.2.0 ⋄ 2025-06-05
       ⍝   * `Cleanup` (as well as group-specific `Cleanup` functions) may now return a (optional) boolean indicating success (1) or failure (0).\\
       ⍝      (Up to version 4.2 a result, if any, was ignored.
       ⍝   * The reports on `Cleanup` and `Cleanup_<group>` is now more precise
-      ⍝   * `Cleanup` and `Cleanup_<group>` are now executed under :Trap. Problems are reported in the log rather than crashing the test suite.  
+      ⍝   * `Cleanup` and `Cleanup_<group>` are now executed under :Trap. Problems are reported in the log rather than crashing the test suite.
       ⍝   * Bug fixes
       ⍝     * The message concerning the "Cleanup" function repeated "found and executed" twice
       ⍝ * 4.1.0 ⋄ 2025-05-30
@@ -73,44 +104,6 @@
       ⍝   * Potenially breaking change: `Version` now returns the package config version number as a char vector
       ⍝   * Packages updated
       ⍝   * `Make` improved
-      ⍝ * 3.11.1 ⋄ 2024-12-30
-      ⍝   Bug fixes
-      ⍝   * In `Version`: if for some reason it cannot find `TatinVars` it should return
-      ⍝     an empty vector for the version number rather than crashing.
-      ⍝   * Reports were intended to honour ⎕PW but got one char too long
-      ⍝ * 3.11.0 ⋄ 2024-12-25
-      ⍝   * `ListTestFunctions` enhanced
-      ⍝   * `Version` extracts the version number now from the package config file
-      ⍝ * 3.10.0 ⋄ 2024-11-30
-      ⍝   * Dependencies updated in order to make Tester2 ready for 20.0 (IniFiles)
-      ⍝ * 3.9.1 ⋄ 2024-10-03
-      ⍝   * Comment added according to issue #25
-      ⍝   * Bug fix: the new '?'-syntax did not work when 3 (for "Cleanup") was selected
-      ⍝ * 3.9.0 ⋄ 2024-10-01
-      ⍝   * The term `stopFlag` was used in two different ways: on the level of the test framework and inside
-      ⍝     test functions. This required a change: inside test functions, what was initially called
-      ⍝     `stopFlag` is now called `debugFlag`.\\
-      ⍝     Note that the old name is still supported in order to support old test cases, so this is not a
-      ⍝     breaking change.
-      ⍝   * `stopFlag` is not necessarily a Boolean anymore, making the name a misnomer.
-      ⍝     Therefore, it was renamed to `stop`.
-      ⍝   * All `Run*`-functions that accept `stop` as a left argument now allow it to be "?".
-      ⍝     This led to a list with all options the user may select from.
-      ⍝ * 3.8.0 ⋄ 2024-08-03
-      ⍝   * `RunThese` accepts now a list of names identifying test functions (like `Foo_001` or `Test_Foo_001)
-      ⍝ * 3.7.0 ⋄ 2024-03-02
-      ⍝   * The restriction that "," and "*" cannot go together has been lifted.
-      ⍝   * The restriction that `~` could only be used at the beginning has been lifted
-      ⍝   * Bug fixes
-      ⍝     *
-      ⍝ * 3.6.0 ⋄ 2024-01-11
-      ⍝   * Any a general `Initial` function as well as any group-specific one can now return a text vector
-      ⍝     rather than a Boolean. Empty=success, otherwise it is treated as an error msg and reported.
-      ⍝   * So far, in case a test suite was executed in batch mode, there was no information provided which
-      ⍝     line did cause a test case to fail.
-      ⍝   * Shared method `Help` added that provides a full documentation of Tester2.
-      ⍝ * 3.5.0 ⋄ 2023-04-28
-      ⍝   * Helpers updated
       ⍝\\
       ⍝ For a full history (including older versions) see <https://github.com/aplteam/Tester2/releases>
       r←↑{⍵↓⍨+/∧\∧⌿(↑⍵)=' '}{⍵↓⍨⍵⍳'⍝'}¨{⍵/⍨'⍝'=⊃¨⍵}{⍵↓⍨+/∧\(↑⍵)=' '}¨1↓⎕NR⊃⎕SI
@@ -256,8 +249,8 @@
           r←_codeCoverage
         ∇
         ∇ set value;buff;bool
-          'Is not an instance of the "CodeCoverage" class'Assert∨/'[CodeCoverage]'⍷⍕value.NewValue
           :If 0<≢value.NewValue
+              'Is not an instance of the "CodeCoverage" class'Assert∨/'[CodeCoverage]'⍷⍕value.NewValue
               _codeCoverage←value.NewValue
           :Else
               _codeCoverage←''
@@ -288,8 +281,10 @@
           r←_exec_before_each_test
         ∇
         ∇ set arg
-          'Must be fully qualified name of a function'Assert' '=1↑0⍴∊arg.NewValue
-          'Must be fully qualified name of a function'Assert 3=⎕NC arg.NewValue
+          :If 0<≢arg.NewValue
+              'Must be fully qualified name of a function'Assert' '=1↑0⍴∊arg.NewValue
+              'Must be fully qualified name of a function'Assert 3=⎕NC arg.NewValue
+          :EndIf
           _exec_before_each_test←arg.NewValue
         ∇
     :endproperty
@@ -301,8 +296,10 @@
           r←_exec_after_each_test
         ∇
         ∇ set arg
-          'Must be fully qualified name of a function'Assert' '=1↑0⍴∊arg.NewValue
-          'Must be fully qualified name of a function'Assert 3=⎕NC arg.NewValue
+          :If 0<≢arg.NewValue
+              'Must be fully qualified name of a function'Assert' '=1↑0⍴∊arg.NewValue
+              'Must be fully qualified name of a function'Assert 3=⎕NC arg.NewValue
+          :EndIf
           _exec_after_each_test←arg.NewValue
         ∇
     :endproperty
@@ -360,7 +357,10 @@
     ⍝ DO NOT localyze `_parms` in this function!
       :Access Public Instance
       stop←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'stop'
-      →(⍬≡stop←ProcessStop stop)/0
+      :If ⍬≡stop←ProcessStop stop                                ⍝ The user has cancelled
+          (rc log)←0 ''
+          :Return
+      :EndIf
       'Invalid left argument 'Assert(⊂stop)∊0 1 2 4 3 5 6 7
       'Invalid left argument 'Assert 1=≡,stop
       'Invalid left argument 'Assert 1=≢stop
@@ -387,7 +387,6 @@
           CloseGUI
           _parms.testCaseNos←these
           _parms.guiFlag←1
-          _parms.testCaseNos←these
           (rc log)←Run__ _parms
       :Else
           'RunGUI is Windows-only'⎕SIGNAL 11
@@ -418,7 +417,10 @@
     ⍝ DO NOT localyze `_parms` in this function!
       :Access Public Instance
       stop←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'stop'
-      →(⍬≡stop←ProcessStop stop)/0
+      :If ⍬≡stop←ProcessStop stop                                ⍝ The user has cancelled
+          (rc log)←0 ''
+          :Return
+      :EndIf
       'Invalid left argument 'Assert(⊂stop)∊0 1 2 4 3 5 6 7
       _parms←CreateParms ⍬
       _parms.testCaseNos←these
@@ -443,7 +445,10 @@
     ⍝ DO NOT localyze `_parms` in this function!
       :Access Public Instance
       stop←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'stop'
-      →(⍬≡stop←ProcessStop stop)/0
+      :If ⍬≡stop←ProcessStop stop                                ⍝ The user has cancelled
+          (rc log)←0 ''
+          :Return
+      :EndIf
       'Invalid left argument 'Assert(⊂stop)∊0 1 2 4 3 5 6 7
       'Invalid right argument 'Assert(⊂debugFlag)∊0 1
       _parms←CreateParms ⍬
@@ -494,7 +499,7 @@
       :If '?'≡stop
           list←'Tests' 'Initial' 'Cleanup' 'Tests & Initial' 'Tests & Cleanup' 'Initial & Cleanup' 'Test, Initial & Cleanup' 'Nowhere' 'Cancel'
           vals←1 2 4 3 5 6 7 8 9
-          ind←'WhereToStop@Stop just before...' 1 1  (⊃⊃⎕CLASS ⎕THIS).##.CommTools.Select list
+          ind←'WhereToStop@Stop just before...' 1 1(⊃⊃⎕CLASS ⎕THIS).##.CommTools.Select list
           :If 0=≢ind
               stop←0
           :ElseIf ind≡9
@@ -534,9 +539,10 @@
       :If 0=≢ps.list
           →∆GetOutOfHere,rc←0
       :EndIf
-      →(0=≢ps.list)/∆GetOutOfHere
       :If ps.guiFlag
           :If 0<≢ps.list
+              ps.ref2Gui.∆n.Grid.Values←((≢ps.list),5)⍴⊂''              ⍝ The GUI starts with room for 2000 test cases only
+              ps.ref2Gui.∆n.Grid.CellTypes←((≢ps.list),5)⍴6
               ps.ref2Gui.∆n.Grid.Values[⍳≢ps.list;2]←(≢'Test_')↓¨ps.list
               ps.ref2Gui.∆n.Grid.Values[⍳≢ps.list;3]←2↓¨_ref GetFirstCommentLine¨ps.list
               {2 ⎕NQ ps.ref2Gui.∆n.Grid'SetColSize'⍵ ¯3}¨2 3
@@ -577,7 +583,12 @@
       :EndIf
       :If ps.guiFlag
       :AndIf {6::1 ⋄ 0⊣⍵.Type}ps.ref2Gui.∆n.Form
-          ⍞←'*** Tests cancelled',⎕UCS 10
+          ⍞←'*** Tests cancelled',LF
+          :If 0<⎕NC'initialFlag'
+          :AndIf initialFlag
+              ps.guiFlag←0                                     ⍝ The GUI is gone: report to the session instead
+              {}ExecuteCleanup _ref ps
+          :EndIf
           log←ps.log
           →0
       :EndIf
@@ -596,7 +607,7 @@
       :EndIf
       :If 0<≢_codeCoverage
           :If 0=≢res←_codeCoverage.Finalise 1
-              ⍞←'Coverage report: nothing to report',⎕UCS 10
+              ⍞←'Coverage report: nothing to report',LF
           :Else
               ShowLog'Coverage report: ',res
           :EndIf
@@ -622,7 +633,7 @@
       :If 0<⎕NC'_ref2GUI'
       :AndIf ⍬≢_ref2GUI
           :Trap 6 11
-              2 ⎕NQ _parms.ref2Gui'Close'
+              2 ⎕NQ _ref2GUI'Close'
               _ref2GUI←⍬
           :EndTrap
       :EndIf
@@ -688,7 +699,7 @@
           :Else
               ((⎕STOP 1⊃⎕SI)~,∆stop_before_initial_1,∆stop_before_initial_2,∆stop_before_initial_3,∆stop_before_initial_4)⎕STOP 1⊃⎕SI
           :EndIf
-          :Select ⊃(⎕IO+1)⊃1 ref.⎕AT'Initial'
+          :Select 1 2⊃ref.⎕AT'Initial'                          ⍝ `1 ⎕AT` would report an ambivalent fn (and any dfn) as dyadic
           :Case 0
               :If 0=⊃⊃ref.⎕AT'Initial'
      ∆stop_before_initial_1:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
@@ -705,7 +716,7 @@
                       success←buff
                   :EndIf
               :EndIf
-          :Case 1
+          :CaseList 1 ¯2                                  ⍝ Monadic or ambivalent (a dfn is always ambivalent)
               :If 0=⊃⊃ref.⎕AT'Initial'
      ∆stop_before_initial_3:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
                   ref.Initial ps
@@ -751,7 +762,6 @@
                       ps.list←ps.testCaseNos
                       ps.testCaseNos←⍬
                       ps.list←{'Test_'≡(≢'Test_')↑⍵:⍵ ⋄ 'Test_',⍵}¨ps.list
-                      :Return
                   :Else
                       ps.group←1⊃ps.testCaseNos
                       'Group definition must not carry "," or "~" in case test case number were specified'Assert~∨/',~'∊ps.group
@@ -817,20 +827,26 @@
               :ElseIf ∧/grp∊⎕D                  ⍝ Specific test case rather than group?
                   collect,←((↑list)[;⍳≢grp]∧.=grp)/list
               :ElseIf '_'∊grp
-              :AndIf ∧/({⍵↓⍨⍵⍳'_'}grp)∊⎕D
+              :AndIf ∧/({⍵↑⍨-¯1+'_'⍳⍨⌽⍵}grp)∊⎕D     ⍝ Digits after the last "_"
                   collect,←(list≡¨⊂grp)/list
               :Else
-                  collect,←(({~'_'∊⍵:'' ⋄ ⍵↑⍨¯1+⍵⍳'_'}¨list)≡¨⊂grp)/list
+                  collect,←((GetGroupName¨list)≡¨⊂grp)/list
               :EndIf
           :EndFor
       :EndIf
       without←{⍵/⍨'~'=⊃¨⍵}groups
       :If 0<≢collect
-          :For grp :In without                  ⍝ Loops over "without" definitions and removes stuff
-              :If '*'∊grp
-                  collect←(~collect{(↑⍺)[;⍳≢⍵]∧.=⍵}grp~'~*')/collect
+          :For grp :In Remove∆Test_¨1↓¨without  ⍝ Loops over "without" definitions and removes stuff
+              :If '*'∊grp                       ⍝ All groups starting with...
+                  collect←(~collect{(↑⍺)[;⍳≢⍵]∧.=⍵}grp~'*')/collect
+              :ElseIf ∧/grp∊⎕D                  ⍝ Specific test case without a group
+                  collect←(~collect≡¨⊂grp)/collect
+              :ElseIf '_'∊grp
+              :AndIf ∧/({⍵↑⍨-¯1+'_'⍳⍨⌽⍵}grp)∊⎕D ⍝ Specific test case of a group
+                  collect←(~collect≡¨⊂grp)/collect
+              :Else                             ⍝ Exactly this group
+                  collect←(~(GetGroupName¨collect)≡¨⊂grp)/collect
               :EndIf
-              collect←((~collect{((≢⍵)↑[2](↑⍺))∧.=⍵}1↓grp))/collect
           :EndFor
       :EndIf
       ps.list←'Test_'∘,¨∪collect
@@ -880,11 +896,18 @@
                   :If (⊂rc)∊ListCustomMessages[;2]                      ⍝ Is it a valid custom message?
                       rc←-⍎¯1↑ListSymbolicNames{⊃⍺[1⍳⍨⍺[;2]≡¨⊂⍵;]}rc    ⍝ Translate custom msg into return code
                   :Else
-                      ⍞←'Current test function (',testFns,')',⎕UCS 10
-                      ⍞←'returned an invalid result: neither a valid numeric code (symbolic name) nor a custom message',⎕UCS 10
+                      ⍞←'Current test function (',testFns,')',LF
+                      ⍞←'returned an invalid result: neither a valid numeric code (symbolic name) nor a custom message',LF
                       ∘∘∘
                   :EndIf
               :EndIf
+              :If 1≠≢,rc
+              :OrIf ~(⊂⊃rc)∊(⍎¨' '~¨⍨↓'_'⎕NL 2.2),ListCustomNumbers  ⍝ Neither a symbolic name nor a custom code?
+                  ⍞←'Current test function (',testFns,')',LF
+                  ⍞←'returned an invalid result: neither a valid numeric code (symbolic name) nor a custom message',LF
+                  ∘∘∘
+              :EndIf
+              rc←⊃rc
               ps.totalCounter+←1
               ps.failedCounter+←rc=1
               :If 0>rc
@@ -906,21 +929,19 @@
               :AndIf ps.ref2Gui.∆n.∆Closed=0
                   (GetSymbolicName rc)ReportInactiveToGUI i ref testFns ps.ref2Gui.∆n
               :EndIf
-              :If 0>rc
-                  :If 0<ps.errCounter
-                      rc←1
-                  :EndIf
-              :EndIf
           :Case QuitEvent
               HandleCleanup ref ps currentGroup i
               ⎕SIGNAL QuitEvent
           :Else
+              :If 0<≢_codeCoverage
+                  _codeCoverage.Stop ⍬                         ⍝ The crashed test never reached `Stop`
+              :EndIf
               ps.errCounter+←1
               ps.totalCounter+←1
               comment←2↓ref GetFirstCommentLine testFns
               desc←⊢comment
               marker←'#'
-              ¯2 ShowLog marker' ',desc
+              3 ShowLog marker,' ',desc
               i AddToGui(length2↑(length↑marker,' ',testFns),' (',(cw 0⍕i),'/',max,')'),' ⍝ ',desc
               :If ps.guiFlag
                   ps.ref2Gui.∆n.Grid.Values[i;4]←⊂'{Broken}'
@@ -947,7 +968,7 @@
       :If 0<ps.stop
       :AndIf 1⊃⌽(8⍴2)⊤⊃ps.stop
           (∪(⎕STOP fns),StopHere)⎕STOP fns
-          ⍞←'About to execute <',(⍕_ref),'.',fnsName,'> ...',⎕UCS 10
+          ⍞←'About to execute <',(⍕_ref),'.',fnsName,'> ...',LF
       :Else
           ((⎕STOP fns)~StopHere)⎕STOP fns
       :EndIf
@@ -1002,6 +1023,17 @@
               ShowLog report
               :Return
           :EndTrap
+          :If ''≡0⍴rc                                                   ⍝ Text?
+          :AndIf 1≥≢⍴rc                                                 ⍝ A scalar or a vector
+              rc←,rc
+              :If 0=≢rc
+                  rc←1                                                  ⍝ Empty: success
+              :Else
+                  report,←' found and executed but indicated failure:',CR,rc
+                  ShowLog report
+                  :Return
+              :EndIf
+          :EndIf
           :Select ⊃rc,⊂⍬                                                ⍝ `,⊂⍬` stops an empty result from passing for 0 (`⊃⍬`)
           :Case ¯1
               report,←' found and executed'
@@ -1035,7 +1067,7 @@
               ⍎_exec_before_each_test,' fnsName ps'
           :Else
               :If 0<≢buff←⍎_exec_before_each_test,' fnsName ps'
-                  ⍞←buff,⎕UCS 10
+                  ⍞←buff,LF
               :EndIf
           :EndIf
       :EndIf
@@ -1048,7 +1080,7 @@
               ⍎_exec_after_each_test,' fnsName ps'
           :Else
               :If 0<≢buff←⍎_exec_after_each_test,' fnsName ps'
-                  ⍞←buff,⎕UCS 10
+                  ⍞←buff,LF
               :EndIf
           :EndIf
       :EndIf
@@ -1068,11 +1100,11 @@
 
 
     ∇ {r}←{type}ShowLog msg;selog;buff
-    ⍝ `type` may be 1 or 2 or 3 or ¯1 or ¯2:
+    ⍝ `type` may be 1 or 2 or 3 or ¯1:
     ⍝ * A 1 means an action message
     ⍝ * A 2 means the result of the execution attempt of a test function.
     ⍝ * A 3 means "to be appended the very last line in the log"
-    ⍝ * A negative type means message with more to come
+    ⍝ * A ¯1 starts a line that is completed later with type 3; it is logged but not printed to the session
     ⍝ Requires semi-global `ps`: a parameter space with `ps.log` being, well, the log.
       r←⍬
       :If 0<≢msg
@@ -1110,15 +1142,13 @@
               :If ~ps.guiFlag
                   :If type=3
                       ⍞←⊃¯1↑ps.log
-                      ⍞←⎕UCS 10
+                      ⍞←LF
                   :ElseIf ¯1≠×type
                       selog←{1=≡⍵:⍵ ⋄ (3≠≢⍵)∨'---'≡3↑⊃⍵:⍵ ⋄ (1⊃⍵),' ',(2⊃⍵),' ',(3⊃⍵)}msg
-                      :If type<0
-                          ⍞←selog,(type=¯2)/CR
-                      :ElseIf 1<≡selog
-                          ⍞←∊selog,¨⎕UCS 10
+                      :If 1<≡selog
+                          ⍞←∊selog,¨LF
                       :Else
-                          ⍞←selog,⎕UCS 10
+                          ⍞←selog,LF
                       :EndIf
                   :EndIf
               :EndIf
@@ -1306,7 +1336,7 @@
       :EndIf
     ∇
 
-    ∇ {r}←row AddToGui msg;row;colHeaderHeight;noOfLines;cols
+    ∇ {r}←row AddToGui msg;n;colHeaderHeight;noOfLines;cols
       r←⍬
       :If ps.guiFlag
           n←ps.ref2Gui.∆n
@@ -1397,6 +1427,7 @@
       label←{(0<⎕NC ⍵):⍎⍵ ⋄ ref.⍎'∆TidyUp'}'label'
       r←flag/label
       :If ref.batchFlag
+      :AndIf flag
           ∆FAILING_LINE←2⊃⎕LC
       :EndIf
     ∇
@@ -1418,7 +1449,7 @@
               list←↑{⍵↑⍨+/∧\⍵≠' '}¨{⍵↓⍨+/∧\' '=⍵}¨↓list
           :EndIf
       :ElseIf 2=|≡list
-          list←⊃list
+          list←↑list
       :Else
           :If '*'=¯1↑list
               name←'Test_'{(⍺/⍨⍺≢(≢⍺)↑⍵),⍵}¯1↓list
@@ -1483,7 +1514,6 @@
           r2←r2,[1.5]buff
           r2←r2[⍋↑⎕C r2[;1];]
           longestName←⌈/≢¨r2[;1]
-          longestName←⌈/≢¨r2[;1]
           :If ~view
           :AndIf 0<≢r2
           :AndIf ⎕PW<longestName+3+⌈/≢¨r2[;2]
@@ -1534,7 +1564,7 @@
    ⍝ * If it is a single integer a string is returned
    ⍝ * If `constant` is more than one integer a vector of strings is returned
       :Access Public Instance
-      'Invalid right argument: must be one or more integers'Assert∧/{(0 1 2∊⍨≡⍵)∧83∧.=⎕DR ⍵}¨1(2 3)
+      'Invalid right argument: must be one or more integers'Assert{~(≡⍵)∊0 1:0 ⋄ 0≠1↑0⍴⍵:0 ⋄ ∧/,⍵=⌊⍵}constant
       names←,ListSymbolicNames[;1]
       values←⍎¨names
       :If 1<≢constant
@@ -1683,7 +1713,7 @@
       groupName←{0<⎕NC ⍵:⍎⍵ ⋄ ''}'groupName'
       'Invalid right argumet: must be an integer between 1 and 999'Assert(⊂no)∊(⍳999)
       'Invalid left argumet: must be a char vector'Assert((≡groupName)∊0 1)∧' '≡⊃0⍴groupName
-      body←A.DTB↓180⌶'Test_000'
+      body←⎕NR'Test_000'
       :If 0=≢groupName
           newName←'Test_',(¯3↑'000',⍕no)
           (1⊃body)←'←Test_000\('⎕R('←',newName,'(')⍠('Greedy' 0)⊣1⊃body
@@ -1697,7 +1727,7 @@
                   :Return
               :EndIf
           :Else
-              11 ⎕SIGNAL⍨'The name <'.newName,'> is already taken!'
+              11 ⎕SIGNAL⍨'The name <',newName,'> is already taken!'
           :EndIf
       :EndIf
       :If {16::0 ⋄ 1⊣⎕SRC ⍵}_ref
@@ -1706,14 +1736,14 @@
               cl.Text←2↓⊃,/(⊂CRLF),¨body
               :Return
           :Else
-              ⍞←'No action taken',⎕UCS 10 ⋄ →0
+              ⍞←'No action taken',LF ⋄ →0
           :EndIf
       :Else
           _ref.⎕FX body
       :EndIf
       :If ∨/IsLinked _ref
-          ⍞←'You might want to tell Link:',⎕UCS 10
-          ⍞←']Link.Add ',(⍕_ref),'.',newName,⎕UCS 10
+          ⍞←'You might want to tell Link:',LF
+          ⍞←']Link.Add ',(⍕_ref),'.',newName,LF
       :EndIf
     ∇
 
@@ -1730,7 +1760,7 @@
       :EndIf
       'Cannot establish helpers in class instances/unnamed namespaces'Assert~'['∊⍕ref
       :If 3=+/ref.⎕NC↑'Prepare' 'RunTests' 'RunTestsInBatchMode'
-          ⍞←'Prepare, RunTests and RunTestsInBatchMode are all already established in ',(⍕ref),⎕UCS 10
+          ⍞←'Prepare, RunTests and RunTestsInBatchMode are all already established in ',(⍕ref),LF
       :Else
           :If force
           :OrIf YesOrNo'Helpers@Sure you wanna establish three helpers "Prepare", "RunTests" & "RunTestsInBatchMode" in ',(⍕ref),' ?'
@@ -1745,8 +1775,8 @@
               r,←CR,'⍝ ⎕SE.Link.Add ',⊃,/('''','.',⍨⍕ref)∘,¨'Prepare'' ' 'RunTests'' ' 'RunTestsInBatchMode'' '
           :EndIf
           :If IsLinked ref
-              ⍞←'You might want to tell Link:',⎕UCS 10
-              ⍞←']Link.Add ',(⊃,/(⊂⍕ref),¨'.Prepare ' '.RunTests ' '.RunTestsInBatchMode'),⎕UCS 10
+              ⍞←'You might want to tell Link:',LF
+              ⍞←']Link.Add ',(⊃,/(⊂⍕ref),¨'.Prepare ' '.RunTests ' '.RunTestsInBatchMode'),LF
           :EndIf
       :EndIf
     ∇
@@ -1803,7 +1833,7 @@
           list←' '~¨⍨↓'_custom_'{⍵⌿⍨((≢⍺)↑[2]⍵)∧.=⍺}'_'⎕NL 2
           list←↓'_custom_'{⍵⌿⍨((≢⍺)↑[2]⍵)∧.=⍺}↑list
           list←(i≠∊(//)∘⎕VFI¨¯1↑¨list)/list     ⍝ Exclude itself
-          :If (⊂msg)∊⍎¨list
+          :If (0<≢msg)∧(⊂msg)∊⍎¨list          ⍝ Several custom messages may well be empty
               r←'Message is already defined' 11
           :EndIf
       :EndIf
@@ -1869,7 +1899,7 @@
               :EndIf
           :EndIf
       :Else
-          ⍞←'Incompatible version of Link detected; we need 3.0.0 or better',⎕UCS 10
+          ⍞←'Incompatible version of Link detected; we need 3.0.0 or better',LF
       :EndIf
     ∇
 
@@ -1887,10 +1917,11 @@
               :Else
                   ((⎕STOP 1⊃⎕SI)~,∆stop_before_initial_1,∆stop_before_initial_2,∆stop_before_initial_3)⎕STOP 1⊃⎕SI
               :EndIf
+              result←1                  ⍝ No result at all means success
               :If (2⊃at)∊1 ¯2           ⍝ Accepts a right argument (monadic=1, ambivalent=¯2)?
      ∆stop_before_initial_1:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
-                  result←ps ref.{⍎⍵,' ⍺'}'Initial_',currentGroup
-              :ElseIf |1⊃at
+                  ⍎((0≠1⊃at)/'result←'),'ref.Initial_',currentGroup,' ps'
+              :ElseIf 0≠1⊃at
      ∆stop_before_initial_2:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
                   result←ps ref.{⍎⍵}'Initial_',currentGroup
               :Else
@@ -1928,6 +1959,7 @@
     ∇ {r}←HandleCleanup(ref ps currentGroup i);at;rc;resultFlag;report
       r←0
       currentGroup←Remove∆Test_ currentGroup
+      →(0=≢currentGroup)/0                                                      ⍝ Not a member of any group
       report←'Looking for a group function "Cleanup_',currentGroup,'": '
       :If i=≢ps.list                                                            ⍝ Last one?
       :OrIf currentGroup{0=≢⍺:0 ⋄ ⍺≢Remove∆Test_ GetGroupName(i+1)⊃⍵}ps.list    ⍝ Group change?!
@@ -1953,6 +1985,17 @@
                   ShowLog report
                   :Return
               :EndTrap
+              :If ''≡0⍴rc                                               ⍝ Text?
+              :AndIf 1≥≢⍴rc                                             ⍝ A scalar or a vector
+                  rc←,rc
+                  :If 0=≢rc
+                      rc←1                                              ⍝ Empty: success
+                  :Else
+                      report,←' found and executed but indicated failure:',CR,rc
+                      ShowLog report
+                      :Return
+                  :EndIf
+              :EndIf
               :Select ⊃rc,⊂⍬                                            ⍝ `,⊂⍬` stops an empty result from passing for 0 (`⊃⍬`)
               :Case ¯1
                   report,←' found and executed'
@@ -1972,9 +2015,9 @@
 
     ∇ r←{x}YesOrNo y
       :If 0=⎕NC'x'
-          r← (⊃⊃⎕CLASS ⎕THIS).##.CommTools.YesOrNo y
+          r←(⊃⊃⎕CLASS ⎕THIS).##.CommTools.YesOrNo y
       :Else
-          r←x  (⊃⊃⎕CLASS ⎕THIS).##.CommTools.YesOrNo y
+          r←x(⊃⊃⎕CLASS ⎕THIS).##.CommTools.YesOrNo y
       :EndIf
     ∇
 
@@ -1993,6 +2036,10 @@
 
     ∇ r←CRLF
       r←⎕UCS 13 10
+    ∇
+
+    ∇ r←LF
+      r←⎕UCS 10
     ∇
 
     ∇ r←IsLinked ref;buff
@@ -2015,17 +2062,17 @@
       :If 9=⎕NC'CodeCoverage'
       :AndIf ⎕NEXISTS testPath
           :If ⎕NEXISTS testFilename,'.profile'
-              ind←('Code Coverage' 0 1)CommTools.Select'Append' 'Replace' 'Neither'
+              ind←('Tester2CoCoAppendReplace@Code Coverage' 0 1)CommTools.Select'Append' 'Replace' 'Neither'
               →(3=ind)/0
               flag←1
               :If 2=ind
                   1 CodeCoverage.DeleteFiles testFilename
               :EndIf
           :Else
-              flag←0 CommTools.YesOrNo'Code coverage?'
+              flag←0 CommTools.YesOrNo'Tester2CoCoToggle@Code coverage?'
           :EndIf
       :Else
-          flag←0 CommTools.YesOrNo'Code coverage?'
+          flag←0 CommTools.YesOrNo'Tester2CoCoToggle@Code coverage?'
       :EndIf
       :If flag
           3 ⎕MKDIR testPath  ⍝
@@ -2057,9 +2104,12 @@
 ⍝ Returns a two-item vector:\\
 ⍝ [1] Boolean with 1 indicating success and 0 failure\\
 ⍝ [2] A vector of character vectors with the messages
+      CommTools.AddAutomation'Select' 'Tester2CoCoAppendReplace' 1  ⍝ Append automatically (there is already a sreport)
+      CommTools.AddAutomation'Select' 'Tester2CoCoToggle' 0  ⍝ By default no code coverage
       Prepare
       (rc log)←T.RunBatchTests 0
       success←rc=0
+      CommTools.Cleanup
     ∇
 
     :EndSection

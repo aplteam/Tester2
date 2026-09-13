@@ -1,0 +1,16 @@
+ r←Test_Cleanup_017(debugFlag batchFlag);⎕TRAP;T2;rc;log
+⍝ Exercise `Run` with an ungrouped test case: no group-specific `Cleanup_` must be looked for or executed
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⎕FX'r←Test_01 x;⎕TRAP' 'r←0'
+ #.Temp.⎕FX'Cleanup_' '∆CleanupWithoutGroup←1'
+ (rc log)←T2.Run 1
+ →T.PassesIf 0=rc
+ →T.PassesIf~∨/'"Cleanup_"'⍷∊log
+ →T.PassesIf 0=#.Temp.⎕NC'∆CleanupWithoutGroup'
+
+ r←T._OK

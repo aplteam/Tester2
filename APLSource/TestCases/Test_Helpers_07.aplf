@@ -23,6 +23,6 @@
 
  res←2 T2.ListTestFunctions'Foo*,Grp*'
  →T.PassesIf∧/'Comment:'∘{⍺≡(≢⍺)↑⍵}¨res[;2]
- →T.PassesIf 2∧.=⊃∘APLTreeUtils2.ToNum¨{⍵↑⍨-¯1+'_'⍳⍨⌽⍵}¨res[;1]
+ →T.PassesIf 2∧.=⊃∘##.APLTreeUtils2.ToNum¨{⍵↑⍨-¯1+'_'⍳⍨⌽⍵}¨res[;1]
 
  r←T._OK

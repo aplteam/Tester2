@@ -1,0 +1,15 @@
+ r←Test_Init_84(debugFlag batchFlag);⎕TRAP;T2;rc;log
+⍝ Exercise `Run` with a dfn `Initial` (a dfn is always ambivalent) that returns 1
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⍎'Initial←{1}'
+ #.Temp.⎕FX'r←Test_01 x;⎕TRAP' 'r←0'
+ (rc log)←T2.Run 1
+ →T.PassesIf 0=rc
+ →T.PassesIf∨/'Looking for a function "Initial": found and executed successfully'⍷∊log
+
+ r←T._OK

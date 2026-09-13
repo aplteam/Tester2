@@ -1,4 +1,4 @@
 aplteam-APLTreeUtils2-1.4.1
 aplteam-FilesAndDirs-7.1.1
 aplteam-CodeCoverage-1.0.0
-aplteam-CommTools-2.1.0
+aplteam-CommTools-3.0.0
