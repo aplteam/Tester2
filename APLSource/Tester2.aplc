@@ -52,6 +52,13 @@
       ⍝   * `codeCoverage`, `exec_before_each_test`, `exec_after_each_test` and custom messages can now be reset to ''
       ⍝   * Documentation corrected in several places (names of symbolic constants, `ps.List`, the result of the
       ⍝     `Run*` functions, INI file names, `~` in group definitions, examples) as well as the class header comment
+      ⍝   * Less noise in the log: functions `Initial`, `Cleanup` and `Cleanup_<group>` that do not exist are not
+      ⍝     reported anymore, and the two lines on INI files not found are replaced by a single one
+      ⍝   * Functions that look like `Initial`, `Cleanup`, `Initial_<group>` or `Cleanup_<group>` but will never be
+      ⍝     executed (wrong case, typo, missing or unknown group) are reported as warnings in the log
+      ⍝   * `Initial`, `Initial_<group>`, `Cleanup` and `Cleanup_<group>` now all signal error 11 when they return an
+      ⍝     invalid result (neither a Boolean nor a text vector). So far the four handled such a result differently:
+      ⍝     LENGTH ERROR or DOMAIN ERROR, success, failure, or just a note in the log
       ⍝   * Internal: niladic `LF` introduced, dead code removed
       ⍝   * Bug fixes
       ⍝     * Final report came with empty lines
@@ -68,6 +75,8 @@
       ⍝     * `RunThese` did not sort a list of test function names, so group-specific `Initial` and `Cleanup`
       ⍝       functions could be executed more than once
       ⍝     * Group names containing an underscore were not handled consistently
+      ⍝     * A failing `Initial_<group>` also skipped test cases of other groups whose names contain the group name,
+      ⍝       like "Foo_Bar" or "Zed_Foo" for the group "Foo"
       ⍝     * `~` excluded all groups starting with the given name rather than exactly that group
       ⍝     * A test function that crashed was not reported in the session (without GUI), and its log line lacked its name
       ⍝     * In batch mode `GoToTidyUp` added a line number to test cases that passed
@@ -76,8 +85,10 @@
       ⍝     * `EditTestFunctions` crashed when given a vector of names
       ⍝     * `GetSymbolicName` did not check its argument
       ⍝     * Coverage data of test cases that crashed got lost
-      ⍝     * GUI: `CloseGUI` could fail to close the GUI; more than 2000 test cases could not be handled; closing
-      ⍝       the GUI during a run skipped `Cleanup`
+      ⍝     * GUI: `CloseGUI` could fail to close the GUI; closing the GUI during a run skipped `Cleanup`
+      ⍝     * `INI` was removed before `Cleanup` got executed, so `Cleanup` could not access it
+      ⍝     * With error trapping active, a crash in `Initial_<group>` was reported as a broken test case, and the
+      ⍝       remaining members of the group were executed without initialisation; now it crashes, as `Initial` does
       ⍝ * 4.4.0 ⋄ 2026-02-06
       ⍝   * Packages updated (CommTools!)
       ⍝ * 4.3.0 ⋄ 2025-09-13
@@ -535,6 +546,7 @@
       :If 0=≢ps.list←{⍵[;1]}ListTestFunctions''
           →∆GetOutOfHere,rc←0
       :EndIf
+      _ref CheckForMisnamedFunctions ps.list
       ProcessGroupAndTestCaseNumbers(_ref ps)
       :If 0=≢ps.list
           →∆GetOutOfHere,rc←0
@@ -592,7 +604,6 @@
           log←ps.log
           →0
       :EndIf
-      _INI←⍬                    ⍝ Flatten any leftovers
       :If 0<ps.⎕NC'list'        ⍝ Then no test cases got executed, probably because `Initial` failed.
       :AndIf 0<≢ps.list
           (rc2 log)←ReportTestResults ps
@@ -605,6 +616,7 @@
       :If initialFlag
           {}ExecuteCleanup _ref ps
       :EndIf
+      _INI←⍬                    ⍝ Flatten any leftovers, but not before `Cleanup` got executed
       :If 0<≢_codeCoverage
           :If 0=≢res←_codeCoverage.Finalise 1
               ⍞←'Coverage report: nothing to report',LF
@@ -649,34 +661,21 @@
       :EndIf
     ∇
 
-    ∇ ref←ProcessIniFiles(ref ps);iniFilenames;iniFilename;report;parent;cn
-      iniFilenames←''
-      iniFilename←_IniFolder,((0<≢_IniFolder)/'/'),'Testcases.ini'
-      report←,⊂'Searching for INI file ',iniFilename
-      :If ⎕NEXISTS iniFilename
-          iniFilenames,←⊂iniFilename
-          report[≢report]←⊂((≢report)⊃report),': found'
-      :Else
-          report[≢report]←⊂((≢report)⊃report),': not found'
-      :EndIf
+    ∇ ref←ProcessIniFiles(ref ps);iniFilenames;parent;cn;bool
       :If 'Win'≡A.GetOperatingSystem ⍬
           cn←2 ⎕NQ'#' 'GetEnvironment' 'Computername'
       :Else
           cn←⊃⎕SH'uname -n'
       :EndIf
-      iniFilename←_IniFolder,((0<≢_IniFolder)/'/'),'Testcases-',cn,'.ini'
-      report,←⊂'Searching for INI file ',iniFilename
-      :If ⎕NEXISTS iniFilename
-          iniFilenames,←⊂iniFilename
-          report[≢report]←⊂((≢report)⊃report),': found'
+      iniFilenames←(_IniFolder,(0<≢_IniFolder)/'/')∘,¨'Testcases.ini'('Testcases-',cn,'.ini')
+      bool←⎕NEXISTS¨iniFilenames
+      :If ~∨/bool
+          ShowLog'No INI file found (searched for "',(1⊃iniFilenames),'" and "',(2⊃iniFilenames),'")'
       :Else
-          report[≢report]←⊂((≢report)⊃report),': not found'
-      :EndIf
-      ShowLog¨report
-      :If 0≠≢iniFilenames
+          iniFilenames←bool/iniFilenames
           :Trap 6
               _INI←'flat'(⎕NEW((⊃⊃⎕CLASS ⎕THIS).##.IniFiles)(iniFilenames 1)).Convert ⎕NS''
-              ShowLog'  INI file(s) "',(⊃{⍺,',',⍵}/iniFilenames),'" found and instantiated as INI'
+              ShowLog'INI file(s) "',(⊃{⍺,',',⍵}/iniFilenames),'" found and instantiated as INI'
               ShowLog(⍕≢iniFilenames),' INI file',((1<≢iniFilenames)/'s'),' instantiated'
           :Else
               'The class "IniFiles" is needed but missing'⎕SIGNAL 6
@@ -684,12 +683,44 @@
       :EndIf
     ∇
 
+    ∇ ref CheckForMisnamedFunctions list;groups;names;name;lc;group;prefix;msg
+    ⍝ Warns about functions that look like `Initial`, `Cleanup`, `Initial_<group>` or `Cleanup_<group>` but will
+    ⍝ never be executed: wrong case, typo, missing or unknown group.\\
+    ⍝ `list` must hold the names of _all_ test functions, not just those that are going to be executed.
+      groups←∪{Remove∆Test_ GetGroupName Remove∆Test_ ⍵}¨list
+      groups←groups/⍨~{∧/⍵∊⎕D}¨groups                                   ⍝ Just digits (or empty): not a group
+      names←' '~¨⍨↓ref.⎕NL 3
+      :For name :In names
+          msg←''
+          lc←¯1 ⎕C name
+          :If (⊂lc)∊'initial' 'initialise' 'initialize' 'cleanup'
+              :If ~(⊂name)∊'Initial' 'Cleanup'
+                  msg←'the name must be "',((1+'i'=⊃lc)⊃'Cleanup' 'Initial'),'"'
+              :EndIf
+          :ElseIf (⊂8↑lc)∊'initial_' 'cleanup_'
+              prefix←8↑name
+              group←8↓name
+              :If ~(⊂prefix)∊'Initial_' 'Cleanup_'
+                  msg←'the name must start with "',((1+'i'=⊃lc)⊃'Cleanup_' 'Initial_'),'"'
+              :ElseIf 0=≢group
+                  msg←'the group name is missing'
+              :ElseIf ~(⊂group)∊groups
+                  msg←'there is no group "',group,'"'
+                  msg,←((⊂¯1 ⎕C group)∊¯1 ⎕C¨groups)/' (group names are case sensitive)'
+              :EndIf
+          :EndIf
+          :If 0<≢msg
+              ShowLog'*** WARNING: function "',(⍕ref),'.',name,'" will never be executed: ',msg
+          :EndIf
+      :EndFor
+    ∇
+
       GetTestNo←{
       ⍝ Take a string like "Test_001" or "Test_MyGroup_002" and return just the number
           {A.ToNum⌽⍵↑⍨¯1+⍨⍵⍳'_'}⌽⍵
       }
 
-    ∇ {success}←ExecuteInitial(ref ps);report;buff;initMsg
+    ∇ {success}←ExecuteInitial(ref ps);report;initMsg
       success←1
       report←'Looking for a function "Initial": '
       initMsg←''
@@ -706,15 +737,7 @@
                   ref.Initial
               :Else
      ∆stop_before_initial_2:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
-                  buff←ref.Initial
-                  :If ' '=1↑0⍴buff
-                      success←0=≢buff
-                      :If 0<≢buff
-                          initMsg←buff
-                      :EndIf
-                  :Else
-                      success←buff
-                  :EndIf
+                  (success initMsg)←((⍕ref),'.Initial')EvaluateResult ref.Initial
               :EndIf
           :CaseList 1 ¯2                                  ⍝ Monadic or ambivalent (a dfn is always ambivalent)
               :If 0=⊃⊃ref.⎕AT'Initial'
@@ -722,15 +745,7 @@
                   ref.Initial ps
               :Else
      ∆stop_before_initial_4:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
-                  buff←ref.Initial ps
-                  :If ' '=1↑0⍴buff
-                      success←0=≢buff
-                      :If 0<≢buff
-                          initMsg←buff
-                      :EndIf
-                  :Else
-                      success←buff
-                  :EndIf
+                  (success initMsg)←((⍕ref),'.Initial')EvaluateResult ref.Initial ps
               :EndIf
           :Else
               11 ⎕SIGNAL⍨'The "Initial" function in ',(⍕ref),' has an invalid signature: it''s neither monadic nor niladic'
@@ -743,10 +758,8 @@
                   report,←':',CR,initMsg
               :EndIf
           :EndIf
-      :Else
-          report,←'not found'
+          ShowLog report
       :EndIf
-      ShowLog report
     ∇
 
     ∇ ProcessGroupAndTestCaseNumbers(ref ps);rc;buff
@@ -878,7 +891,7 @@
           currentGroup←GetGroupName Remove∆Test_ testFns
           currentGroup←(~∧/currentGroup∊⎕D)/currentGroup  ⍝ If it's just digits its a number rather than a group name
           testNo←GetTestNo testFns
-          :Trap QuitEvent,ps.trapFlag/0
+          :Trap QuitEvent                                   ⍝ Not 0: `Initial_<group>` must crash on an error or an invalid result
               :If ps.guiFlag
               :AndIf ps.ref2Gui.∆n.PauseBtn.State
                   ps.ref2Gui.∆n.Info.Text←'PAUSING'
@@ -887,10 +900,15 @@
               ¯1 ShowLog(length2↑(length↑testFns),' (',(cw 0⍕i),'/',max,')')
               i AddToGui(length2↑(length↑'  ',testFns),' (',(cw 0⍕i),'/',max,')')
               (continueFlag i noOf)←HandleInitialize(ref ps currentGroup i noOf)
-              :If continueFlag
-                  HandleCleanup ref ps currentGroup i
-                  :Continue
-              :EndIf
+          :Else
+              HandleCleanup ref ps currentGroup i
+              ⎕SIGNAL QuitEvent
+          :EndTrap
+          :If continueFlag
+              HandleCleanup ref ps currentGroup i
+              :Continue
+          :EndIf
+          :Trap QuitEvent,ps.trapFlag/0
               rc←ExecuteTestFunction ref ps testNo testFns
               :If ' '=1↑0⍴rc   ⍝ Custom message?
                   :If (⊂rc)∊ListCustomMessages[;2]                      ⍝ Is it a valid custom message?
@@ -999,7 +1017,7 @@
       rc←0<ps.failedCounter+ps.errCounter
     ∇
 
-    ∇ {r}←ExecuteCleanup(ref ps);report;resultFlag;rc
+    ∇ {r}←ExecuteCleanup(ref ps);report;resultFlag;rc;success;msg
       r←⍬
       report←'Looking for a function "Cleanup": '
       :If 3=ref.⎕NC'Cleanup'
@@ -1009,7 +1027,6 @@
               ((⎕STOP 1⊃⎕SI)~∆stop_before_cleanup_1 ∆stop_before_cleanup_2)⎕STOP 1⊃⎕SI
           :EndIf
           resultFlag←0≠1 1⊃ref.⎕AT'Cleanup'                            ⍝ Whether the result is shy or not does not matter
-          rc←¯1 ⍝ Undefined
           :Trap 0
               :If 0=1 2⊃ref.⎕AT'Cleanup'
      ∆stop_before_cleanup_1:  ⍝ To switch off the stopping mechanism permanently, enter:   ps.stop←0
@@ -1023,31 +1040,37 @@
               ShowLog report
               :Return
           :EndTrap
-          :If ''≡0⍴rc                                                   ⍝ Text?
-          :AndIf 1≥≢⍴rc                                                 ⍝ A scalar or a vector
-              rc←,rc
-              :If 0=≢rc
-                  rc←1                                                  ⍝ Empty: success
+          :If resultFlag
+              (success msg)←((⍕ref),'.Cleanup')EvaluateResult rc        ⍝ Signals 11 on an invalid result: that is not trapped
+              :If success
+                  report,←' found and executed successfully'
+              :ElseIf 0<≢msg
+                  report,←' found and executed but indicated failure:',CR,msg
               :Else
-                  report,←' found and executed but indicated failure:',CR,rc
-                  ShowLog report
-                  :Return
+                  report,←' found and executed but indicated failure by its result'
               :EndIf
-          :EndIf
-          :Select ⊃rc,⊂⍬                                                ⍝ `,⊂⍬` stops an empty result from passing for 0 (`⊃⍬`)
-          :Case ¯1
-              report,←' found and executed'
-          :Case 1
-              report,←' found and executed successfully'
-          :Case 0
-              report,←' found and executed but indicated failure by its result'
           :Else
-              report,←' found and executed but returned an invalid result'
-          :EndSelect
-      :Else
-          report,←'not found'
+              report,←' found and executed'
+          :EndIf
+          ShowLog report
       :EndIf
-      ShowLog report
+    ∇
+
+    ∇ (success msg)←name EvaluateResult result
+    ⍝ Evaluates the result of an `Initial*` or `Cleanup*` function: it must be either a Boolean or a text vector
+    ⍝ (a scalar counts as a one-item vector). `name` is used in the error message.\\
+    ⍝ `success` is 1 for a 1 or an empty text vector; `msg` is a non-empty text vector returned, if any.\\
+    ⍝ Any other result signals error 11: that is a bug in the function that returned it.
+      msg←''
+      :If (1≥≢⍴result)∧(10|⎕DR result)∊0 2                                   ⍝ Text: ⎕DR 80, 82, 160, 320
+          msg←,result
+          success←0=≢msg
+      :ElseIf (1≥≢⍴result)∧(1=≢,result)∧(10|⎕DR result)∊1 3 5 7 9            ⍝ A single number...
+      :AndIf (⊃result)∊0 1                                                     ⍝ ...that is a Boolean
+          success←⊃result
+      :Else
+          ('Function "',name,'" returned an invalid result: neither a Boolean nor a text vector')⎕SIGNAL 11
+      :EndIf
     ∇
 
     ∇ rc←ExecuteTestFunction(ref ps testNo fnsName);buff
@@ -1903,7 +1926,7 @@
       :EndIf
     ∇
 
-    ∇ {(continueFlag i noOf)}←{force}HandleInitialize(ref ps currentGroup i noOf);at;result;buff
+    ∇ {(continueFlag i noOf)}←{force}HandleInitialize(ref ps currentGroup i noOf);at;result;buff;success;msg
       force←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'force'
       continueFlag←0
       currentGroup←Remove∆Test_ currentGroup
@@ -1929,16 +1952,16 @@
                   ref⍎'Initial_',currentGroup
                   result←1
               :EndIf
-              :If ~(⊂result)∊⍬ 1
-              :AndIf ''≢result
+              (success msg)←((⍕ref),'.Initial_',currentGroup)EvaluateResult result
+              :If ~success
                   buff←¯1↑ps.log
                   ps.log←¯1↓ps.log
-                  :If ' '=1↑0⍴∊result
-                      ShowLog'Function "Initial_',currentGroup,'" found and executed, but it returned an error message:',CR,result
+                  :If 0<≢msg
+                      ShowLog'Function "Initial_',currentGroup,'" found and executed, but it returned an error message:',CR,msg
                   :Else
                       ShowLog'Function "Initial_',currentGroup,'" found and executed but did not return a 1'
                   :EndIf
-                  noOf←+/∨/('_',currentGroup,'_')⍷↑(i-1)↓ps.list
+                  noOf←+/∧\(⊂currentGroup)≡¨{Remove∆Test_ GetGroupName Remove∆Test_ ⍵}¨(i-1)↓ps.list  ⍝ Consecutive members of exactly this group
                   ShowLog'Therefore ',(⍕noOf),' member',((1<noOf)/'s'),' of the group "',currentGroup,'" will not be executed'
                   :If ps.guiFlag
                       ps.ref2Gui.∆n.Grid.Values[(i-1)+⍳noOf;4]←⊂'Prevented by Initial_',currentGroup
@@ -1956,7 +1979,7 @@
       :EndIf
     ∇
 
-    ∇ {r}←HandleCleanup(ref ps currentGroup i);at;rc;resultFlag;report
+    ∇ {r}←HandleCleanup(ref ps currentGroup i);at;rc;resultFlag;report;success;msg
       r←0
       currentGroup←Remove∆Test_ currentGroup
       →(0=≢currentGroup)/0                                                      ⍝ Not a member of any group
@@ -1969,7 +1992,6 @@
               :Else
                   ((⎕STOP 1⊃⎕SI)~,∆stop_before_cleanup_1,∆stop_before_cleanup_2)⎕STOP 1⊃⎕SI
               :EndIf
-              rc←¯1  ⍝ Undefined
               at←1⊃ref.⎕AT'Cleanup_',currentGroup
               resultFlag←0≠1⊃at                                                 ⍝ Whether the result is shy or not does not matter
               :Trap 0
@@ -1985,31 +2007,20 @@
                   ShowLog report
                   :Return
               :EndTrap
-              :If ''≡0⍴rc                                               ⍝ Text?
-              :AndIf 1≥≢⍴rc                                             ⍝ A scalar or a vector
-                  rc←,rc
-                  :If 0=≢rc
-                      rc←1                                              ⍝ Empty: success
+              :If resultFlag
+                  (success msg)←((⍕ref),'.Cleanup_',currentGroup)EvaluateResult rc  ⍝ Signals 11 on an invalid result: not trapped
+                  :If success
+                      report,←' found and executed successfully'
+                  :ElseIf 0<≢msg
+                      report,←' found and executed but indicated failure:',CR,msg
                   :Else
-                      report,←' found and executed but indicated failure:',CR,rc
-                      ShowLog report
-                      :Return
+                      report,←' found and executed but indicated failure by its result'
                   :EndIf
-              :EndIf
-              :Select ⊃rc,⊂⍬                                            ⍝ `,⊂⍬` stops an empty result from passing for 0 (`⊃⍬`)
-              :Case ¯1
-                  report,←' found and executed'
-              :Case 1
-                  report,←' found and executed successfully'
-              :Case 0
-                  report,←' found and executed but indicated failure by its result'
               :Else
-                  report,←' found and executed but returned an invalid result'
-              :EndSelect
-          :Else
-              report,←'not found'
+                  report,←' found and executed'
+              :EndIf
+              ShowLog report
           :EndIf
-          ShowLog report
       :EndIf
     ∇
 
