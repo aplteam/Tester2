@@ -1,4 +1,4 @@
-  RunTests;htmlFilename;parms;option
+  RunTests;htmlFilename;parms;option;verbose
 ⍝ Note that Tester2's test cases MUST be run from the GUI for technical reasons.
 ⍝ It's also the only way to be able to follow the stream of tests since Tester2 tests itself.
  Prepare
@@ -8,12 +8,12 @@
  parms.guiFlag←1
  parms T.RunGUI''
  :If 0<≢T.codeCoverage
- :AndIf FilesAndDirs.IsFile T.codeCoverage.filename
-     {}CodeCoverage.ProcessData T.codeCoverage.filename
+ :AndIf FilesAndDirs.IsFile T.codeCoverage.filename,'.profile'
+     {}##.CodeCoverage.ProcessData T.codeCoverage.filename
      option←'Type of code coverage report' 0 1 CommTools.Select'Overview' 'Verbose' 'None'
      :If 3>option
          verbose←2=option
-         htmlFilename←verbose CodeCoverage.CreateReport T.codeCoverage.filename
+         htmlFilename←verbose ##.CodeCoverage.CreateReport T.codeCoverage.filename
          ⎕←']Open file://',htmlFilename
      :EndIf
  :EndIf
