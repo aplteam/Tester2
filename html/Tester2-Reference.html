@@ -59,6 +59,7 @@ html{-webkit-text-size-adjust:100%;}body{margin:0;}main{display:block;}h1{margin
 <li class="toc-entry toc-h3"><a href="#finally-running-the-test-cases">Finally: running the test cases</a></li>
 <li class="toc-entry toc-h3"><a href="#cleaning-up">Cleaning up</a></li>
 <li class="toc-entry toc-h3"><a href="#cleaning-up-for-groups">Cleaning up for groups</a></li>
+<li class="toc-entry toc-h3"><a href="#misnamed-initial-and-cleanup-functions">Misnamed <code>Initial</code> and <code>Cleanup</code> functions</a></li>
 <li class="toc-entry toc-h3"><a href="#ini-file-again">INI file again</a></li>
 <li class="toc-entry toc-h3"><a href="#premature-exit">Premature exit</a></li>
 <li class="toc-entry toc-h3"><a href="#make-the-test-framework-stop">Make the test framework stop</a>
@@ -138,7 +139,8 @@ html{-webkit-text-size-adjust:100%;}body{margin:0;}main{display:block;}h1{margin
 <p>The “Log” tab shows all the messages the <code>Tester2</code> class provides:</p>
 <ul>
 <li>Whether there were any INI files instantiated</li>
-<li>Whether a function  <code>Initial</code> was found and executed, and what it returned, if anything</li>
+<li>Warnings about functions that look like <code>Initial</code> or <code>Cleanup</code> functions but will never be executed (see <a href="#misnamed-initial-and-cleanup-functions" class="bookmark_link">Misnamed functions</a>)</li>
+<li>If there is a function <code>Initial</code>: whether it was executed successfully, and what it returned, if anything</li>
 <li>Which test cases got examined and possibly executed</li>
 <li>What the overall picture is:
 <ul>
@@ -149,7 +151,7 @@ html{-webkit-text-size-adjust:100%;}body{margin:0;}main{display:block;}h1{margin
 <li>Number of test cases that were not applicable</li>
 <li>Number of test cases designed to run on different platforms</li>
 </ul></li>
-<li>Whether a function  <code>Cleanup</code> was found and executed</li>
+<li>If there is a function <code>Cleanup</code>: whether it was executed successfully</li>
 </ul>
 <p>The “Details” tab shows a list of all test cases with…</p>
 <ol start="1">
@@ -375,6 +377,7 @@ RunThese 'G*,~GP'        ⍝ Everything that starts with "G" except "GP"</code><
 <p>If your INI file(s) do not live in either place then you must set the <code>IniFolder</code> property in order to allow <code>Tester2</code> to find the INI file(s).</p>
 <p>First the <code>Run*</code> methods check whether there is a file <code>Testcases.ini</code>. If this is the case the INI file is processed. Use this INI file to specify general stuff that does not depend on a certain computer/environment.</p>
 <p>Then the <code>Run*</code> methods checks for a file <code>Testcases-{computername}.ini</code>. If this file exists it is processed. (On Linux and macOS these file names are case-sensitive.) Use this to specify stuff that does depend on a certain computer or environment.</p>
+<p>If neither of the two files exists, the log says so in a single line that names both files, including their paths.</p>
 <p>Note that if one or both of the two INI files exist there will be a <em>flat</em> namespace <code>T.INI</code>, meaning that any sections defined in the INI file(s) will be ignored.</p>
 <p>An example: if your test functions are hosted by a namespace <code>Foo.TestCases</code> and your INI file specifies a variable <code>hello</code> as holding “world” and you have created an instance with the name <code>T</code> inside <code>#.Foo.TestCases</code> then:</p>
 <pre tabindex="0"><code>       'world'≡#.Foo.TestCases.T.INI.hello
@@ -398,6 +401,7 @@ RunThese 'G*,~GP'        ⍝ Everything that starts with "G" except "GP"</code><
 <li>A non-empty text vector means that the function could not initialise; the text vector is added to the log.</li>
 </ul></li>
 </ul>
+<p>Any other result is a bug in <code>Initial</code>: <code>Tester2</code> signals error 11 with a message like <code>Function "#.Foo.TestCases.Initial" returned an invalid result: neither a Boolean nor a text vector</code>. The same is true for <code>Initial_&lt;group&gt;</code>, <code>Cleanup</code> and <code>Cleanup_&lt;group&gt;</code>.</p>
 <p>Of course, you can simply execute <code>→</code> on a single line in your <code>Initial</code> function if any requirement is not met, but that would also mean that if you run your test cases as part of, say, an automated build process, then this would disrupt the workflow. (There are other reasons why this is not a great idea)</p>
 <p>In such cases <code>Initial</code> should return a 0 indicating failure. Also, part of the initialisation might have been carried out, and a function <code>Cleanup</code> (discussed in a second) might get rid of any leftovers.</p>
 <p>If the function is monadic, then a reference pointing to the parameter space is passed as the right argument. By checking this parameter space <code>Initial</code> can, for example, find out whether the <code>batchFlag</code> is set or not.</p>
@@ -420,6 +424,7 @@ RunThese 'G*,~GP'        ⍝ Everything that starts with "G" except "GP"</code><
 <p>When <code>Initial_foo</code> returns a Boolean and that is a zero, then no test function belonging to the group <code>foo</code> will be executed, but <code>Tester2</code> will carry on executing other test cases.</p>
 <p>Accordingly, when <code>Initial_foo</code> returns a non-empty text vector, then no test function belonging to the group <code>foo</code> will be executed, but <code>Tester2</code> will carry on executing other test cases. The result will be added to the log.</p>
 <p>A group-specific initialisation function is executed right before the first test case of that group is executed.</p>
+<p>Like <code>Initial</code>, a group-specific initialisation function is not executed under error trapping: if it crashes, the test suite crashes, no matter whether errors are trapped or not.</p>
 <div class="h_tag">
 <a href="#finally-running-the-test-cases" id="finally-running-the-test-cases" class="autoheader_anchor">
 <h3 data-id="Finally-running-the-test-cases">Finally: running the test cases</h3>
@@ -432,12 +437,12 @@ RunThese 'G*,~GP'        ⍝ Everything that starts with "G" except "GP"</code><
 </a>
 </div>
 <p>After the last test case was executed, the <code>Run*</code> function checks whether there is a function <code>Cleanup</code> in the namespace hosting your test cases. If that's the case, then this function is executed.</p>
-<p><del>Any <code>Cleanup</code> function should either return a shy result (which will be ignored) or no result at all.</del> Starting with version 4.2, a <code>Cleanup</code> function may or may not return a Boolean result with 1 indicating success. This has an effect only on the log.</p>
+<p><del>Any <code>Cleanup</code> function should either return a shy result (which will be ignored) or no result at all.</del> Starting with version 4.2, a <code>Cleanup</code> function may or may not return a Boolean result with 1 indicating success. It may also return a text vector: an empty one counts as success, a non-empty one as failure, and its content is added to the log. This has an effect only on the log. Any other result makes <code>Tester2</code> signal error 11, as with <a href="#initialisation" class="bookmark_link"><code>Initial</code></a>.</p>
 <p>It might accept a right argument, but this is optional: it might as well be niladic. If it <em>does</em> accept a right argument it will get the parameter namespace passed.</p>
 <p>Notes</p>
 <ul>
 <li>A function <code>Cleanup</code> is be executed no matter whether there was or was not a function <code>Initial</code>, and if there was, no matter whether it returned a 0 or a 1 or nothing at all.</li>
-<li>Cleanup functions are executed under error trapping, and any crashes are noted in the log, but the test suite carries on (from version 4.2 onwards)</li>
+<li>Cleanup functions are executed under error trapping, and any crashes are noted in the log, but the test suite carries on (from version 4.2 onwards). An invalid result, however, is not a crash but a bug: it signals error 11.</li>
 </ul>
 <div class="h_tag">
 <a href="#cleaning-up-for-groups" id="cleaning-up-for-groups" class="autoheader_anchor">
@@ -445,8 +450,24 @@ RunThese 'G*,~GP'        ⍝ Everything that starts with "G" except "GP"</code><
 </a>
 </div>
 <p>You can have clean-up functions for groups. It's recognized by naming convention: for a group <code>foo</code> the function's name must be <code>Cleanup_foo</code>.</p>
-<p>The rules are the same as for the <a href="#initialisation" class="bookmark_link">global <code>Cleanup</code> function</a>.</p>
+<p>The rules are the same as for the <a href="#cleaning-up" class="bookmark_link">global <code>Cleanup</code> function</a>.</p>
 <p>Naturally a group-specific <code>Cleanup</code> function is called after the last test function of that group got executed.</p>
+<div class="h_tag">
+<a href="#misnamed-initial-and-cleanup-functions" id="misnamed-initial-and-cleanup-functions" class="autoheader_anchor">
+<h3 data-id="Misnamed-Initial-and-Cleanup-functions">Misnamed <code>Initial</code> and <code>Cleanup</code> functions</h3>
+</a>
+</div>
+<p>Nothing is reported in the log when there is no function <code>Initial</code>, <code>Cleanup</code>, <code>Initial_&lt;group&gt;</code> or <code>Cleanup_&lt;group&gt;</code>. A misnamed function would therefore be ignored without notice.</p>
+<p>To prevent that, <code>Tester2</code> checks the namespace hosting your test cases for functions that look like one of these but will never be executed, and adds a warning to the log for each of them. For example, with test cases belonging to a group <code>Foo</code>:</p>
+<ul>
+<li><code>CleanUp</code>, <code>INITIAL</code> and <code>Initialise</code> are reported because the names must be <code>Cleanup</code> and <code>Initial</code></li>
+<li><code>INITIAL_Foo</code> is reported because the name must start with <code>Initial_</code></li>
+<li><code>Initial_foo</code> is reported because there is no group “foo” (group names are case sensitive)</li>
+<li><code>Cleanup_Bar</code> is reported because there is no group “Bar”</li>
+<li><code>Cleanup_</code> is reported because the group name is missing</li>
+</ul>
+<p>All test functions in that namespace are taken into account, not just those that are going to be executed, so running just some of them with <code>RunThese</code> does not cause any warnings.</p>
+<p>Note that this means that names starting with <code>Initial_</code> or <code>Cleanup_</code> are reserved: a helper function called, say, <code>Cleanup_Files</code> is reported unless there is a group “Files”.</p>
 <div class="h_tag">
 <a href="#ini-file-again" id="ini-file-again" class="autoheader_anchor">
 <h3 data-id="INI-file-again">INI file again</h3>
@@ -469,24 +490,25 @@ RunThese 'G*,~GP'        ⍝ Everything that starts with "G" except "GP"</code><
 </a>
 </div>
 <p><code>Tester2</code> allows you to stop at strategically important points in time.</p>
+<p>The stops discussed below are specified as the optional left argument of <code>Run</code>, <code>RunThese</code> and <code>RunBatchTests</code>. <code>RunGUI</code> and <code>Run__</code> do not accept such a left argument: with <code>RunGUI</code> you select the stops in the GUI (see <a href="#stops-with-the-gui" class="bookmark_link">Stops with the GUI</a>), and with <code>Run__</code> you assign them to <code>ps.stop</code>.</p>
 <div class="h_tag">
 <a href="#stopping-on-a-test-function" id="stopping-on-a-test-function" class="autoheader_anchor">
 <h4 data-id="Stopping-on-a-test-function">Stopping on a test function</h4>
 </a>
 </div>
-<p>You might want to trace through a test function from top to bottom without tracing through the test framework. That can be achieved by passing a 1 as left argument to any of the <code>Run*</code> functions. The test framework will stop just before the test function(s) get executed.</p>
+<p>You might want to trace through a test function from top to bottom without tracing through the test framework. That can be achieved by passing a 1 as left argument. The test framework will stop just before the test function(s) get executed.</p>
 <div class="h_tag">
 <a href="#stopping-on-initial-function" id="stopping-on-initial-function" class="autoheader_anchor">
 <h4 data-id="Stopping-on-Initial-function">Stopping on <code>Initial</code> function(s)</h4>
 </a>
 </div>
-<p>You can force <code>Tester2</code> to stop just before any <code>Initial</code> function gets executed. That can be achieved by passing a 2 as left argument to any of the <code>Run*</code> functions.</p>
+<p>You can force <code>Tester2</code> to stop just before any <code>Initial</code> function gets executed. That can be achieved by passing a 2 as left argument.</p>
 <div class="h_tag">
 <a href="#stopping-on-cleanup-function" id="stopping-on-cleanup-function" class="autoheader_anchor">
 <h4 data-id="Stopping-on-Cleanup-function">Stopping on <code>Cleanup</code> function(s)</h4>
 </a>
 </div>
-<p>You can force <code>Tester2</code> to stop just before any <code>Cleanup</code> function gets executed. That can be achieved by passing a 4 as left argument to any of the <code>Run*</code> functions except <code>RunGUI</code> and <code>Run__</code>.</p>
+<p>You can force <code>Tester2</code> to stop just before any <code>Cleanup</code> function gets executed. That can be achieved by passing a 4 as left argument.</p>
 <div class="h_tag">
 <a href="#combining-stops" id="combining-stops" class="autoheader_anchor">
 <h4 data-id="Combining-stops">Combining stops</h4>
@@ -519,6 +541,7 @@ Select one item (q=quit) :</code></pre>
 </div>
 <p>Note that the GUI provides a combo box with all possible values:</p>
 <p><img src="gui_4.png" alt="Stop options" title="Stop options"></p>
+<p>If you pass a parameter space to <code>RunGUI</code> as left argument, its <code>stop</code> setting preselects the corresponding entry.</p>
 <div class="h_tag">
 <a href="#code-coverage" id="code-coverage" class="autoheader_anchor">
 <h2 data-id="Code-coverage">Code coverage</h2>

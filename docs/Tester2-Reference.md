@@ -40,7 +40,8 @@ This is how the GUI looks like:
 The "Log" tab shows all the messages the `Tester2` class provides:
 
 * Whether there were any INI files instantiated
-* Whether a function  `Initial` was found and executed, and what it returned, if anything
+* Warnings about functions that look like `Initial` or `Cleanup` functions but will never be executed (see [Misnamed functions](#misnamed-initial-and-cleanup-functions))
+* If there is a function `Initial`: whether it was executed successfully, and what it returned, if anything
 * Which test cases got examined and possibly executed
 * What the overall picture is:
   * Number of test cases executed
@@ -49,7 +50,7 @@ The "Log" tab shows all the messages the `Tester2` class provides:
   * Number of inactive test cases
   * Number of test cases that were not applicable
   * Number of test cases designed to run on different platforms
-* Whether a function  `Cleanup` was found and executed
+* If there is a function `Cleanup`: whether it was executed successfully
 
 The "Details" tab shows a list of all test cases with...
 
@@ -293,6 +294,8 @@ First the `Run*` methods check whether there is a file `Testcases.ini`. If this 
 
 Then the `Run*` methods checks for a file `Testcases-{computername}.ini`. If this file exists it is processed. (On Linux and macOS these file names are case-sensitive.) Use this to specify stuff that does depend on a certain computer or environment.
 
+If neither of the two files exists, the log says so in a single line that names both files, including their paths.
+
 Note that if one or both of the two INI files exist there will be a _flat_ namespace `T.INI`, meaning that any sections defined in the INI file(s) will be ignored. 
 
 An example: if your test functions are hosted by a namespace `Foo.TestCases` and your INI file specifies a variable `hello` as holding "world" and you have created an instance with the name `T` inside `#.Foo.TestCases` then:
@@ -315,6 +318,8 @@ Note that the function must be either niladic or monadic (a dfn, being ambivalen
 * Text result
   * An empty text vector means that the function did what it is supposed to do (=same as no result)
   * A non-empty text vector means that the function could not initialise; the text vector is added to the log.
+
+Any other result is a bug in `Initial`: `Tester2` signals error 11 with a message like `Function "#.Foo.TestCases.Initial" returned an invalid result: neither a Boolean nor a text vector`. The same is true for `Initial_<group>`, `Cleanup` and `Cleanup_<group>`.
 
 Of course, you can simply execute `→` on a single line in your `Initial` function if any requirement is not met, but that would also mean that if you run your test cases as part of, say, an automated build process, then this would disrupt the workflow. (There are other reasons why this is not a great idea)
 
@@ -349,6 +354,8 @@ Accordingly, when `Initial_foo` returns a non-empty text vector, then no test fu
 
 A group-specific initialisation function is executed right before the first test case of that group is executed.
 
+Like `Initial`, a group-specific initialisation function is not executed under error trapping: if it crashes, the test suite crashes, no matter whether errors are trapped or not.
+
 ### Finally: running the test cases
 
 Now the test cases are executed one by one, or, if groups are defined, one group after the other.
@@ -358,22 +365,38 @@ Now the test cases are executed one by one, or, if groups are defined, one group
 
 After the last test case was executed, the `Run*` function checks whether there is a function `Cleanup` in the namespace hosting your test cases. If that's the case, then this function is executed. 
 
-~~Any `Cleanup` function should either return a shy result (which will be ignored) or no result at all.~~ Starting with version 4.2, a `Cleanup` function may or may not return a Boolean result with 1 indicating success. It may also return a text vector: an empty one counts as success, a non-empty one as failure, and its content is added to the log. This has an effect only on the log.
+~~Any `Cleanup` function should either return a shy result (which will be ignored) or no result at all.~~ Starting with version 4.2, a `Cleanup` function may or may not return a Boolean result with 1 indicating success. It may also return a text vector: an empty one counts as success, a non-empty one as failure, and its content is added to the log. This has an effect only on the log. Any other result makes `Tester2` signal error 11, as with [`Initial`](#initialisation).
 
 It might accept a right argument, but this is optional: it might as well be niladic. If it _does_ accept a right argument it will get the parameter namespace passed.
 
 Notes
 
 * A function `Cleanup` is be executed no matter whether there was or was not a function `Initial`, and if there was, no matter whether it returned a 0 or a 1 or nothing at all.
-* Cleanup functions are executed under error trapping, and any crashes are noted in the log, but the test suite carries on (from version 4.2 onwards)
+* Cleanup functions are executed under error trapping, and any crashes are noted in the log, but the test suite carries on (from version 4.2 onwards). An invalid result, however, is not a crash but a bug: it signals error 11.
 
 ### Cleaning up for groups
 
 You can have clean-up functions for groups. It's recognized by naming convention: for a group `foo` the function's name must be `Cleanup_foo`. 
 
-The rules are the same as for the [global `Cleanup` function](#initialisation).
+The rules are the same as for the [global `Cleanup` function](#cleaning-up).
 
 Naturally a group-specific `Cleanup` function is called after the last test function of that group got executed.
+
+### Misnamed `Initial` and `Cleanup` functions
+
+Nothing is reported in the log when there is no function `Initial`, `Cleanup`, `Initial_<group>` or `Cleanup_<group>`. A misnamed function would therefore be ignored without notice.
+
+To prevent that, `Tester2` checks the namespace hosting your test cases for functions that look like one of these but will never be executed, and adds a warning to the log for each of them. For example, with test cases belonging to a group `Foo`:
+
+* `CleanUp`, `INITIAL` and `Initialise` are reported because the names must be `Cleanup` and `Initial`
+* `INITIAL_Foo` is reported because the name must start with `Initial_`
+* `Initial_foo` is reported because there is no group "foo" (group names are case sensitive)
+* `Cleanup_Bar` is reported because there is no group "Bar"
+* `Cleanup_` is reported because the group name is missing
+
+All test functions in that namespace are taken into account, not just those that are going to be executed, so running just some of them with `RunThese` does not cause any warnings.
+
+Note that this means that names starting with `Initial_` or `Cleanup_` are reserved: a helper function called, say, `Cleanup_Files` is reported unless there is a group "Files".
 
 
 ### INI file again
@@ -397,17 +420,19 @@ You are advised to make using this mechanism a habit when you want to exist a te
 
 `Tester2` allows you to stop at strategically important points in time. 
 
+The stops discussed below are specified as the optional left argument of `Run`, `RunThese` and `RunBatchTests`. `RunGUI` and `Run__` do not accept such a left argument: with `RunGUI` you select the stops in the GUI (see [Stops with the GUI](#)), and with `Run__` you assign them to `ps.stop`.
+
 #### Stopping on a test function
 
-You might want to trace through a test function from top to bottom without tracing through the test framework. That can be achieved by passing a 1 as left argument to any of the `Run*` functions. The test framework will stop just before the test function(s) get executed.
+You might want to trace through a test function from top to bottom without tracing through the test framework. That can be achieved by passing a 1 as left argument. The test framework will stop just before the test function(s) get executed.
 
 #### Stopping on `Initial` function(s)
 
-You can force `Tester2` to stop just before any `Initial` function gets executed. That can be achieved by passing a 2 as left argument to any of the `Run*` functions. 
+You can force `Tester2` to stop just before any `Initial` function gets executed. That can be achieved by passing a 2 as left argument.
 
 #### Stopping on `Cleanup` function(s)
 
-You can force `Tester2` to stop just before any `Cleanup` function gets executed. That can be achieved by passing a 4 as left argument to any of the `Run*` functions except `RunGUI` and `Run__`. 
+You can force `Tester2` to stop just before any `Cleanup` function gets executed. That can be achieved by passing a 4 as left argument.
 
 #### Combining stops
 
@@ -439,6 +464,8 @@ Select one item (q=quit) :
 Note that the GUI provides a combo box with all possible values:
 
 ![Stop options](gui_4.png "Stop options")
+
+If you pass a parameter space to `RunGUI` as left argument, its `stop` setting preselects the corresponding entry.
 
 
 ## Code coverage
