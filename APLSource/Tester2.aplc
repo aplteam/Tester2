@@ -42,7 +42,13 @@
 
     ∇ r←History
       :Access Public shared
-      ⍝ * 4.5.0 ⋄ 2026-09-12
+      ⍝ * 5.0.0 ⋄ 2026-09-13
+      ⍝   * BREAKING CHANGES
+      ⍝     The way Initial & Intial_{group} as well as Cleanup & Cleanup_group have changed is in some ways a
+      ⍝     breaking change. So far the process war partly different for the same argument, or behaviour and
+      ⍝     documentation disagreed. That has been fixed. When using `Tester2` interactively it will not matter
+      ⍝     that much, but when it is used as part of a batch process that might well be different.
+      ⍝     Consult the documentation for details. 
       ⍝   * GoToTidyUp did not return a result and relied on a bug to work.
       ⍝   * Packages updated (CommTools!)
       ⍝   * A dfn can now be used as `Initial` (it was rejected because a dfn is ambivalent)
