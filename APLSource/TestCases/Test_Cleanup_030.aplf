@@ -1,5 +1,5 @@
- r←Test_Cleanup_030(debugFlag batchFlag);⎕TRAP;T2;rc;log;expected
-⍝ Exercise `Run` with a `Cleanup` function that returns an empty shy result: that is not a Boolean
+ r←Test_Cleanup_030(debugFlag batchFlag);⎕TRAP;T2;rc;log;qdmx
+⍝ Exercise `Run` with a `Cleanup` function that returns an empty numeric result: that is invalid and signals error 11
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  r←T._Failed
 
@@ -8,9 +8,12 @@
  T2←⎕NEW ##.Tester2 #.Temp
  #.Temp.⎕FX'r←Test_01 x;⎕TRAP' 'r←0'
  #.Temp.⎕FX'{r}←Cleanup' 'r←⍬'
- (rc log)←T2.Run 1
- →T.PassesIf 0=rc
- expected←'Looking for a function "Cleanup":  found and executed but returned an invalid result'
- →T.PassesIf∨/expected⍷∊log
+ :Trap 11
+     (rc log)←T2.Run 1
+     →T.FailsIf 1
+ :Else
+     qdmx←⎕DMX
+     →T.PassesIf'Function "#.Temp.Cleanup" returned an invalid result: neither a Boolean nor a text vector'≡qdmx.EM
+ :EndTrap
 
  r←T._OK

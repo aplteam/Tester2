@@ -1,0 +1,20 @@
+ r←Test_Init_94(debugFlag batchFlag);⎕TRAP;T2;rc;log
+⍝ Exercise `Run` with a failing `Initial_Foo` while groups "Foo_Bar" and "Zed_Foo" exist: only "Foo" must be skipped
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⎕FX'r←Initial_Foo' 'r←0'
+ #.Temp.⎕FX'r←Test_Foo_001 x;⎕TRAP' '∘∘∘'
+ #.Temp.⎕FX'r←Test_Foo_002 x;⎕TRAP' '∘∘∘'
+ #.Temp.⎕FX'r←Test_Foo_Bar_001 x;⎕TRAP' 'r←0'
+ #.Temp.⎕FX'r←Test_Goo_001 x;⎕TRAP' 'r←0'
+ #.Temp.⎕FX'r←Test_Zed_Foo_001 x;⎕TRAP' 'r←0'
+ (rc log)←T2.Run 1
+ →T.PassesIf 0=rc
+ →T.PassesIf∨/'Therefore 2 members of the group "Foo" will not be executed'⍷∊log
+ →T.PassesIf∨/'3 test cases of 5 called'⍷∊log
+
+ r←T._OK

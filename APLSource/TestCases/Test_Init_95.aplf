@@ -1,0 +1,23 @@
+ r←Test_Init_95(debugFlag batchFlag);⎕TRAP;T2;rc;log;prefix
+⍝ Exercise `Run` with misnamed group functions (wrong case, unknown or missing group): each of them is reported
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⎕FX'r←Test_Foo_01 x;⎕TRAP' 'r←0'
+ #.Temp.⎕FX'r←Initial_foo' 'r←0'
+ #.Temp.⎕FX'r←INITIAL_Foo' 'r←0'
+ #.Temp.⎕FX'r←Cleanup_Bar' 'r←1'
+ #.Temp.⎕FX'r←Cleanup_' 'r←1'
+ (rc log)←T2.Run 1
+ →T.PassesIf 0=rc
+ →T.PassesIf∨/'1 test case of 1 called'⍷∊log
+ prefix←'*** WARNING: function "#.Temp.'
+ →T.PassesIf(⊂prefix,'Initial_foo" will never be executed: there is no group "foo" (group names are case sensitive)')∊log
+ →T.PassesIf(⊂prefix,'INITIAL_Foo" will never be executed: the name must start with "Initial_"')∊log
+ →T.PassesIf(⊂prefix,'Cleanup_Bar" will never be executed: there is no group "Bar"')∊log
+ →T.PassesIf(⊂prefix,'Cleanup_" will never be executed: the group name is missing')∊log
+
+ r←T._OK

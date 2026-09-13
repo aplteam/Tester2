@@ -1,0 +1,18 @@
+ r←Test_Cleanup_018(debugFlag batchFlag);⎕TRAP;T2;rc;log
+⍝ Exercise `Run` without any `Initial*` or `Cleanup*` functions: nothing must be reported about them
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⎕FX'r←Test_Foo_01 x;⎕TRAP' 'r←0'
+ #.Temp.⎕FX'r←Test_01 x;⎕TRAP' 'r←0'
+ (rc log)←T2.Run 1
+ →T.PassesIf 0=rc
+ →T.PassesIf∨/'2 test cases of 2 called'⍷∊log
+ →T.PassesIf~∨/'not found'⍷∊log
+ →T.PassesIf~∨/'Looking for'⍷∊log
+ →T.PassesIf~∨/'WARNING'⍷∊log
+
+ r←T._OK

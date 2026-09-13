@@ -1,0 +1,18 @@
+ r←Test_Init_96(debugFlag batchFlag);⎕TRAP;T2;rc;log
+⍝ Exercise `RunThese` with a subset: group functions of groups not selected must not be reported as misnamed
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⎕FX'r←Test_Foo_01 x;⎕TRAP' 'r←0'
+ #.Temp.⎕FX'r←Test_Goo_01 x;⎕TRAP' 'r←0'
+ #.Temp.⎕FX'r←Initial_Goo' 'r←1'
+ #.Temp.⎕FX'r←Cleanup_Goo' 'r←1'
+ (rc log)←T2.RunThese'Foo'
+ →T.PassesIf 0=rc
+ →T.PassesIf∨/'1 test case of 1 called'⍷∊log
+ →T.PassesIf~∨/'WARNING'⍷∊log
+
+ r←T._OK

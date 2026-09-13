@@ -9,7 +9,7 @@
  TestCasesSimu.⎕EX'T'
  →T.PassesIf 1=+/'Looking for a function "Initial":'⍷∊log  ⍝ One function `Initial`
  →T.PassesIf 1=+/'Looking for a function "Cleanup":  found and executed'⍷∊log  ⍝ One function `Initial`
- →T.PassesIf 2=≢'Searching for INI file .* not found'⎕S 1⊣log ⍝ Two INI files
+ →T.PassesIf 1=+/'No INI file found'⍷∊log ⍝ Neither of the two INI files
  →T.PassesIf∨/'14 test cases of 14 called'⍷∊log
  →T.PassesIf∨/'2 test cases failed'⍷∊log
  →T.PassesIf∨/'0 test cases broken'⍷∊log

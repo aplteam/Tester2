@@ -10,7 +10,7 @@
  #.Temp.⎕FX'Cleanup_' '∆CleanupWithoutGroup←1'
  (rc log)←T2.Run 1
  →T.PassesIf 0=rc
- →T.PassesIf~∨/'"Cleanup_"'⍷∊log
+ →T.PassesIf(⊂'*** WARNING: function "#.Temp.Cleanup_" will never be executed: the group name is missing')∊log
  →T.PassesIf 0=#.Temp.⎕NC'∆CleanupWithoutGroup'
 
  r←T._OK

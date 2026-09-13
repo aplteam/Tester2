@@ -1,0 +1,22 @@
+ r←Test_IniFiles_05(debugFlag batchFlag);⎕TRAP;path;cn;rc;log;expected
+⍝ Exercise `Run` without any INI file: a single line reports the files searched for
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ path←FilesAndDirs.GetTempSubDir''
+ cn←2 ⎕NQ #'GetEnvironment' 'Computername'
+ #.⎕SHADOW'TEMP'
+ 'TEMP'#.⎕NS''
+ #.TEMP.⎕FX'r←Test_01 y;⎕TRAP' 'r←0'
+ #.TEMP.T←⎕NEW ##.Tester2 #.TEMP
+ #.TEMP.T.IniFolder←path
+ (rc log)←#.TEMP.T.Run 1
+ →T.GoToTidyUp 0≠rc
+ expected←'No INI file found (searched for "',path,'/Testcases.ini" and "',path,'/Testcases-',cn,'.ini")'
+ →T.GoToTidyUp~(⊂expected)∊log
+ →T.GoToTidyUp∨/'Searching for INI file'⍷∊log
+
+ r←T._OK
+
+∆TidyUp:
+ FilesAndDirs.RmDir path

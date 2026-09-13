@@ -1,0 +1,20 @@
+ r←Test_Init_98(debugFlag batchFlag);⎕TRAP;T2;rc;log;qdmx
+⍝ Exercise `Run` with error trapping and an `Initial_Foo` that crashes: that must crash, not report a broken test
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⎕FX'r←Test_Foo_01 x;⎕TRAP' 'r←0'
+ #.Temp.⎕FX'r←Test_Foo_02 x;⎕TRAP' 'r←0'
+ #.Temp.⎕FX'r←Initial_Foo' '''Deliberate crash''⎕SIGNAL 11' 'r←1'
+ :Trap 11
+     (rc log)←T2.Run 0
+     →T.FailsIf 1
+ :Else
+     qdmx←⎕DMX
+     →T.PassesIf'Deliberate crash'≡qdmx.EM
+ :EndTrap
+
+ r←T._OK

@@ -1,0 +1,22 @@
+ r←Test_Cleanup_010(debugFlag batchFlag);⎕TRAP;rc;log;path;expected
+⍝ Exercise `Run` with a `Cleanup` function that accesses `INI`: it must still be available
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ path←FilesAndDirs.GetTempSubDir''
+ (⊂'[CONFIG]' 'file1= ''Main file''')FilesAndDirs.NPUT path,'\Testcases.ini'
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ #.Temp.⎕FX'r←Test_01 x;⎕TRAP' 'r←0'
+ #.Temp.⎕FX'r←Cleanup' 'r←''Main file''≡{9≠⎕NC''⍵'':'''' ⋄ ⍵.file1}T2.INI'
+ #.Temp.T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.T2.IniFolder←path
+ (rc log)←#.Temp.T2.Run 1
+ →T.GoToTidyUp 0≠rc
+ expected←'Looking for a function "Cleanup":  found and executed successfully'
+ →T.GoToTidyUp~(⊂expected)∊log
+
+ r←T._OK
+
+∆TidyUp:
+ FilesAndDirs.RmDir path

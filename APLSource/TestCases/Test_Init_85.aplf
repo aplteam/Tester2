@@ -1,0 +1,21 @@
+ r←Test_Init_85(debugFlag batchFlag);⎕TRAP;T2;rc;log;prefix
+⍝ Exercise `Run` with misnamed `Initial` and `Cleanup` functions (wrong case, typo): each of them is reported
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕SHADOW'Temp'
+ 'Temp'#.⎕NS''
+ T2←⎕NEW ##.Tester2 #.Temp
+ #.Temp.⎕FX'r←Test_01 x;⎕TRAP' 'r←0'
+ #.Temp.⎕FX'r←INITIAL' 'r←1'
+ #.Temp.⎕FX'r←Initialise' 'r←1'
+ #.Temp.⎕FX'r←CleanUp' 'r←1'
+ (rc log)←T2.Run 1
+ →T.PassesIf 0=rc
+ prefix←'*** WARNING: function "#.Temp.'
+ →T.PassesIf(⊂prefix,'INITIAL" will never be executed: the name must be "Initial"')∊log
+ →T.PassesIf(⊂prefix,'Initialise" will never be executed: the name must be "Initial"')∊log
+ →T.PassesIf(⊂prefix,'CleanUp" will never be executed: the name must be "Cleanup"')∊log
+ →T.PassesIf 3=+/'*** WARNING:'∘{⍺≡(≢⍺)↑⍵}¨log
+
+ r←T._OK
